@@ -1,6 +1,100 @@
+import React from "react";
+import {
+  HiOutlineChartSquareBar,
+  HiOutlineUserGroup,
+  HiOutlineTrendingUp,
+  HiOutlineUserCircle,
+  HiOutlineBookOpen,
+  HiOutlineCurrencyDollar,
+  HiOutlineShieldCheck,
+  HiOutlineColorSwatch,
+  HiOutlineChatAlt,
+  HiOutlineDesktopComputer,
+  HiOutlinePaperAirplane,
+  HiOutlineChartPie,
+  HiOutlineUserAdd,
+  HiOutlineKey,
+  HiOutlineBan,
+  HiOutlineHand,
+  HiOutlineDocumentText,
+  HiOutlineTemplate,
+  HiOutlineLockClosed,
+  HiOutlineDocumentDuplicate,
+  HiOutlineViewGridAdd,
+  HiOutlineShare,
+  HiOutlineVariable,
+  HiOutlineCode,
+  HiShieldCheck,
+  HiUsers,
+  HiDatabase,
+  HiPhone,
+  HiDocumentText,
+} from "react-icons/hi";
+import {
+  MdPrivacyTip,
+  MdSubscriptions,
+  MdTransferWithinAStation,
+} from "react-icons/md";
+import { CgGym } from "react-icons/cg";
+import { AiTwotoneSetting } from "react-icons/ai";
+import { PiStudentFill, PiFilesFill } from "react-icons/pi";
+import { FaSchool } from "react-icons/fa";
+import { RiGraduationCapFill } from "react-icons/ri";
+import Assessment from "assets/svg/assessment";
+import { Clients, ContentHub, Dashboard, DataNoFound, Instructors, Policy, Settings, Staff, Student } from "assets/svg";
 
 const navigationIcon = {
+  // main navbar icon
+  loginRequest: <HiShieldCheck />,
+  users: <HiUsers />,
+  gym: <CgGym />,
+  addUser: <HiUsers />,
+  assign: <MdTransferWithinAStation />,
+  configuration: <AiTwotoneSetting />,
+  libraries: <HiDatabase />,
+  subscriptions: <MdSubscriptions />,
+  students: <PiStudentFill />,
+  contents: <PiFilesFill />,
+  college: <FaSchool />,
+  dataNoFound: <DataNoFound />,
+  clients: <Clients />,
+  contentHub: <ContentHub />,
+  assessment: <Assessment />,
+  dashboard: <Dashboard />,
+  instructors: <Instructors />,
+  policy: <Policy />,
+  settings: <Settings />,
+  staff: <Staff />,
+  student: <RiGraduationCapFill  />,
+  //other icon
+  apps: <HiOutlineViewGridAdd />,
+  project: <HiOutlineChartSquareBar />,
+  crm: <HiOutlineUserGroup />,
+  sales: <HiOutlineTrendingUp />,
+  crypto: <HiOutlineCurrencyDollar />,
+  knowledgeBase: <HiOutlineBookOpen />,
+  account: <HiOutlineUserCircle />,
+  uiComponents: <HiOutlineTemplate />,
+  common: <HiOutlineColorSwatch />,
+  feedback: <HiOutlineChatAlt />,
+  dataDisplay: <HiOutlineDesktopComputer />,
+  forms: <HiOutlineDocumentText />,
+  navigation: <HiOutlinePaperAirplane />,
+  graph: <HiOutlineChartPie />,
+  authentication: <HiOutlineLockClosed />,
+  signIn: <HiOutlineShieldCheck />,
+  signUp: <HiOutlineUserAdd />,
+  forgotPassword: <HiOutlineLockClosed />,
+  resetPassword: <HiOutlineKey />,
+  pages: <HiOutlineDocumentDuplicate />,
+  welcome: <HiOutlineHand />,
+  accessDenied: <HiOutlineBan />,
+  guide: <HiOutlineBookOpen />,
+  documentation: <HiDocumentText  />,
+  sharedComponentDoc: <HiOutlineShare />,
+  utilsDoc: <HiOutlineVariable />,
+  changeLog: <HiOutlineCode />,
+  contact: <HiPhone />,
+};
 
-}
-
-export default navigationIcon
+export default navigationIcon;

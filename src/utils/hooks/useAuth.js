@@ -24,14 +24,14 @@ function useAuth() {
 			if (resp.data) {
 				const { token } = resp.data
 				dispatch(onSignInSuccess(token))
-				if(resp.data.user) {
+				// if(resp.data.user) {
 					dispatch(setUser(resp.data.user || { 
 						avatar: '', 
 						userName: 'Anonymous', 
-						authority: ['USER'], 
+						authority: ['admin'], 
 						email: ''
 					}))
-				}
+				// }
 				const redirectUrl = query.get(REDIRECT_URL_KEY)
 				navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath)
                 return {
