@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 const HorizontalNav = () => {
 	
 	const mode = useSelector(state => state.theme.mode)
-	const userAuthority = useSelector((state) => state.auth.user.authority)
+	const userAuthority = useSelector((state) => state.auth.user.userData.authority)
 
 	const { larger } = useResponsive()
 

@@ -1,67 +1,95 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { setUser, initialState } from 'store/auth/userSlice'
-// import { apiSignIn, apiSignOut } from 'services/AuthService'
-import { onSignInSuccess, onSignOutSuccess } from 'store/auth/sessionSlice'
-import appConfig from 'configs/app.config'
-import { REDIRECT_URL_KEY } from 'constants/app.constant'
-import { useNavigate } from 'react-router-dom'
-import useQuery from './useQuery'
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, userLoggedOut } from "store/auth/userSlice";
+import { onSignInSuccess, onSignOutSuccess } from "store/auth/sessionSlice";
+import appConfig from "configs/app.config";
+import { REDIRECT_URL_KEY } from "constants/app.constant";
+import { useNavigate } from "react-router-dom";
+import useQuery from "./useQuery";
+import axiosInstance from "apiServices/axiosInstance";
+import { setThemeColor, setThemeColorLevel } from "store/theme/themeSlice";
+import { themeConfig } from "configs/theme.config";
 
 function useAuth() {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
+  const query = useQuery();
 
-	const query = useQuery()
+  const { token, expired } = useSelector((state) => state.auth.session);
+  const onThemeColorChange = (value) => {
+    dispatch(setThemeColor(value));
+  };
 
-    const { token, signedIn } = useSelector((state) => state.auth.session)
+  const onThemeColorLevelChange = (value) => {
+    dispatch(setThemeColorLevel(value));
+  };
+  const signIn = async ({ email, password }) => {
+    try {
+      const formData = {
+        email: email,
+        password: password,
+      };
+      const response = await axiosInstance.post("user/sign-in", formData);
+      if (response.status) {
+        const { token, data } = response.data;
+        dispatch(onSignInSuccess(token));
+        const userData = data;
+        if (userData) {
+          console.log("token, data: ", token, data);
+          dispatch(
+            setUser({
+              avatar: userData.avatar ? userData.avatar : "",
+              email: userData.email ? userData.email : "demo@gmail.com",
+              user_name: userData.user_name ? userData.user_name : "Guest",
+              authority: userData.role ? [userData.role] : ["admin"],
+              user_id: userData._id ? userData._id : 0,
+              password: userData.password ? userData.password : "",
+              permissions: userData.permissions ? userData.permissions : "",
+            })
+          );
+        }
 
-    const signIn = async ({ userName, password }) => {
-        try {
-			// const resp = await apiSignIn({ userName, password })
-			const resp ={data: {token :"dfugkbkubdkfvgk"}}
-			if (resp.data) {
-				const { token } = resp.data
-				dispatch(onSignInSuccess(token))
-				// if(resp.data.user) {
-					dispatch(setUser(resp.data.user || { 
-						avatar: '', 
-						userName: 'Anonymous', 
-						authority: ['admin'], 
-						email: ''
-					}))
-				// }
-				const redirectUrl = query.get(REDIRECT_URL_KEY)
-				navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath)
-                return {
-                    status: 'success',
-                    message: ''
-                }
-			}
-		} catch (errors) {
-			return {
-                status: 'failed',
-                message: errors?.response?.data?.message || errors.toString()
-            }
-		}
+        const redirectUrl = query.get(REDIRECT_URL_KEY);
+        navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath);
+        return response;
+      } else {
+        return response;
+      }
+    } catch (errors) {
+      console.log("signIn error:", errors);
+      return {
+        status: false,
+        message: errors?.response?.data?.message || errors.toString(),
+      };
     }
+  };
 
-    const handleSignOut = ()  => {
-		dispatch(onSignOutSuccess())
-		dispatch(setUser(initialState))
-		navigate(appConfig.unAuthenticatedEntryPath)
-	}
+  const handleSignOut = () => {
+    dispatch(onSignOutSuccess());
+    dispatch(userLoggedOut());
+    onThemeColorChange(themeConfig.themeColor);
+    onThemeColorLevelChange(themeConfig.primaryColorLevel);
+    navigate(appConfig.unAuthenticatedEntryPath);
+  };
 
-    const signOut = async () => {
-		handleSignOut()
-	}
-    
-    return {
-        authenticated: token && signedIn,
-        signIn,
-        signOut
+  const signOut = async () => {
+    handleSignOut();
+  };
+
+  const checkAuthenticated = () => {
+    if (expired > new Date().getTime()) {
+      return true;
+    } else {
+      handleSignOut();
+      return false;
     }
+  };
+  return {
+    authenticated: token && signIn && checkAuthenticated(),
+    signIn,
+    signOut,
+  };
 }
 
-export default useAuth
+export default useAuth;

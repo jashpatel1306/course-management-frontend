@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Avatar } from "components/ui";
+import { Card } from "components/ui";
 import { MediaSkeleton, Loading } from "components/shared";
 import {
   HiOutlineUserGroup,
@@ -13,7 +13,7 @@ import TopTrainer from "./components/toptrainers";
 import StudentRegistrations from "./components/studentRegistrations";
 
 const StatisticCard = (props) => {
-  const { icon, avatarClass, label, value, loading } = props;
+  const {  label, value, loading } = props;
 
   const avatarSize = 55;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -35,11 +35,11 @@ const StatisticCard = (props) => {
         }
       >
         <div className="flex justify-between items-center text-white">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 font-semibold">
             {/* <Avatar className={avatarClass} size={avatarSize} icon={icon} /> */}
             <div>
-              <span>{label}</span>
-              <h3 className="text-white">{value}</h3>
+              <span className="text-lg ">{label}</span>
+              <p className="text-white text-2xl">{value}</p>
             </div>
           </div>
         </div>
@@ -85,9 +85,12 @@ const SuperAdminDashboard = () => {
           value={55}
         />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <WeeklyActivity data={weeklyReportData} className="col-span-2" />
-        <CourseStatistics data={courseStatisticssData} />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <WeeklyActivity data={weeklyReportData} className="col-span-3" />
+        <div className="col-span-2">
+        <CourseStatistics data={courseStatisticssData}  />
+          
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4  gap-4 mt-8">
         <div className="col-span-1 ">

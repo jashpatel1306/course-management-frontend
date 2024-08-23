@@ -1,12 +1,10 @@
 import { ADMIN_PREFIX_PATH } from "constants/route.constant";
-import {
-  NAV_ITEM_TYPE_ITEM,
-} from "constants/navigation.constant";
+import { NAV_ITEM_TYPE_ITEM } from "constants/navigation.constant";
 import { STUDENT } from "constants/roles.constant";
 
 const studentNavigationConfig = [
   {
-    key: "student.mycourses",
+    key: "apps.student.mycourses",
     path: `${ADMIN_PREFIX_PATH}/students`,
     title: "My Courses",
     icon: "student",
@@ -15,7 +13,7 @@ const studentNavigationConfig = [
     subMenu: [],
   },
   {
-    key: "student.assessment",
+    key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment`,
     title: "Assessment",
     icon: "assessment",
@@ -24,7 +22,7 @@ const studentNavigationConfig = [
     subMenu: [],
   },
   {
-    key: "student.certificate",
+    key: "apps.certificate",
     path: `${ADMIN_PREFIX_PATH}/certificate`,
     title: "Certificate",
     icon: "documentation",

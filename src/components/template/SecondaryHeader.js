@@ -12,7 +12,7 @@ const SecondaryHeader = props => {
 	const navMode = useSelector(state => state.theme.navMode)
 	const themeColor = useSelector(state => state.theme.themeColor)
 	const primaryColorLevel = useSelector(state => state.theme.primaryColorLevel)
-	const userAuthority = useSelector((state) => state.auth.user.authority)
+	const userAuthority = useSelector((state) => state.auth.user.userData.authority)
 
 	const { larger } = useResponsive()
 

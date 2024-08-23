@@ -1,110 +1,122 @@
-import React from 'react'
-import { Input, Button, Checkbox, FormItem, FormContainer, Alert } from 'components/ui'
-import { PasswordInput, ActionLink } from 'components/shared'
-import useTimeOutMessage from 'utils/hooks/useTimeOutMessage'
-import { Field, Form, Formik } from 'formik'
-import * as Yup from 'yup'
-import useAuth from 'utils/hooks/useAuth'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React from "react";
+import {
+  Input,
+  Button,
+  Checkbox,
+  FormItem,
+  FormContainer,
+} from "components/ui";
+import { PasswordInput, ActionLink } from "components/shared";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import useAuth from "utils/hooks/useAuth";
+import openNotification from "views/common/notification";
 
 const validationSchema = Yup.object().shape({
-	userName: Yup.string().required('Please enter your user name'),
-	password: Yup.string().required('Please enter your password'),
-	rememberMe: Yup.bool()
-})
+  email: Yup.string()
+    .email("Please enter valid user name")
+    .required("Please enter your user name"),
+  password: Yup.string().required("Please enter your password"),
+  rememberMe: Yup.bool(),
+});
 
-const SignInForm = props => {
+const SignInForm = (props) => {
+  const {
+    disableSubmit = false,
+    className,
+    forgotPasswordUrl = "/admin/forgot-password",
+  } = props;
 
-	const { 
-		disableSubmit = false, 
-		className, 
-		forgotPasswordUrl = '/forgot-password',
-		signUpUrl = '/sign-up'
-	} = props
+  const { signIn } = useAuth();
 
-	const [message, setMessage] = useTimeOutMessage()
+  const onSignIn = async (values, setSubmitting) => {
+    const { email, password } = values;
+    setSubmitting(true);
 
-	const { signIn } = useAuth()
+    const result = await signIn({ email, password });
+    if (result.status) {
+      openNotification("success", result.message);
+    } else {
+      openNotification("danger", result.message);
+    }
 
-	const onSignIn = async (values, setSubmitting) => {
-		const { userName, password } = values
-		setSubmitting(true)
-		
-		const result = await signIn({ userName, password })
+    setSubmitting(false);
+  };
 
-		if (result.status === 'failed') {
-			setMessage(result.message)
-		}
+  return (
+    <>
+      <div className={className}>
+        <Formik
+          initialValues={{
+            email: "lms@admin.com",
+            password: "Admin@1234",
+            rememberMe: true,
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            if (!disableSubmit) {
+              onSignIn(values, setSubmitting);
+            } else {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ touched, errors, isSubmitting }) => (
+            <Form>
+              <FormContainer>
+                <FormItem
+                  label="Username"
+                  invalid={errors.email && touched.email}
+                  errorMessage={errors.email}
+                >
+                  <Field
+                    type="text"
+                    autoComplete="off"
+                    name="email"
+                    placeholder="Enter the Username"
+                    component={Input}
+                  />
+                </FormItem>
 
-		setSubmitting(false)
-	}
+                <FormItem
+                  label="Password"
+                  invalid={errors.password && touched.password}
+                  errorMessage={errors.password}
+                >
+                  <Field
+                    autoComplete="off"
+                    name="password"
+                    placeholder="Enter the Password"
+                    component={PasswordInput}
+                  />
+                </FormItem>
+                <div className="flex justify-between mb-6">
+                  <Field
+                    className="mb-0"
+                    name="rememberMe"
+                    component={Checkbox}
+                    children="Remember Me"
+                  />
+                  <ActionLink to={forgotPasswordUrl}>
+                    Forgot Password?
+                  </ActionLink>
+                </div>
+                <Button
+                  block
+                  loading={isSubmitting}
+                  variant="solid"
+                  type="submit"
+                >
+                  {isSubmitting ? "Signing in..." : "Sign In"}
+                </Button>
+              </FormContainer>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </>
+  );
+};
 
-	return (
-		<div className={className}>
-			{message && <Alert className="mb-4" type="danger" showIcon>{message}</Alert>}
-			<Formik
-				initialValues={{
-					userName: 'admin', 
-					password: '123Qwe', 
-					rememberMe: true 
-				}}
-				validationSchema={validationSchema}
-				onSubmit={(values, { setSubmitting }) => {
-					if(!disableSubmit) {
-						onSignIn(values, setSubmitting)
-					} else {
-						setSubmitting(false)
-					}
-				}}
-			>
-				{({touched, errors, isSubmitting}) => (
-					<Form>
-						<FormContainer>
-							<FormItem
-								label="User Name"
-								invalid={errors.userName && touched.userName}
-								errorMessage={errors.userName}
-							>
-								<Field 
-									type="text" 
-									autoComplete="off" 
-									name="userName" 
-									placeholder="User Name" 
-									component={Input} 
-								/>
-							</FormItem>
-							<FormItem
-								label="Password"
-								invalid={errors.password && touched.password}
-								errorMessage={errors.password}
-							>
-								<Field
-									autoComplete="off" 
-									name="password" 
-									placeholder="Password" 
-									component={PasswordInput} 
-								/>
-							</FormItem>
-							<div className="flex justify-between mb-6">
-								<Field className="mb-0" name="rememberMe" component={Checkbox} children="Remember Me" />
-								<ActionLink to={forgotPasswordUrl}>
-									Forgot Password?
-								</ActionLink>
-							</div>
-							<Button block loading={isSubmitting} variant="solid" type="submit">
-								{ isSubmitting ? 'Signing in...' : 'Sign In' }
-							</Button>
-							<div className="mt-4 text-center">
-								<span>Don't have an account yet? </span>
-								<ActionLink to={signUpUrl}>
-									Sign up
-								</ActionLink>
-							</div>
-						</FormContainer>
-					</Form>
-				)}
-			</Formik>
-		</div>
-	)
-}
-
-export default SignInForm
+export default SignInForm;

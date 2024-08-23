@@ -69,7 +69,7 @@ const adminNavigationConfig = [
     subMenu: [],
   },
   {
-    key: "contentHub.instructors",
+    key: "apps.instructors",
     path: `${ADMIN_PREFIX_PATH}/content-hub/instructors`,
     title: "Instructors",
     icon: "instructors",
