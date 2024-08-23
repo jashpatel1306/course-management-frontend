@@ -2,7 +2,7 @@
 
 ## Live Application URL
 
-The Application is deployed in https://aditya-sridhar.github.io/simple-reactjs-app
+The Application is deployed in https://course-management-frontend-six.vercel.app/
 
 Click on the link to see the application
 
@@ -10,10 +10,12 @@ Click on the link to see the application
 
 Clone the project into local
 
-# Environment Setup
+## Environment Setup
+
+```bash
 REACT_APP_URL=
 REACT_APP_JWT_SECRET_KEY=
-
+```
 
 Install all the npm packages. Go into the project folder and type the following command to install all npm packages
 
