@@ -16,7 +16,7 @@ const SignIn = () => {
           className={`mb-1 text-xl font-bold `}
 
         >
-          Welcome To LMS:
+          Welcome To LMS
         </p>
         <p>Please enter your credentials to sign in!</p>
       </div>

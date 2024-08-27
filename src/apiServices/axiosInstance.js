@@ -11,7 +11,7 @@ axiosInstance.interceptors.request.use(
     if (config.url !== "user/sign-in") {
       const admin = localStorage.getItem("admin");
       const authData = JSON.parse(admin)?.auth;
-      const token = JSON.parse(authData)?.session.token;
+      const token = JSON.parse(authData)?.session?.token;
 
       config.headers = {
         Authorization: `${token}`,

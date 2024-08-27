@@ -15,13 +15,13 @@ const Clients = () => {
         <circle cx="7" cy="9" r="3" fill="currentColor" />
         <path
           fillRule="evenodd"
-          clip-rule="evenodd"
+          clipRule="evenodd"
           d="M17.5683 18H19.8949C20.4865 18 20.9402 17.4901 20.7965 16.9162C20.4282 15.4458 19.4478 13 16.9999 13C16.1138 13 15.42 13.3205 14.8779 13.7991C16.3857 14.7773 17.1653 16.4902 17.5683 18Z"
           fill="currentColor"
         />
         <path
           fillRule="evenodd"
-          clip-rule="evenodd"
+          clipRule="evenodd"
           d="M9.1221 13.7991C8.58001 13.3205 7.88621 13 7.00012 13C4.5522 13 3.57178 15.4458 3.20355 16.9162C3.05983 17.4901 3.51348 18 4.1051 18H6.43167C6.83476 16.4902 7.61435 14.7773 9.1221 13.7991Z"
           fill="currentColor"
         />

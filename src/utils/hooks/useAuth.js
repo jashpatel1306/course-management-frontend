@@ -27,12 +27,12 @@ function useAuth() {
   const signIn = async ({ email, password }) => {
     try {
       const formData = {
-        email: email,
+        email: email.trim(),
         password: password,
       };
       const response = await axiosInstance.post("user/sign-in", formData);
       if (response.status) {
-        const { token, data } = response.data;
+        const { token, data, collegeId } = response.data;
         dispatch(onSignInSuccess(token));
         const userData = data;
         if (userData) {
@@ -45,7 +45,8 @@ function useAuth() {
               authority: userData.role ? [userData.role] : ["admin"],
               user_id: userData._id ? userData._id : 0,
               password: userData.password ? userData.password : "",
-              permissions: userData.permissions ? userData.permissions : "",
+              permissions: userData.permissions ? userData.permissions : [],
+              collegeId: collegeId ? collegeId : "",
             })
           );
         }

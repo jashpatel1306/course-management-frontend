@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Input,
   Button,
@@ -15,9 +15,10 @@ import openNotification from "views/common/notification";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
+    .trim()
     .email("Please enter valid user name")
     .required("Please enter your user name"),
-  password: Yup.string().required("Please enter your password"),
+  password: Yup.string().trim().required("Please enter your password"),
   rememberMe: Yup.bool(),
 });
 
@@ -25,7 +26,7 @@ const SignInForm = (props) => {
   const {
     disableSubmit = false,
     className,
-    forgotPasswordUrl = "/admin/forgot-password",
+    forgotPasswordUrl = "/forgot-password",
   } = props;
 
   const { signIn } = useAuth();
@@ -33,7 +34,6 @@ const SignInForm = (props) => {
   const onSignIn = async (values, setSubmitting) => {
     const { email, password } = values;
     setSubmitting(true);
-
     const result = await signIn({ email, password });
     if (result.status) {
       openNotification("success", result.message);

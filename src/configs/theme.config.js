@@ -1,9 +1,9 @@
 export const themeConfig = {
-    "themeColor": "blue",
+    "themeColor": "custome",
     "direction": "ltr",
     "mode": "light",
     "locale": "en",
-    "primaryColorLevel": 900,
+    "primaryColorLevel": 500,
     "cardBordered": false,
     "panelExpand": false,
     "controlSize": "md",

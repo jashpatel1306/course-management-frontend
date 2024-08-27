@@ -1,35 +1,26 @@
+import React from "react";
 import { USER_PREFIX_PATH } from "constants/route.constant";
-import { NAV_ITEM_TYPE_ITEM } from "constants/navigation.constant";
 import { STUDENT } from "constants/roles.constant";
 
-const studentNavigationConfig = [
+const studentRoute = [
   {
     key: "apps.student.mycourses",
     path: `${USER_PREFIX_PATH}/students`,
-    title: "My Courses",
-    icon: "student",
-    type: NAV_ITEM_TYPE_ITEM,
+    component: React.lazy(() => import("views/studentPanel/myCourses")),
     authority: [STUDENT],
-    subMenu: [],
   },
   {
     key: "apps.student.assessment",
     path: `${USER_PREFIX_PATH}/assessment`,
-    title: "Assessment",
-    icon: "assessment",
-    type: NAV_ITEM_TYPE_ITEM,
+    component: React.lazy(() => import("views/studentPanel/assessment")),
     authority: [STUDENT],
-    subMenu: [],
   },
   {
     key: "apps.certificate",
     path: `${USER_PREFIX_PATH}/certificate`,
-    title: "Certificate",
-    icon: "documentation",
-    type: NAV_ITEM_TYPE_ITEM,
+    component: React.lazy(() => import("views/studentPanel/certificate")),
     authority: [STUDENT],
-    subMenu: [],
   },
 ];
 
-export default studentNavigationConfig;
+export default studentRoute;

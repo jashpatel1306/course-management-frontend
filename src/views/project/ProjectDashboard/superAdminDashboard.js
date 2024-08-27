@@ -13,7 +13,7 @@ import TopTrainer from "./components/toptrainers";
 import StudentRegistrations from "./components/studentRegistrations";
 
 const StatisticCard = (props) => {
-  const {  label, value, loading } = props;
+  const { label, value, loading } = props;
 
   const avatarSize = 55;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -38,7 +38,7 @@ const StatisticCard = (props) => {
           <div className="flex items-center gap-4 font-semibold">
             {/* <Avatar className={avatarClass} size={avatarSize} icon={icon} /> */}
             <div>
-              <span className="text-lg ">{label}</span>
+              <span className="text-xl ">{label}</span>
               <p className="text-white text-2xl">{value}</p>
             </div>
           </div>
@@ -62,7 +62,7 @@ const courseStatisticssData = [];
 const SuperAdminDashboard = () => {
   return (
     <div>
-      <h4 className="mb-4">My Cards</h4>
+      <h4 className="mb-4 ">My Cards</h4>
       <div className="flex gap-4 mb-6 overflow-x-auto whitespace-nowrap">
         <StatisticCard
           icon={<HiOutlineUserGroup />}
@@ -88,8 +88,7 @@ const SuperAdminDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <WeeklyActivity data={weeklyReportData} className="col-span-3" />
         <div className="col-span-2">
-        <CourseStatistics data={courseStatisticssData}  />
-          
+          <CourseStatistics data={courseStatisticssData} />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4  gap-4 mt-8">

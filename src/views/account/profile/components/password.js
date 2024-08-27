@@ -5,9 +5,7 @@ import FormRow from "./formRow";
 import { Field, Form, Formik } from "formik";
 
 import * as Yup from "yup";
-import useEncryption from "common/useEncryption";
 import axiosInstance from "apiServices/axiosInstance";
-import { useSelector } from "react-redux";
 import openNotification from "views/common/notification";
 import { PasswordInput } from "components/shared";
 import useAuth from "utils/hooks/useAuth";
