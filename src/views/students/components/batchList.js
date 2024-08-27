@@ -121,6 +121,7 @@ const BatchScroller = (props) => {
         )}
 
         {/* Batches container */}
+        {/* <div ref={containerRef} className="flex gap-4 overflow-x-hidden pb-4"> */}
         <div ref={containerRef} className="flex gap-4 overflow-x-hidden pb-4">
           {/* Batch cards */}
           {!isLoading &&

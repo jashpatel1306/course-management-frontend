@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Badge } from "components/ui";
 import { Chart } from "components/shared";
 import { COLORS } from "constants/chart.constant";
+import { useSelector } from "react-redux";
 
 const StudentRegistrations = () => {
   const data = [
@@ -14,9 +15,15 @@ const StudentRegistrations = () => {
       data: [11, 32, 45, 32, 34, 52, 41],
     },
   ];
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
   return (
     <Card>
-      <h4>Student Registrations</h4>
+      <h4 className={`text-${themeColor}-${primaryColorLevel}`}>
+        Student Registrations
+      </h4>
       <div className="mt-6">
         <Chart
           options={{

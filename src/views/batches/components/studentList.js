@@ -23,9 +23,7 @@ import openNotification from "views/common/notification";
 import { useDebounce } from "use-debounce";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import removeSpecials from "views/common/serachText";
 
-const { TabNav, TabList, TabContent } = Tabs;
 const { Tr, Th, Td, THead, TBody } = Table;
 
 const columns = [
@@ -66,13 +64,11 @@ const StudentList = (props) => {
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
-  const [batchLoading, setBatchLoading] = useState(false);
 
-  const [batchList, setBatchList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
- 
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -104,7 +100,7 @@ const StudentList = (props) => {
       // const bodyData =
       //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
       let formData = {
-        search: removeSpecials(debouncedText),
+        // search: removeSpecials(debouncedText),
         batchId: currentTab ? currentTab : "all",
         pageNo: page,
         perPage: appConfig.pagePerData,
@@ -133,7 +129,6 @@ const StudentList = (props) => {
       setIsLoading(false);
     }
   };
- 
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
@@ -180,20 +175,7 @@ const StudentList = (props) => {
   return (
     <>
       <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
-          <Select
-            isSearchable={true}
-            className="w-[100%] md:mb-0 mb-4 sm:mb-0"
-            placeholder="Batches"
-            options={batchList}
-            defaultValue={batchList[0]}
-            onChange={(item) => {
-              setCurrentTab(item.value);
-              setApiFlag(true);
-              setPage(1);
-            }}
-          />
-        </div>
+       
         <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
           <Input
             placeholder="Search By Name, Email"

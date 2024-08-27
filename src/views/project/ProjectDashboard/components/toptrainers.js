@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const TopTrainer = () => {
-
   const navigate = useNavigate();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -17,62 +16,54 @@ const TopTrainer = () => {
       trainer_rating: 4.9,
     },
     {
-        trainer_name: "Terrance Moreno",
-        trainer_rating: 4.9,
-      },
-      {
-        trainer_name: "Ron Vargas",
-        trainer_rating: 4.9,
-      },
-      {
-        trainer_name: "Luke Cook",
-        trainer_rating: 4.9,
-      },
-      {
-        trainer_name: "Samantha Phillips",
-        trainer_rating: 4.9,
-      },
+      trainer_name: "Terrance Moreno",
+      trainer_rating: 4.9,
+    },
+    {
+      trainer_name: "Ron Vargas",
+      trainer_rating: 4.9,
+    },
+    {
+      trainer_name: "Luke Cook",
+      trainer_rating: 4.9,
+    },
+    {
+      trainer_name: "Samantha Phillips",
+      trainer_rating: 4.9,
+    },
   ]);
 
   return (
     <Card>
       <div className="mb-2">
         <h3 className={`text-${themeColor}-${primaryColorLevel}`}>
-          Top 5 Trainers
+          Top Trainers
         </h3>
       </div>
       {gyms.map((info, index) => {
         return (
           <>
+           
             <div
-              className={`p-2 grid grid-cols-4  mb-3 gap-4
-              cursor-pointer bg-${themeColor}-50 rounded-lg
-            `}
+              className={`p-2 hover:bg-${themeColor}-200 rounded-xl cursor-pointer`}
+              onClick={() => {}}
             >
-              <div className="col-span-3 ">
-                <div className="flex items-center">
-                  <p
-                    className={`bg-${themeColor}-${primaryColorLevel} py-1 px-3 mr-4 rounded-lg text-xl text-white font-bold`}
-                  >
-                    {index + 1}
-                  </p>
-                  <h6
-                    className={`font-bold text-lg text-${themeColor}-${primaryColorLevel} capitalize`}
+              <div className=" flex items-center  overflow-hidden">
+                <Avatar
+                  className={`border-${themeColor}-${primaryColorLevel} mr-4 border-2 dark:bg-${themeColor}-${primaryColorLevel}`}
+                  size={50}
+                  src={`/img/avatars/thumb-${index+1}.jpg`}
+                  shape="circle"
+                />
+
+                <div className="flex justify-between items-center">
+                  <h5
+                    className={`font-bold leading-none text-${themeColor}-${primaryColorLevel} mr-2`}
                   >
                     {info.trainer_name}
-                  </h6>
+                  </h5>
                 </div>
-              </div>
-              <div className="col-start-4 flex justify-end ">
-                <h3
-                  className={`font-bold text-xl text-${themeColor}-${primaryColorLevel}`}
-                >
-                  <NumberFormat
-                    displayType="text"
-                    value={info.trainer_rating}
-                    thousandSeparator
-                  />
-                </h3>
+                <hr />
               </div>
             </div>
           </>

@@ -21,7 +21,11 @@ const StatisticCard = (props) => {
     (state) => state?.theme?.primaryColorLevel
   );
   return (
-    <Card className={`bg-${themeColor}-${primaryColorLevel} w-64 h-25`}>
+    <Card
+      className={`bg-${themeColor}-${primaryColorLevel} rounded-lg items-center flex  text-white`}
+      style={{ width: "272px", height: "183px" }}
+    >
+      {/* <Card className={`bg-${themeColor}-${primaryColorLevel} w-64 h-25`}> */}
       <Loading
         loading={loading}
         customLoader={
@@ -34,12 +38,12 @@ const StatisticCard = (props) => {
           />
         }
       >
-        <div className="flex justify-between items-center text-white">
+        <div className="flex justify-start items-center text-white">
           <div className="flex items-center gap-4 font-semibold">
             {/* <Avatar className={avatarClass} size={avatarSize} icon={icon} /> */}
             <div>
-              <span className="text-xl ">{label}</span>
-              <p className="text-white text-2xl">{value}</p>
+              <span className="text-lg ">{label}</span>
+              <p className="text-white text-4xl">{value}</p>
             </div>
           </div>
         </div>
@@ -60,9 +64,15 @@ const weeklyReportData = [
 ];
 const courseStatisticssData = [];
 const SuperAdminDashboard = () => {
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
   return (
     <div>
-      <h4 className="mb-4 ">My Cards</h4>
+      <h4 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+        My Cards
+      </h4>
       <div className="flex gap-4 mb-6 overflow-x-auto whitespace-nowrap">
         <StatisticCard
           icon={<HiOutlineUserGroup />}

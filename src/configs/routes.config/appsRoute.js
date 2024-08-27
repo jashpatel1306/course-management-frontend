@@ -22,6 +22,24 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
+    key: "apps.batches",
+    path: `${ADMIN_PREFIX_PATH}/batches`,
+    component: React.lazy(() => import("views/batches")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
+    key: "apps.batches.datails",
+    path: `${ADMIN_PREFIX_PATH}/batche-details/:id`,
+    component: React.lazy(() => import("views/batches/components/batchDetails")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
+    key: "apps.students",
+    path: `${ADMIN_PREFIX_PATH}/students`,
+    component: React.lazy(() => import("views/students")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students`,
     component: React.lazy(() => import("views/contentHub/studentsContent")),

@@ -42,6 +42,7 @@ import { FaSchool } from "react-icons/fa";
 import { RiGraduationCapFill } from "react-icons/ri";
 import Assessment from "assets/svg/assessment";
 import { Clients, ContentHub, Dashboard, DataNoFound, Instructors, Policy, Settings, Staff, Student } from "assets/svg";
+import { BiSolidCategoryAlt } from "react-icons/bi";
 
 const navigationIcon = {
   // main navbar icon
@@ -66,6 +67,7 @@ const navigationIcon = {
   settings: <Settings />,
   staff: <Staff />,
   student: <RiGraduationCapFill  />,
+  batches: <BiSolidCategoryAlt   />,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,

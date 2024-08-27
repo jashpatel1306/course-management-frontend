@@ -1,4 +1,4 @@
-import { Button, Card } from "components/ui";
+import { Button, Card, Upload } from "components/ui";
 import React, { useState } from "react";
 import { HiPlusCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -6,6 +6,9 @@ import BatchScroller from "./components/batchList";
 import BatchForm from "./components/batchForm";
 import StudentForm from "./components/studentForm";
 import StudentList from "./components/studentList";
+import { BiImport } from "react-icons/bi";
+import openNotification from "views/common/notification";
+import axiosInstance from "apiServices/axiosInstance";
 
 const Students = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -16,7 +19,7 @@ const Students = () => {
   const [addFlag, setAddFlag] = useState(false);
   const [batchData, setBatchData] = useState();
   const [studentData, setStudentData] = useState();
-  
+  const [importLoading, setImportLoading] = useState(false);
   const handleAddNewBatchClick = () => {
     setAddBatchFlag(true);
   };
@@ -29,7 +32,45 @@ const Students = () => {
   const handleAddNewStudentCloseClick = () => {
     setAddFlag(false);
   };
+  const beforeUpload = (files) => {
+    let valid = true;
 
+    const allowedFileType = [
+      "text/csv",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+    const maxFileSize = 5000000;
+    for (let file of files) {
+      if (!allowedFileType.includes(file.type)) {
+        valid = false;
+      }
+      if (file.size >= maxFileSize) {
+        valid = false;
+      }
+    }
+    if (valid) {
+    }
+    return valid;
+  };
+  const ImportStudentData = async (file) => {
+    try {
+      setImportLoading(true);
+      const response = await axiosInstance.post(`user/students-bulk`, {
+        excelFile: file,
+      });
+      if (response.status) {
+        openNotification("success", response.message);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log("onFormSubmit error: ", error);
+      openNotification("danger", error.message);
+    } finally {
+      setImportLoading(false);
+    }
+  };
   return (
     <>
       <Card>
@@ -80,10 +121,25 @@ const Students = () => {
           >
             Batch Details
           </div>
-          <div>
+          <div className="flex gap-x-2">
+            <Upload
+              showList={false}
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              beforeUpload={beforeUpload}
+              onChange={async (file) => {
+                console.log("file:  ", file);
+                await ImportStudentData(file[0]);
+              }}
+            >
+              <Button size="sm" variant="twoTone" icon={<BiImport />}>
+                Import Data
+              </Button>
+            </Upload>
+
             <Button
               size="sm"
               variant="solid"
+              loading={importLoading}
               icon={<HiPlusCircle color={"#fff"} />}
               onClick={async () => {
                 handleAddNewStudentCloseClick();
@@ -104,7 +160,6 @@ const Students = () => {
             parentCloseCallback={handleAddNewStudentCloseClick}
             parentCallback={handleAddNewStudentClick}
             setData={setStudentData}
-            
           />
         </div>
       </Card>

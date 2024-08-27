@@ -2,12 +2,19 @@ import React from "react";
 import { Card, Button } from "components/ui";
 import { Chart } from "components/shared";
 import { COLORS } from "constants/chart.constant";
+import { useSelector } from "react-redux";
 
 const WeeklyActivity = ({ className, data = {} }) => {
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
   return (
     <Card className={className}>
       <div className="flex items-center justify-between">
-        <h4>weekly activity</h4>
+        <h4 className={`text-${themeColor}-${primaryColorLevel}`}>
+          weekly activity
+        </h4>
       </div>
       <Chart
         options={{

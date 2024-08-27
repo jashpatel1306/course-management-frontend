@@ -30,6 +30,16 @@ const adminNavigationConfig = [
     authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: [],
   },
+  {
+    key: "apps.batches",
+    path: `${ADMIN_PREFIX_PATH}/batches`,
+    title: "Batches",
+    icon: "batches",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    subMenu: [],
+  },
+
 
   {
     key: "apps.contentHub",
