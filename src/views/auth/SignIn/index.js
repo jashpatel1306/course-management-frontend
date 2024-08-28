@@ -3,10 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import SignInForm from "./SignInForm";
 const SignIn = () => {
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
+  
 
   return (
     <>
