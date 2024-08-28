@@ -1,12 +1,10 @@
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Table } from "components/ui";
 import React, { useRef, useState, useEffect } from "react";
-import { AiFillEye } from "react-icons/ai";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
+import { FaChevronRight } from "react-icons/fa";
+import { HiOutlinePencil } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import openNotification from "views/common/notification";
-import { GrView } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { TableRowSkeleton } from "components/shared";
 import { DataNoFound } from "assets/svg";
@@ -17,8 +15,8 @@ const columns = [
   "Total Student",
   "Courses",
   "Instructor Name",
-  "Active",
-  "view"
+  "Action",
+  "View",
 ];
 const BatchList = (props) => {
   const { flag, parentCallback, setData, parentCloseCallback } = props;
@@ -28,10 +26,7 @@ const BatchList = (props) => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const [showScrollButtons, setShowScrollButtons] = useState({
-    left: false,
-    right: true,
-  });
+
   const [batchData, setBatchData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 

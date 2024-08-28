@@ -52,8 +52,8 @@ function BatchForm(props) {
   const { userData } = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    batchName: "LPU-CSE-BT1",
-    batchNumber: "1",
+    batchName: "",
+    batchNumber: "",
     instructorIds: [],
     courses: [],
     active: true,
@@ -80,7 +80,6 @@ function BatchForm(props) {
     setFormData({
       batchName: "",
       batchNumber: "",
-
       instructorIds: [],
       courses: [],
       active: false,
@@ -119,6 +118,7 @@ function BatchForm(props) {
       if (response.success) {
         setLoading(false);
         handleCloseClick();
+        resetFormData();
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -146,6 +146,7 @@ function BatchForm(props) {
       if (response.success) {
         setLoading(false);
         handleCloseClick();
+        resetFormData();
       } else {
         setLoading(false);
         openNotification("danger", response.message);

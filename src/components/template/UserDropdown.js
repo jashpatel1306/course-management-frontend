@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { HiOutlineLogout, HiOutlineCog } from "react-icons/hi";
-import { ADMIN_PREFIX_PATH, APP_PREFIX_PATH } from "constants/route.constant";
+import { APP_PREFIX_PATH } from "constants/route.constant";
 
 const dropdownItemList = [
   {

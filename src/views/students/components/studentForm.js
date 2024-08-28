@@ -6,6 +6,7 @@ import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { FormNumericInput } from "components/shared";
+import { SUPERADMIN } from "constants/roles.constant";
 
 const departmentList = [
   { label: "Computer Science", value: "cs" },
@@ -15,38 +16,11 @@ const departmentList = [
   { label: "Mathematics", value: "math" },
 ];
 
-const sectionList = [
-  { label: "A", value: "A" },
-  { label: "B", value: "B" },
-  { label: "C", value: "C" },
-  { label: "D", value: "D" },
-];
 const genderList = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
   { label: "Other", value: "other" },
 ];
-
-const studentValidationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  phone: Yup.string().required("Phone number is required"),
-  collegeUserId: Yup.string().required("College User ID is required"),
-  batchId: Yup.string().required("Batch ID is required"),
-  rollNo: Yup.string().required("Roll no is required"),
-  department: Yup.string().required("Department is required"),
-  section: Yup.string().required("Section is required"),
-  passoutYear: Yup.number()
-    .required("Passout Year is required")
-    .positive("Must be a positive number"),
-  gender: Yup.string().required("Gender is required"),
-  semester: Yup.number()
-    .required("Semester is required")
-    .positive("Must be a positive number"),
-  active: Yup.boolean(),
-});
 
 function StudentForm(props) {
   const { handleCloseClick, studentData, isOpen } = props;
@@ -55,22 +29,57 @@ function StudentForm(props) {
     (state) => state?.theme?.primaryColorLevel
   );
   const { userData } = useSelector((state) => state.auth.user);
+  const studentValidationSchema = Yup.object().shape({
+    name: Yup.string().required("Name is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    phone: Yup.string().required("Phone number is required"),
+    collegeUserId: Yup.string().required("College User ID is required"),
+    batchId: Yup.string().required("Batch ID is required"),
+    rollNo: Yup.string().required("Roll no is required"),
+    department: Yup.string().required("Department is required"),
+    section: Yup.string().required("Section is required"),
+    passoutYear: Yup.number()
+      .required("Passout Year is required")
+      .positive("Must be a positive number"),
+    gender: Yup.string().required("Gender is required"),
+    // Conditional validation for superadmin authority
+    colCode: Yup.string().when([], {
+      is: (userData) =>
+        userData?.authority.toString() === SUPERADMIN.toString(),
+      then: Yup.string().required("College Code is required"),
+      otherwise: Yup.string().notRequired(),
+    }),
+    colName: Yup.string().when([], {
+      is: (userData) =>
+        userData?.authority.toString() === SUPERADMIN.toString(),
+      then: Yup.string().required("College Name is required"),
+      otherwise: Yup.string().notRequired(),
+    }),
+    semester: Yup.number()
+      .required("Semester is required")
+      .positive("Must be a positive number"),
+    active: Yup.boolean(),
+  });
   const [loading, setLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
   const [batchList, setBatchList] = useState([]);
 
   const [formData, setFormData] = useState({
     studentId: "",
-    name: "panthil",
-    email: "panthilmalaviya288@gmail.com",
-    phone: "+916353980453",
+    name: "",
+    email: "",
+    phone: "",
     collegeUserId: userData.collegeId,
     batchId: "",
-    rollNo: "R" + Math.floor(Math.random() * 10000),
+    rollNo: "",
     department: "",
     section: "",
     passoutYear: "",
     gender: "",
+    colCode: "",
+    colName: "",
     semester: "",
     active: true,
   });
@@ -83,6 +92,8 @@ function StudentForm(props) {
     section: "",
     passoutYear: "",
     gender: "",
+    colCode: "",
+    colName: "",
     semester: "",
   });
 
@@ -96,6 +107,8 @@ function StudentForm(props) {
       section: "",
       passoutYear: "",
       gender: "",
+      colCode: "",
+      colName: "",
       semester: "",
     });
   };
@@ -113,6 +126,8 @@ function StudentForm(props) {
       section: "",
       passoutYear: "",
       gender: "",
+      colCode: "",
+      colName: "",
       semester: "",
       active: true,
     });
@@ -132,11 +147,13 @@ function StudentForm(props) {
         phone: studentData.phone ? studentData.phone : "",
         rollNo: studentData.rollNo ? studentData.rollNo : "",
         collegeUserId: userData.collegeId,
-        batchId: studentData.batchId ? studentData.batchId : "",
+        batchId: studentData.batchId ? studentData.batchId?._id : "",
         department: studentData.department ? studentData.department : "",
         section: studentData.section ? studentData.section : "",
         passoutYear: studentData.passoutYear ? studentData.passoutYear : "",
         gender: studentData.gender ? studentData.gender : "",
+        colCode: studentData.colCode ? studentData.colCode : "",
+        colName: studentData.colName ? studentData.colName : "",
         semester: studentData.semester ? studentData.semester : "",
         active: studentData.active !== undefined ? studentData.active : true,
       });
@@ -222,6 +239,8 @@ function StudentForm(props) {
         section: "",
         passoutYear: "",
         gender: "",
+        colCode: "",
+        colName: "",
         semester: "",
       };
     } catch (error) {
@@ -237,6 +256,8 @@ function StudentForm(props) {
           section: "",
           passoutYear: "",
           gender: "",
+          colCode: "",
+          colName: "",
           semester: "",
         };
       } else {
@@ -251,6 +272,8 @@ function StudentForm(props) {
           section: errorObject.section ? errorObject.section : "",
           passoutYear: errorObject.passoutYear ? errorObject.passoutYear : "",
           gender: errorObject.gender ? errorObject.gender : "",
+          colCode: errorObject.colCode ? errorObject.colCode : "",
+          colName: errorObject.colName ? errorObject.colName : "",
           semester: errorObject.semester ? errorObject.semester : "",
         };
       }
@@ -262,7 +285,8 @@ function StudentForm(props) {
     if (!errorObject.status) {
       resetErrorData();
       if (studentData?._id) {
-        await editStudentMethod(formData, studentData._id);
+        const newFormData = { ...formData };
+        await editStudentMethod(newFormData, studentData._id);
       } else {
         await addNewStudentMethod(formData);
       }
@@ -433,6 +457,9 @@ function StudentForm(props) {
                     batchId: value.value,
                   });
                 }}
+                // defaultValue={batchList.find(
+                //   (info) => info.value === formData?.batchId
+                // )}
                 value={batchList.find(
                   (info) => info.value === formData?.batchId
                 )}
@@ -447,7 +474,7 @@ function StudentForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Department {formData?.department}
+              Department
             </div>
             <div className="col-span-2">
               <Select
@@ -467,6 +494,59 @@ function StudentForm(props) {
             </div>
             {DisplayError(errorData.department)}
           </div>
+          {userData?.authority.toString() === SUPERADMIN.toString() ? (
+            <>
+              {/*  College Name */}
+              <div className="col-span-1 gap-4 mb-4">
+                <div
+                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                >
+                  College Name
+                </div>
+                <div className="col-span-2">
+                  <Input
+                    type="text"
+                    placeholder="Please Enter College Name"
+                    className={errorData.colName && "select-error"}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        colName: e.target.value.trim(),
+                      });
+                    }}
+                    value={formData?.colName}
+                  />
+                </div>
+                {DisplayError(errorData.colName)}
+              </div>
+              {/* College Code */}
+              <div className="col-span-1 gap-4 mb-4">
+                <div
+                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                >
+                  College Code
+                </div>
+                <div className="col-span-2">
+                  <Input
+                    type="text"
+                    placeholder="Please Enter College Code"
+                    className={errorData.colCode && "select-error"}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        colCode: e.target.value.trim(),
+                      });
+                    }}
+                    value={formData?.colCode}
+                  />
+                </div>
+                {DisplayError(errorData.colCode)}
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+
           {/* Section */}
           <div className="col-span-1 gap-4 mb-4">
             <div
@@ -475,19 +555,17 @@ function StudentForm(props) {
               Section
             </div>
             <div className="col-span-2">
-              <Select
-                placeholder="Select Section"
+              <Input
+                type="text"
+                placeholder="Please Enter Student Section"
+                className={errorData.section && "select-error"}
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    section: e.value,
+                    section: e.target.value.trim(),
                   });
                 }}
-                value={sectionList.find(
-                  (info) => info.value === formData?.section
-                )}
-                options={sectionList}
-                className={errorData.section && "select-error"}
+                value={formData?.section}
               />
             </div>
             {DisplayError(errorData.section)}

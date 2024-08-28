@@ -1,13 +1,14 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button } from "components/ui";
+import { Avatar, Button } from "components/ui";
 import React, { useRef, useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import openNotification from "views/common/notification";
 
 const BatchScroller = (props) => {
-  const { flag, parentCallback, setUserData, parentCloseCallback } = props;
-
+  const { flag } = props;
+  const navigate = useNavigate();
   const containerRef = useRef(null);
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -33,7 +34,7 @@ const BatchScroller = (props) => {
       );
       setShowScrollButtons({
         left: scrollLeft > 0,
-        right:  scrollLeft <= scrollWidth - clientWidth,
+        right: scrollLeft <= scrollWidth - clientWidth,
       });
     }
   };
@@ -76,9 +77,10 @@ const BatchScroller = (props) => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get(`user/batches/all`);
+      const response = await axiosInstance.get(`user/batches-option`);
       console.log("response : ", response);
       if (response.success) {
+        response.data.shift();
         setBatchData(response.data);
         setIsLoading(false);
       } else {
@@ -128,26 +130,21 @@ const BatchScroller = (props) => {
             batchData?.map((item) => (
               <div
                 key={item}
-                className={`bg-${themeColor}-${primaryColorLevel} text-white p-6 rounded-lg w-64 flex-shrink-0`}
+                className={`flex cursor-pointer shadow-lg justify-start gap-x-3 items-center p-2 px-4 border-2 border-${themeColor}-${primaryColorLevel} bg-${themeColor}-100 text-white rounded-xl`}
+                onClick={() => {
+                  navigate(`/app/admin/batche-details/${item._id}`);
+                }}
               >
-                <p className="text-lg font-semibold mb-2">
-                  Batch {item.batchNumber}
-                </p>
-                <p className="text-sm mb-1">Batch Name: {item.batchName}</p>
-                <p className="text-sm mb-1">Total Students: 120</p>
-                <p className="text-sm mb-1">Courses Attached: python</p>
-                <p className="text-sm mb-1">
-                  Instructor Name: {item.instructorIds.toString()}
-                </p>
-                <div className="flex justify-end   mt-4 text-white font-medium ">
-                  <Button
-                    shape="circle"
-                    size="xs"
-                    className="flex items-center gap-1"
-                  >
-                    <span>View</span>
-                    <FaChevronRight />
-                  </Button>
+                <div
+                  className={`bg-${themeColor}-${primaryColorLevel} text-base font-semibold rounded-full p-1 px-3`}
+                >
+                  {item.batchNumber}
+                </div>
+
+                <div
+                  className={`text-${themeColor}-${primaryColorLevel} text-base font-semibold capitalize`}
+                >
+                  {item.label}
                 </div>
               </div>
             ))}
@@ -163,7 +160,18 @@ const BatchScroller = (props) => {
           </button>
         )}
       </div>
-      <div></div>
+      <div className={`flex justify-end mt-2 `}>
+        <Button
+          size="sm"
+          variant="twoTone"
+          className={`font-bold border border-${themeColor}-${primaryColorLevel}`}
+          onClick={() => {
+            navigate(`/app/admin/batches`);
+          }}
+        >
+          View All
+        </Button>
+      </div>
     </>
   );
 };

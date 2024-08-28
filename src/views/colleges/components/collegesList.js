@@ -364,16 +364,33 @@ const AdminList = (props) => {
         )}
       </div>
 
-      <Dialog isOpen={deleteIsOpen} closable={false}>
-        <h5 className="mb-4">Delete College</h5>
-        <p>Are you sure you want to Inactive this College</p>
-        <div className="text-right mt-6">
+      <Dialog
+        isOpen={deleteIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+        <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>Confirm Deactivation of College</h5>
+          <p>Are you sure you want to deactivate this College?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button
             className="ltr:mr-2 rtl:ml-2"
-            variant="plain"
             onClick={() => {
               setDeleteIsOpen(false);
-              setApiFlag(true);
+              // setApiFlag(true);
             }}
           >
             Cancel

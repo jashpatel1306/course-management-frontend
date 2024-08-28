@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Table,
-  Tabs,
   Dialog,
   Button,
   Pagination,
@@ -14,7 +13,6 @@ import {
   HiOutlinePencil,
   HiOutlineSearch,
   HiOutlineTrash,
-  HiPlusCircle,
 } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
@@ -23,12 +21,14 @@ import openNotification from "views/common/notification";
 import { useDebounce } from "use-debounce";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
+import removeSpecials from "views/common/serachText";
+import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
-const columns = [
-  // "College Code",
-  // "College Name",
+const columnsSuperAdmin = [
+  "College Code",
+  "College Name",
   "Roll No",
   "Name",
   "Email",
@@ -38,7 +38,30 @@ const columns = [
   "Sem",
   "Active",
 ];
-const columnsWithCollege = [
+const columnsSuperAdminWithBatch = [
+  "College Code",
+  "College Name",
+  "Batch Name",
+  "Roll No",
+  "Name",
+  "Email",
+  "Dept",
+  "Section",
+  "Gender",
+  "Sem",
+  "Active",
+];
+const columns = [
+  "Roll No",
+  "Name",
+  "Email",
+  "Dept",
+  "Section",
+  "Gender",
+  "Sem",
+  "Active",
+];
+const columnsWithBatch = [
   "Batch Name",
   "Roll No",
   "Name",
@@ -51,57 +74,35 @@ const columnsWithCollege = [
 ];
 
 const StudentList = (props) => {
-  const { flag, parentCallback, setData, parentCloseCallback } = props;
+  const { flag, parentCallback, batchId, setData, parentCloseCallback } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const { authority } = useSelector((state) => state.auth.user.userData);
 
-  const [currentTab, setCurrentTab] = useState();
   const [studentData, setStudentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
-
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
-
+  const [resultTitle, setResultTitle] = useState(
+    `Result 1 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
+  );
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
   };
-  const getBatchData = async () => {
-    try {
-      setBatchLoading(true);
-      const response = await axiosInstance.get(`user/batches-option`);
 
-      if (response.success) {
-        setBatchList(response.data);
-        setBatchLoading(false);
-        if (!currentTab) {
-          setCurrentTab(response.data[0].value);
-          fetchData();
-        }
-      } else {
-        openNotification("danger", response.error);
-        setBatchLoading(false);
-      }
-    } catch (error) {
-      console.log("getBatchsData error :", error.message);
-      openNotification("danger", error.message);
-      setBatchLoading(false);
-    }
-  };
   const fetchData = async () => {
     try {
-      // const bodyData =
-      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
       let formData = {
-        // search: removeSpecials(debouncedText),
-        batchId: currentTab ? currentTab : "all",
+        search: removeSpecials(debouncedText),
+        batchId: batchId,
         pageNo: page,
         perPage: appConfig.pagePerData,
       };
@@ -118,6 +119,14 @@ const StudentList = (props) => {
             ? Math.ceil(response.pagination.total / appConfig.pagePerData)
             : 0
         );
+        if (response.data) {
+          const start = appConfig.pagePerData * (page - 1);
+          console.log("start", start);
+          const end = start + response.data?.length;
+          setResultTitle(
+            `Result ${start + 1} - ${end} of ${response.pagination.total}`
+          );
+        }
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -129,18 +138,17 @@ const StudentList = (props) => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-      console.log("fetchData();fetchData();fetchData();: ");
-      getBatchData();
+
       fetchData();
     }
   }, [apiFlag]);
   useEffect(() => {
     setApiFlag(true);
-    getBatchData();
   }, []);
   useEffect(() => {
     if (!flag) {
@@ -172,11 +180,24 @@ const StudentList = (props) => {
       setDeleteIsOpen(false);
     }
   };
+  const customColumns = () => {
+    return authority.toString() === SUPERADMIN.toString()
+      ? columnsSuperAdmin
+      : columns;
+  };
   return (
     <>
-      <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-       
-        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+      <div className="lg:flex items-center justify-between mb-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
+        {" "}
+        <div className="w-[50%] ">
+          <div
+            className={`w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
+                dark:bg-gray-700 dark:text-white dark:border-white px-4 border border-${themeColor}-${primaryColorLevel} py-2 px-2 md:w-[100%] lg:w-[50%] xl:w-[40%] sm:w-[100%]`}
+          >
+            {resultTitle}
+          </div>
+        </div>
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
           <Input
             placeholder="Search By Name, Email"
             className=" input-wrapper md:mb-0 mb-4"
@@ -212,13 +233,9 @@ const StudentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {currentTab === "all"
-                    ? columnsWithCollege?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })
-                    : columns?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })}
+                  {customColumns()?.map((item) => {
+                    return <Th key={item}>{item}</Th>;
+                  })}
                 </Tr>
               </THead>
               <TableRowSkeleton columns={9} rows={10} />
@@ -229,28 +246,22 @@ const StudentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {currentTab === "all"
-                    ? columnsWithCollege?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })
-                    : columns?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })}
+                  {customColumns()?.map((item) => {
+                    return <Th key={item}>{item}</Th>;
+                  })}
                 </Tr>
               </THead>
               <TBody>
                 {studentData?.map((item, key) => {
                   return (
                     <Tr key={item?._id}>
-                      {currentTab === "all" ? (
+                      {authority.toString() === SUPERADMIN.toString() ? (
                         <>
-                          <Td>{item?.batchId?.batchName}</Td>
+                          <Td>{item?.colCode || ""}</Td>
+                          <Td>{item?.colName || ""}</Td>
                         </>
                       ) : (
-                        <>
-                          {/* <Td>{item?.collegeUserId?.collegeNo}</Td>
-                              <Td>{item?.collegeUserId?.collegeName}</Td> */}
-                        </>
+                        <></>
                       )}
 
                       <Td>{item?.rollNo}</Td>
@@ -313,16 +324,35 @@ const StudentList = (props) => {
         )}
       </div>
 
-      <Dialog isOpen={deleteIsOpen} closable={false}>
-        <h5 className="mb-4">Delete Student</h5>
-        <p>Are you sure you want to delete this Student</p>
-        <div className="text-right mt-6">
+      <Dialog
+        isOpen={deleteIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Deactivation of Student
+          </h5>
+          <p>Are you sure you want to deactivate this student?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button
             className="ltr:mr-2 rtl:ml-2"
-            variant="plain"
             onClick={() => {
               setDeleteIsOpen(false);
-              setApiFlag(true);
+              // setApiFlag(true);
             }}
           >
             Cancel

@@ -139,6 +139,7 @@ function CollegeForm(props) {
       if (response.success) {
         setLoading(false);
         handleCloseClick();
+        resetFormData();
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -168,6 +169,7 @@ function CollegeForm(props) {
       if (response.success) {
         setLoading(false);
         handleCloseClick();
+        resetFormData();
       } else {
         setLoading(false);
         openNotification("danger", response.message);

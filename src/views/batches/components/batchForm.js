@@ -125,6 +125,7 @@ function BatchForm(props) {
       if (response.success) {
         setLoading(false);
         handleCloseClick();
+        resetFormData();
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -155,6 +156,7 @@ function BatchForm(props) {
       if (response.success) {
         setLoading(false);
         handleCloseClick();
+        resetFormData();
       } else {
         setLoading(false);
         openNotification("danger", response.message);

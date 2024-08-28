@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Table,
-  Tabs,
   Dialog,
   Button,
   Pagination,
@@ -14,7 +13,6 @@ import {
   HiOutlinePencil,
   HiOutlineSearch,
   HiOutlineTrash,
-  HiPlusCircle,
 } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
@@ -24,13 +22,13 @@ import { useDebounce } from "use-debounce";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import removeSpecials from "views/common/serachText";
+import { SUPERADMIN } from "constants/roles.constant";
 
-const { TabNav, TabList, TabContent } = Tabs;
 const { Tr, Th, Td, THead, TBody } = Table;
 
-const columns = [
-  // "College Code",
-  // "College Name",
+const columnsSuperAdmin = [
+  "College Code",
+  "College Name",
   "Roll No",
   "Name",
   "Email",
@@ -40,7 +38,30 @@ const columns = [
   "Sem",
   "Active",
 ];
-const columnsWithCollege = [
+const columnsSuperAdminWithBatch = [
+  "College Code",
+  "College Name",
+  "Batch Name",
+  "Roll No",
+  "Name",
+  "Email",
+  "Dept",
+  "Section",
+  "Gender",
+  "Sem",
+  "Active",
+];
+const columns = [
+  "Roll No",
+  "Name",
+  "Email",
+  "Dept",
+  "Section",
+  "Gender",
+  "Sem",
+  "Active",
+];
+const columnsWithBatch = [
   "Batch Name",
   "Roll No",
   "Name",
@@ -53,12 +74,13 @@ const columnsWithCollege = [
 ];
 
 const StudentList = (props) => {
-  const { flag, parentCallback, setData, parentCloseCallback } = props;
+  const { flag, parentCallback, setBatchesList, setData, parentCloseCallback } =
+    props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-
+  const { authority } = useSelector((state) => state.auth.user.userData);
   const [currentTab, setCurrentTab] = useState();
   const [studentData, setStudentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,7 +94,7 @@ const StudentList = (props) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
- 
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -87,6 +109,9 @@ const StudentList = (props) => {
         setBatchLoading(false);
         if (!currentTab) {
           setCurrentTab(response.data[0].value);
+          const importBatchList = [...response.data];
+          importBatchList.shift();
+          setBatchesList(importBatchList);
           fetchData();
         }
       } else {
@@ -133,7 +158,7 @@ const StudentList = (props) => {
       setIsLoading(false);
     }
   };
- 
+
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
@@ -177,6 +202,15 @@ const StudentList = (props) => {
       setDeleteIsOpen(false);
     }
   };
+  const customColumns = () => {
+    return currentTab === "all"
+      ? authority.toString() === SUPERADMIN.toString()
+        ? columnsSuperAdminWithBatch
+        : columnsWithBatch
+      : authority.toString() === SUPERADMIN.toString()
+      ? columnsSuperAdmin
+      : columns;
+  };
   return (
     <>
       <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
@@ -186,7 +220,8 @@ const StudentList = (props) => {
             className="w-[100%] md:mb-0 mb-4 sm:mb-0"
             placeholder="Batches"
             options={batchList}
-            defaultValue={batchList[0]}
+            loading={batchLoading}
+            value={batchList.find((item) => item.value === currentTab)}
             onChange={(item) => {
               setCurrentTab(item.value);
               setApiFlag(true);
@@ -230,13 +265,9 @@ const StudentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {currentTab === "all"
-                    ? columnsWithCollege?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })
-                    : columns?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })}
+                  {customColumns()?.map((item) => {
+                    return <Th key={item}>{item}</Th>;
+                  })}
                 </Tr>
               </THead>
               <TableRowSkeleton columns={9} rows={10} />
@@ -247,13 +278,9 @@ const StudentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {currentTab === "all"
-                    ? columnsWithCollege?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })
-                    : columns?.map((item) => {
-                        return <Th key={item}>{item}</Th>;
-                      })}
+                  {customColumns()?.map((item) => {
+                    return <Th key={item}>{item}</Th>;
+                  })}
                 </Tr>
               </THead>
               <TBody>
@@ -261,14 +288,24 @@ const StudentList = (props) => {
                   return (
                     <Tr key={item?._id}>
                       {currentTab === "all" ? (
+                        authority.toString() === SUPERADMIN.toString() ? (
+                          <>
+                            <Td>{item?.colCode || ""}</Td>
+                            <Td>{item?.colName || ""}</Td>
+                            <Td>{item?.batchId?.batchName}</Td>
+                          </>
+                        ) : (
+                          <>
+                            <Td>{item?.batchId?.batchName}</Td>
+                          </>
+                        )
+                      ) : authority.toString() === SUPERADMIN.toString() ? (
                         <>
-                          <Td>{item?.batchId?.batchName}</Td>
+                          <Td>{item?.colCode || ""}</Td>
+                          <Td>{item?.colName || ""}</Td>
                         </>
                       ) : (
-                        <>
-                          {/* <Td>{item?.collegeUserId?.collegeNo}</Td>
-                              <Td>{item?.collegeUserId?.collegeName}</Td> */}
-                        </>
+                        <></>
                       )}
 
                       <Td>{item?.rollNo}</Td>
@@ -331,16 +368,35 @@ const StudentList = (props) => {
         )}
       </div>
 
-      <Dialog isOpen={deleteIsOpen} closable={false}>
-        <h5 className="mb-4">Delete Student</h5>
-        <p>Are you sure you want to delete this Student</p>
-        <div className="text-right mt-6">
+      <Dialog
+        isOpen={deleteIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Deactivation of Student
+          </h5>
+          <p>Are you sure you want to deactivate this student?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button
             className="ltr:mr-2 rtl:ml-2"
-            variant="plain"
             onClick={() => {
               setDeleteIsOpen(false);
-              setApiFlag(true);
+              // setApiFlag(true);
             }}
           >
             Cancel
