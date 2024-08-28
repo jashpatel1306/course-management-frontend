@@ -13,7 +13,7 @@ const AssessmentCard = ({ variant = "full" }) => {
     (state) => state?.theme?.primaryColorLevel
   );
 
-  const cardClasses = `bg-${themeColor}-50 border-2 border-${themeColor}-${primaryColorLevel} text-${themeColor}-${primaryColorLevel} rounded-xl shadow-lg ${
+  const cardClasses = ` border-2 border-${themeColor}-${primaryColorLevel} text-${themeColor}-${primaryColorLevel} rounded-xl shadow-lg ${
     variant === "full" ? "w-full" : "w-56"
   }`;
 
@@ -80,11 +80,11 @@ const AssessmentCard = ({ variant = "full" }) => {
           </div>
         </div>
         <div
-          className={`mt-4 md:mt-0 items-center gap-3 flex ${
+          className={`mt-4 md:mt-0 items-center gap-3  ${
             variant === "full"
-              ? "justify-end"
-              : "justify-center md:justify-start"
-          } flex-col md:flex-row`}
+              ? "flex flex-col justify-center"
+              : "flex justify-center md:justify-start"
+          }`}
         >
           <Button
             size="sm"

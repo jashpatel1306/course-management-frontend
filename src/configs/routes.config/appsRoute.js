@@ -59,7 +59,7 @@ const appsRoute = [
   },
   {
     key: "apps.assessment",
-    path: `${ADMIN_PREFIX_PATH}/assessment/form/:id`,
+    path: `${ADMIN_PREFIX_PATH}/assessment/form/:assessmentId`,
     component: React.lazy(() => import("views/assessment/components/assessmentForm")),
     authority: [ADMIN, SUPERADMIN, STAFF],
   },

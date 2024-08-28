@@ -18,28 +18,55 @@ const Assessment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [IsOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: "Assessments-1",
-    expire: new Date(),
+    title: "Assessments-1",
+    expiresAt: new Date(),
   });
   const [error, setError] = useState("");
+  const CreateAssessment = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.post(`user/assessment`, formData);
+      if (response?.success && response?.data?._id) {
+        openNotification("success", response.message);
+        console.log("response: ", response.data._id);
+        navigate(`/app/admin/assessment/form/${response.data._id}`, {
+          state: response.data,
+        });
+        setIsOpen(false);
+        setError("");
+      } else {
+        openNotification("danger", response.message);
+      }
+      setFormData({
+        title: "",
+        expiresAt: "",
+      });
+    } catch (error) {
+      console.log("onFormSubmit error: ", error);
+      openNotification("danger", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const onHandleBox = async () => {
     try {
       if (
-        !formData.expire &&
-        validator.isEmpty(formData.expire?.toString(), {
+        !formData.expiresAt &&
+        validator.isEmpty(formData.expiresAt?.toString(), {
           ignore_whitespace: true,
         })
       ) {
         setError("Please select a Expire Date.");
       }
-      if (!formData?.name) {
-        setError("Please Enter Assessment Name.");
+      if (!formData?.title) {
+        setError("Please Enter Assessment Title.");
       }
 
-      if (formData?.name && formData.expire) {
+      if (formData?.title && formData.expiresAt) {
         setError("");
-
-        navigate(`/app/admin/assessment/form/66cbfee299936cc2fe180f53`);
+        console.log("formData : ", formData);
+        CreateAssessment(formData);
+        // ;
       }
     } catch (error) {
       console.log("");
@@ -92,16 +119,16 @@ const Assessment = () => {
           setIsOpen(false);
           setError("");
           setFormData({
-            name: "",
-            expire: "",
+            title: "",
+            expiresAt: "",
           });
         }}
         onRequestClose={() => {
           setIsOpen(false);
           setError("");
           setFormData({
-            name: "",
-            expire: "",
+            title: "",
+            expiresAt: "",
           });
         }}
       >
@@ -109,24 +136,24 @@ const Assessment = () => {
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
             Assessment Details
           </h5>
-          {/* Assessment Name  */}
+          {/* Assessment Title  */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Assessment Name
+              Assessment Title
             </div>
             <div className="col-span-2">
               <Input
                 type="text"
-                placeholder="Please Enter Assessment Name"
+                placeholder="Please Enter Assessment Title"
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    name: e.target.value.trim(),
+                    title: e.target.value.trim(),
                   });
                 }}
-                value={formData?.name}
+                value={formData?.title}
               />
             </div>
           </div>
@@ -144,16 +171,16 @@ const Assessment = () => {
                   if (date) {
                     setFormData({
                       ...formData,
-                      expire: new Date(date),
+                      expiresAt: new Date(date),
                     });
                   } else {
                     setFormData((prevFormData) => ({
                       ...prevFormData,
-                      expire: "",
+                      expiresAt: "",
                     }));
                   }
                 }}
-                value={formData.expire ? new Date(formData.expire) : ""}
+                value={formData.expiresAt ? new Date(formData.expiresAt) : ""}
               />
             </div>
           </div>
