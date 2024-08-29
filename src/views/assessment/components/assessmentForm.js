@@ -148,16 +148,17 @@ const AssessmentForm = () => {
             </div>
             <Card className="bg-gray-100 border-2 mt-4">
               <div>
-                {sectionData?.contents?.length &&
-                  sectionData?.contents.map((info) => {
+                {sectionData?.content?.length &&
+                  sectionData?.content.map((info,index) => {
                     return (
                       <>
                         <div>
                           {info?.type === "quiz" ? (
                             <>
                               <QuizCard
-                                assessmentId={assessmentId}
+                                assessmentId={sectionData._id}
                                 quizData={info?.data}
+                                quizIndex={index+1}
                               />
                             </>
                           ) : (

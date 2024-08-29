@@ -298,7 +298,7 @@ const AdminList = (props) => {
                     >
                       <Td>
                         {item?.collegeName}
-                        {currentTab}
+                        
                       </Td>
                       <Td>{item?.shortName}</Td>
                       <Td>{item?.collegeNo}</Td>

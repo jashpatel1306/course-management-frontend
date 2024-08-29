@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Avatar, Card } from "components/ui";
-import NumberFormat from "react-number-format";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const TopTrainer = () => {
-  const navigate = useNavigate();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel

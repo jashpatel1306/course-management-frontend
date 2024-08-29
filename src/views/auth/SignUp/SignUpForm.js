@@ -18,31 +18,13 @@ const SignUpForm = props => {
 
 	const { disableSubmit = false, className, signInUrl = '/sign-in' } = props
 
-	const dispatch = useDispatch()
-
-	const navigate = useNavigate()
-
 	const [message, setMessage] = useTimeOutMessage()
 
 	const onSignUp = async (values, setSubmitting) => {
-		const { userName, password, email } = values
+		const { } = values
 		setSubmitting(true)
 		try {
-			// const resp = await apiSignUp({ userName, password, email })
-			// if (resp.data) {
-			// 	setSubmitting(false)
-			// 	const { token } = resp.data
-			// 	dispatch(onSignInSuccess(token))
-			// 	if(resp.data.user) {
-			// 		dispatch(setUser(resp.data.user || { 
-			// 			avatar: '', 
-			// 			userName: 'Anonymous', 
-			// 			authority: ['USER'], 
-			// 			email: ''
-			// 		}))
-			// 	}
-			// 	navigate(appConfig.tourPath)
-			// }
+		
 		} catch (errors) {
 			setMessage(errors?.response?.data?.message || errors.toString())
 			setSubmitting(false)

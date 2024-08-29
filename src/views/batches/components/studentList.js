@@ -6,7 +6,6 @@ import {
   Button,
   Pagination,
   Input,
-  Select,
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
@@ -38,31 +37,8 @@ const columnsSuperAdmin = [
   "Sem",
   "Active",
 ];
-const columnsSuperAdminWithBatch = [
-  "College Code",
-  "College Name",
-  "Batch Name",
-  "Roll No",
-  "Name",
-  "Email",
-  "Dept",
-  "Section",
-  "Gender",
-  "Sem",
-  "Active",
-];
+
 const columns = [
-  "Roll No",
-  "Name",
-  "Email",
-  "Dept",
-  "Section",
-  "Gender",
-  "Sem",
-  "Active",
-];
-const columnsWithBatch = [
-  "Batch Name",
   "Roll No",
   "Name",
   "Email",

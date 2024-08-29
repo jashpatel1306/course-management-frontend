@@ -1,5 +1,5 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Avatar, Button } from "components/ui";
+import {  Button } from "components/ui";
 import React, { useRef, useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useSelector } from "react-redux";
