@@ -36,7 +36,7 @@ const adminNavigationConfig = [
     title: "Batches",
     icon: "batches",
     type: NAV_ITEM_TYPE_ITEM,
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, STAFF],
     subMenu: [],
   },
 

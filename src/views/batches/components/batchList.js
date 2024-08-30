@@ -35,7 +35,6 @@ const BatchList = (props) => {
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`user/batches/all`);
-      console.log("response : ", response);
       if (response.success) {
         setBatchData(response.data);
         setIsLoading(false);

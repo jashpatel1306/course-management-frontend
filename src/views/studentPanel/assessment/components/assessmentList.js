@@ -39,7 +39,6 @@ const AssessmentList = () => {
         `student/get-all-assign-assessments`,
         formData
       );
-      console.log("response : ", response);
       if (response.success) {
         setAssesssmentData(response.data);
         setTotalPage(

@@ -33,7 +33,6 @@ const AssessmentForm = () => {
       const response = await axiosInstance.post(`user/quiz`, formData);
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
-        console.log("response: ", response.data._id);
         setSectionData(response.data);
         setIsOpen(false);
         setApiFlag(true);
@@ -60,7 +59,6 @@ const AssessmentForm = () => {
       }
 
       if (formData?.title) {
-        console.log("formData: ", formData);
         CreateQuiz();
         setError("");
         // setIsOpen(false);
@@ -72,7 +70,7 @@ const AssessmentForm = () => {
         });
       }
     } catch (error) {
-      console.log("");
+      console.log("onHandleQuizBox error :",error);
     }
   };
 
@@ -81,7 +79,6 @@ const AssessmentForm = () => {
       const response = await axiosInstance.get(
         `user/assessment/${assessmentId}`
       );
-      console.log("response : ", response);
       if (response.success) {
         setSectionData(response.data);
         setSessionLoading(false);

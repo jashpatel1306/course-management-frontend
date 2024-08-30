@@ -36,13 +36,7 @@ function useAuth() {
         dispatch(onSignInSuccess(token));
         const userData = data;
         if (userData) {
-          console.log(
-            "token, data, collegeId,batchId: ",
-            token,
-            data,
-            collegeId,
-            batchId
-          );
+         
           dispatch(
             setUser({
               avatar: userData.avatar ? userData.avatar : "",

@@ -26,12 +26,7 @@ const BatchScroller = (props) => {
   const updateButtonVisibility = () => {
     if (containerRef.current) {
       const { scrollWidth, clientWidth, scrollLeft } = containerRef.current;
-      console.log(
-        "scrollWidth, clientWidth, scrollLeft : ",
-        scrollWidth,
-        clientWidth,
-        scrollLeft
-      );
+     
       setShowScrollButtons({
         left: scrollLeft > 0,
         right: scrollLeft <= scrollWidth - clientWidth,
@@ -67,10 +62,7 @@ const BatchScroller = (props) => {
 
     // Add event listener for window resize to adjust button visibility
     window.addEventListener("resize", updateButtonVisibility);
-    console.log(
-      "containerRef.current.clientWidth : ",
-      containerRef.current.clientWidth
-    );
+   
     // Cleanup event listener on component unmount
     return () => window.removeEventListener("resize", updateButtonVisibility);
   }, []);
@@ -78,7 +70,7 @@ const BatchScroller = (props) => {
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`user/batches-option`);
-      console.log("response : ", response);
+    
       if (response.success) {
         response.data.shift();
         setBatchData(response.data);
