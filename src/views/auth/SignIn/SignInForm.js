@@ -50,7 +50,7 @@ const SignInForm = (props) => {
         <Formik
           initialValues={{
             email: "lms@admin.com",
-            password: "Admin@1234",
+            password: "Admin@123",
             rememberMe: true,
           }}
           validationSchema={validationSchema}

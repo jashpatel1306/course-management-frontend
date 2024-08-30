@@ -9,6 +9,7 @@ import axiosInstance from "apiServices/axiosInstance";
 import DisplayError from "views/common/displayError";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
+import AssessmentList from "./components/assessmentList";
 const Assessment = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -95,18 +96,10 @@ const Assessment = () => {
           </div>
         </div>
       </Card>
+      <div>
+        <AssessmentList />
+      </div>
 
-      <Card className="mt-4">
-        <div className="flex flex-wrap gap-4  p-4">
-          {[...Array(12).keys()]?.map((index) => {
-            return (
-              <>
-                <AssessmentCard variant="full" />
-              </>
-            );
-          })}
-        </div>
-      </Card>
       <Dialog
         isOpen={IsOpen}
         style={{

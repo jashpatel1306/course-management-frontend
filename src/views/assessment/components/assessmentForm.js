@@ -62,13 +62,13 @@ const AssessmentForm = () => {
       if (formData?.title) {
         console.log("formData: ", formData);
         CreateQuiz();
-        setApiFlag(true);
         setError("");
-        setIsOpen(false);
+        // setIsOpen(false);
         setFormData({
           ...formData,
           title: "",
           description: "",
+          quizId: null,
         });
       }
     } catch (error) {
@@ -121,7 +121,7 @@ const AssessmentForm = () => {
         <h4
           className={`text-2xl font-semibold text-${themeColor}-${primaryColorLevel} dark:text-white`}
         >
-          {false ? "Update Assessments Details" : "Add Assessments Details"}
+          Assessments Details
         </h4>
       </div>
       {!sessionLoading && sectionData?._id ? (
@@ -133,43 +133,50 @@ const AssessmentForm = () => {
               >
                 {sectionData?.title}
               </div>
-              <div className="flex gap-4 mb-2 mx-2">
+              {/* <div className="gap-4 mb-2 mx-2 flex">
                 <div
                   className={`text-lg font-semibold text-${themeColor}-${primaryColorLevel} px-4 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
                 >
-                  Total Questions : {sectionData?.totalQuestions || "14"}
+                  Total Questions : {sectionData?.totalQuestions || "0"}
                 </div>
                 <div
-                  className={`text-lg font-semibold text-${themeColor}-${primaryColorLevel} px-4 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
+                  className={`text-base font-semibold text-${themeColor}-${primaryColorLevel} px-2 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
                 >
-                  Total Marks : {sectionData?.totalMarks || "100"}
+                  Total Marks : {sectionData?.totalMarks || "0"}
                 </div>
-              </div>
+              </div> */}
             </div>
             <Card className="bg-gray-100 border-2 mt-4">
               <div>
-                {sectionData?.content?.length &&
-                  sectionData?.content.map((info,index) => {
-                    return (
-                      <>
-                        <div>
-                          {info?.type === "quiz" ? (
-                            <>
-                              <QuizCard
-                                assessmentId={sectionData._id}
-                                quizData={info?.data}
-                                quizIndex={index+1}
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <ExerciseCard />
-                            </>
-                          )}
-                        </div>
-                      </>
-                    );
-                  })}
+              {sectionData?.content?.map((info, index) => {
+                      return (
+                        <>
+                          <div>
+                            {info?.type === "quiz" ? (
+                              <>
+                                <QuizCard
+                                  assessmentId={sectionData._id}
+                                  quizData={info?.data}
+                                  quizIndex={index + 1}
+                                  setApiFlag={setApiFlag}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <ExerciseCard />
+                              </>
+                            )}
+                          </div>
+                        </>
+                      );
+                    })}
+                {sectionData?.content?.length ? (
+                  <>
+                    
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
               <div
                 className={`mt-4 p-2 flex text-${themeColor}-${primaryColorLevel} border-2 border-dashed border-gray-400 rounded-lg  bg-gray-50`}
