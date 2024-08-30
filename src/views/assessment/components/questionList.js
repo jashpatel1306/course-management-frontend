@@ -1,51 +1,40 @@
-import React, { useMemo } from "react";
-import { Avatar, Card, Table } from "components/ui";
+import React, { useEffect, useMemo, useState } from "react";
+import { Avatar, Button, Card, Dialog, Table } from "components/ui";
 import { useTable } from "react-table";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { MdDragIndicator } from "react-icons/md";
 import { HiOutlineMenu, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import axiosInstance from "apiServices/axiosInstance";
+import openNotification from "views/common/notification";
 
-const { Tr, Th, Td, THead, TBody } = Table;
-const users = [
-  { id: "1", question: "What is the output of the following code?" },
-  {
-    id: "2",
-    question: "In React, what is the purpose of the useEffect hook?",
-  },
-  {
-    id: "3",
-    question:
-      "Which of the following TypeScript types represents an object with optional properties?",
-  },
-  {
-    id: "4",
-    question:
-      "Which of the following TypeScript types represents an object with optional properties?",
-  },
-  {
-    id: "5",
-    question:
-      "Which of the following TypeScript types represents an object with optional properties?",
-  },
-  {
-    id: "6",
-    question:
-      "Which of the following TypeScript types represents an object with optional properties?",
-  },
-];
+const { Tr, Td, TBody } = Table;
 
-const ReactTable = ({ columns, data, onChange }) => {
-  const reorderData = (startIndex, endIndex) => {
+const ReactTable = ({ columns, data, onChange, quizData }) => {
+  const reorderData = async (startIndex, endIndex) => {
     const newData = [...data];
     const [movedRow] = newData.splice(startIndex, 1);
     newData.splice(endIndex, 0, movedRow);
 
-    console.log(
-      "newDataIds :L",
-      newData.map((info) => `Row - ${info.id}`)
+    console.log("newDataIds :L", quizData.questions, {
+      ...quizData,
+      questions: newData.map((info) => info._id),
+    });
+    const formData = {
+      title: quizData.title,
+      description: quizData?.description,
+      totalMarks: quizData.totalMarks,
+      questions: newData.map((info) => info._id),
+    };
+    const response = await axiosInstance.put(
+      `user/quiz/${quizData._id}`,
+      formData
     );
-    onChange(newData);
+    if (response?.success && response?.data?._id) {
+      // openNotification("success", response.message);
+      onChange(newData);
+    } else {
+      openNotification("danger", response.message);
+    }
   };
 
   const table = useTable({ columns, data });
@@ -68,8 +57,8 @@ const ReactTable = ({ columns, data, onChange }) => {
                 prepareRow(row);
                 return (
                   <Draggable
-                    draggableId={row.original.id.toString()}
-                    key={row.original.id}
+                    draggableId={row.original._id.toString()}
+                    key={row.original._id}
                     index={row.index}
                   >
                     {(provided, snapshot) => {
@@ -111,32 +100,45 @@ const ReactTable = ({ columns, data, onChange }) => {
   );
 };
 
-const DragAndDrop = () => {
+const DragAndDrop = (props) => {
+  const { quizData, setAddQuestion, setQuestionData, setApiFlag } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectObject, setSelectObject] = useState();
+
+  const [deleteIsOpen, setDeleteIsOpen] = useState(false);
+
   const columns = useMemo(
     () => [
       {
         Header: "",
         accessor: "question",
         Cell: (props) => {
+          console.log("props :", props);
           return (
             <>
               <>
                 <div className="flex items-center gap-2 ">
-                  <Avatar
-                    size="sm"
-                    className={`mr-3 bg-gray-${primaryColorLevel} text-white`}
-                  >
-                    {props?.row?.index + 1}
-                  </Avatar>
-                  <span
-                    className={`font-semibold text-gray-${primaryColorLevel} `}
-                  >
-                    {props?.value}
-                  </span>
+                  <div>
+                    <Avatar
+                      size="sm"
+                      className={`mr-3 bg-gray-${primaryColorLevel} text-white`}
+                    >
+                      {props?.row?.index + 1}
+                    </Avatar>
+                  </div>
+                  <div>
+                    <span
+                      className={`font-semibold text-gray-${primaryColorLevel} line-clamp-1	`}
+                    >
+                      {props?.value.replace(/<[^>]+>/g, "") ||
+                        "Multiple Choice"}
+                    </span>
+                  </div>
                 </div>
               </>
             </>
@@ -152,10 +154,20 @@ const DragAndDrop = () => {
             <div
               className={`flex gap-4 justify-end text-gray-${primaryColorLevel}`}
             >
-              <span>
+              <span
+                onClick={() => {
+                  setAddQuestion(true);
+                  setQuestionData(props.row.original);
+                }}
+              >
                 <HiOutlinePencil size={20} />
               </span>
-              <span>
+              <span
+                onClick={() => {
+                  setDeleteIsOpen(true);
+                  setSelectObject(props.row.original);
+                }}
+              >
                 <HiOutlineTrash size={20} />
               </span>
               <span {...props.dragHandleProps}>
@@ -169,19 +181,116 @@ const DragAndDrop = () => {
     []
   );
 
-  const [data, setData] = React.useState(users);
-
+  const fetchData = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `user/get-questions/${quizData._id}`,
+        {
+          pageNo: 1,
+          perPage: 100,
+          status: "all",
+        }
+      );
+      console.log("response : ", response);
+      if (response.success) {
+        setData(response.data);
+        setLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log("get-all-batch error:", error);
+      openNotification("danger", error.message);
+      setLoading(false);
+    }
+  };
+  // useEffect(() => {
+  //   if (apiFlag) {
+  //     setApiFlag(false);
+  //     setLoading(true);
+  //     fetchData();
+  //   }
+  // }, [apiFlag]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const onHandleDeleteBox = async () => {
+    try {
+      const response = await axiosInstance.delete(
+        `user/question/${selectObject._id}`
+      );
+      if (response.success) {
+        openNotification("success", response.message);
+        setApiFlag(true);
+        setDeleteIsOpen(false);
+      } else {
+        openNotification("danger", response.message);
+        setDeleteIsOpen(false);
+      }
+    } catch (error) {
+      console.log(" error:", error);
+      openNotification("danger", error.message);
+      setDeleteIsOpen(false);
+    }
+  };
   return (
-    <Card>
-      <div className="block text-gray-700 text-lg font-bold mb-3 ">
-        Questions
-      </div>
-      <ReactTable
-        columns={columns}
-        onChange={(newList) => setData(newList)}
-        data={data}
-      />
-    </Card>
+    <>
+      {data?.length > 0 ? (
+        <Card>
+          <div className="block text-gray-700 text-lg font-bold mb-3 ">
+            Questions
+          </div>
+          <ReactTable
+            columns={columns}
+            onChange={(newList) => setData(newList)}
+            data={data}
+            quizData={quizData}
+            setAddQuestion={setAddQuestion}
+          />
+        </Card>
+      ) : (
+        <></>
+      )}
+      <Dialog
+        isOpen={deleteIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Delete of Question
+          </h5>
+          <p>Are you sure you want to delete this Question?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setDeleteIsOpen(false);
+              // setApiFlag(true);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleDeleteBox}>
+            Okay
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 };
 

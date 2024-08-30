@@ -10,7 +10,7 @@ import QuestionsList from "./questionList";
 import QuestionForm from "./questionForm";
 
 const QuizCard = (props) => {
-  const { assessmentId, quizData, quizIndex } = props;
+  const { assessmentId, quizData, quizIndex,setApiFlag} = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -19,10 +19,12 @@ const QuizCard = (props) => {
     title: "Assessments-1",
     description: "",
     assessmentId: assessmentId,
+    quizId: null,
   });
-  const [apiFlag, setApiFlag] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [IsOpen, setIsOpen] = useState(false);
+  const [addQuestion, setAddQuestion] = useState(false);
+  const [questionData, setQuestionData] = useState();
 
   const [error, setError] = useState("");
   const UpdateQuiz = async () => {
@@ -67,6 +69,7 @@ const QuizCard = (props) => {
           ...formData,
           title: "",
           description: "",
+          quizId: null,
         });
       }
     } catch (error) {
@@ -89,6 +92,12 @@ const QuizCard = (props) => {
             <div
               className="flex capitalize gap-4 items-center"
               onClick={() => {
+                setFormData({
+                  title: quizData.title,
+                  description: quizData.description,
+                  assessmentId: assessmentId,
+                  quizId: quizData._id,
+                });
                 setIsOpen(true);
               }}
             >
@@ -98,16 +107,40 @@ const QuizCard = (props) => {
               </div>
             </div>
           </div>
-          <div>
-            <Button className="mr-2" icon={<FaPlus />}>
+          <div className="flex gap-2 ">
+            <div
+              className={`flex items-center text-base font-semibold text-${themeColor}-${primaryColorLevel} px-3 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
+            >
+              Total Marks : {quizData?.totalMarks || "0"}
+            </div>
+            <Button
+              className="mr-2"
+              icon={<FaPlus />}
+              onClick={() => {
+                setAddQuestion(true);
+              }}
+            >
               <span>Questions</span>
             </Button>
           </div>
         </div>
 
         <div>
-          <QuestionsList />
-          <QuestionForm />
+          {addQuestion ? (
+            <QuestionForm
+              quizId={quizData._id}
+              setAddQuestion={setAddQuestion}
+              questionData={questionData}
+              setApiFlag={setApiFlag}
+            />
+          ) : (
+            <QuestionsList
+              quizData={quizData}
+              setAddQuestion={setAddQuestion}
+              setQuestionData={setQuestionData}
+              setApiFlag={setApiFlag}
+            />
+          )}
         </div>
       </Card>
       <Dialog
@@ -125,6 +158,7 @@ const QuizCard = (props) => {
             ...formData,
             title: "",
             description: "",
+            quizId: null,
           });
         }}
         onRequestClose={() => {
@@ -134,6 +168,7 @@ const QuizCard = (props) => {
             ...formData,
             title: "",
             description: "",
+            quizId: null,
           });
         }}
       >
@@ -195,6 +230,7 @@ const QuizCard = (props) => {
                 ...formData,
                 title: "",
                 description: "",
+                quizId: null,
               });
             }}
           >

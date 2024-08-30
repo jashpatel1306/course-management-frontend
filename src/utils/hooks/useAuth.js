@@ -32,11 +32,17 @@ function useAuth() {
       };
       const response = await axiosInstance.post("user/sign-in", formData);
       if (response.status) {
-        const { token, data, collegeId } = response.data;
+        const { token, data, collegeId, batchId } = response.data;
         dispatch(onSignInSuccess(token));
         const userData = data;
         if (userData) {
-          console.log("token, data: ", token, data);
+          console.log(
+            "token, data, collegeId,batchId: ",
+            token,
+            data,
+            collegeId,
+            batchId
+          );
           dispatch(
             setUser({
               avatar: userData.avatar ? userData.avatar : "",
@@ -47,6 +53,7 @@ function useAuth() {
               password: userData.password ? userData.password : "",
               permissions: userData.permissions ? userData.permissions : [],
               collegeId: collegeId ? collegeId : "",
+              batchId: batchId ? batchId : "",
             })
           );
         }
