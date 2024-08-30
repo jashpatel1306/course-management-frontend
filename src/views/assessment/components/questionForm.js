@@ -19,7 +19,6 @@ const answerModules = {
 
 function QuestionForm(props) {
   const { quizId, setAddQuestion, questionData,setApiFlag } = props;
-  console.log("questionData:  ", questionData);
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -62,7 +61,6 @@ function QuestionForm(props) {
     });
     setAnswers(updatedAnswers);
   };
-  console.log("answers: ", answers);
   const addAnswer = () => {
     setAnswers([...answers, { content: "", correct: false, reason: "" }]);
   };
@@ -89,7 +87,6 @@ function QuestionForm(props) {
 
       if (response?.success && response?.data?._id) {
         openNotification("success", "Question saved successfully!");
-        console.log("Question added with ID: ", response.data._id);
         setAddQuestion(false);
         setApiFlag(true);
       } else {
@@ -138,7 +135,6 @@ function QuestionForm(props) {
         marks: questionMark,
         quizId: quizId,
       };
-      console.log("formData: ", formData);
       addUpdateQuestion(formData);
     } catch (error) {
       console.log("handleSave Error :", handleSave);

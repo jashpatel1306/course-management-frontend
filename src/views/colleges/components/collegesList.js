@@ -26,6 +26,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import useEncryption from "common/useEncryption";
 import removeSpecials from "views/common/serachText";
 import { components } from "react-select";
+import { FaChevronRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 const { Tr, Th, Td, THead, TBody } = Table;
 const { Control } = components;
 const columns = [
@@ -38,6 +40,7 @@ const columns = [
   // "Password",
   // "Active",
   "Action",
+  "View",
 ];
 const statusOptions = [
   {
@@ -87,6 +90,7 @@ const CustomControl = ({ children, ...props }) => {
   );
 };
 const AdminList = (props) => {
+  const navigate = useNavigate();
   const { flag, parentCallback, setUserData, parentCloseCallback } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -124,7 +128,6 @@ const AdminList = (props) => {
         `admin/colleges/all/${bodyData}`,
         formData
       );
-      console.log("response : ", response);
       if (response.success) {
         setAdminData(response.data);
         setTotalPage(
@@ -134,7 +137,6 @@ const AdminList = (props) => {
         );
         if (response.data) {
           const start = appConfig.pagePerData * (page - 1);
-          console.log("start", start);
           const end = start + response.data?.length;
           setResultTitle(
             `Result ${start + 1} - ${end} of ${response.pagination.total}`
@@ -296,10 +298,7 @@ const AdminList = (props) => {
                           : "rounded-lg"
                       }
                     >
-                      <Td>
-                        {item?.collegeName}
-                        
-                      </Td>
+                      <Td>{item?.collegeName}</Td>
                       <Td>{item?.shortName}</Td>
                       <Td>{item?.collegeNo}</Td>
                       <Td>{item?.userId.email}</Td>
@@ -343,6 +342,22 @@ const AdminList = (props) => {
                           )}
                         </div>
                       </Td>
+                      <Td>
+                        <Button
+                          shape="circle"
+                          size="sm"
+                          variant="twoTone"
+                          className={`flex justify-center items-center gap-1 text-${themeColor}-${primaryColorLevel} border-2 font-semibold border-${themeColor}-${primaryColorLevel}`}
+                          onClick={() => {
+                            navigate(`/app/admin/college-details/${item._id}`,{
+                              state:item
+                            });
+                          }}
+                        >
+                          View
+                          <FaChevronRight size={15} />
+                        </Button>
+                      </Td>
                     </Tr>
                   );
                 })}
@@ -382,7 +397,9 @@ const AdminList = (props) => {
         }}
       >
         <div className="px-6 pb-6">
-        <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>Confirm Deactivation of College</h5>
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Deactivation of College
+          </h5>
           <p>Are you sure you want to deactivate this College?</p>
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">

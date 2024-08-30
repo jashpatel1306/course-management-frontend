@@ -33,7 +33,6 @@ const QuizCard = (props) => {
       const response = await axiosInstance.post(`user/quiz`, formData);
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
-        console.log("response: ", response.data._id);
         // setSectionData(response.data);
         setIsOpen(false);
         setApiFlag(true);
@@ -60,7 +59,6 @@ const QuizCard = (props) => {
       }
 
       if (formData?.title) {
-        console.log("formData: ", formData);
         UpdateQuiz();
         setApiFlag(true);
         setError("");
@@ -73,7 +71,7 @@ const QuizCard = (props) => {
         });
       }
     } catch (error) {
-      console.log("");
+      console.log("onHandleQuizBox error :",error);
     }
   };
   return (

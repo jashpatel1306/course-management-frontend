@@ -15,10 +15,7 @@ const ReactTable = ({ columns, data, onChange, quizData }) => {
     const [movedRow] = newData.splice(startIndex, 1);
     newData.splice(endIndex, 0, movedRow);
 
-    console.log("newDataIds :L", quizData.questions, {
-      ...quizData,
-      questions: newData.map((info) => info._id),
-    });
+   
     const formData = {
       title: quizData.title,
       description: quizData?.description,
@@ -118,7 +115,7 @@ const DragAndDrop = (props) => {
         Header: "",
         accessor: "question",
         Cell: (props) => {
-          console.log("props :", props);
+        
           return (
             <>
               <>
@@ -191,7 +188,6 @@ const DragAndDrop = (props) => {
           status: "all",
         }
       );
-      console.log("response : ", response);
       if (response.success) {
         setData(response.data);
         setLoading(false);

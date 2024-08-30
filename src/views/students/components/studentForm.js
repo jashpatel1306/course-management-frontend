@@ -44,14 +44,7 @@ function StudentForm(props) {
       .required("Passout Year is required")
       .positive("Must be a positive number"),
     gender: Yup.string().required("Gender is required"),
-    // Conditional validation for superadmin authority
-    colCode: Yup.string().when([], {
-      is: (userData) =>
-        userData?.authority.toString() === SUPERADMIN.toString(),
-      then: Yup.string().required("College Code is required"),
-      otherwise: Yup.string().notRequired(),
-    }),
-    colName: Yup.string().when([], {
+    collegeUserId: Yup.string().when([], {
       is: (userData) =>
         userData?.authority.toString() === SUPERADMIN.toString(),
       then: Yup.string().required("College Name is required"),
@@ -65,21 +58,22 @@ function StudentForm(props) {
   const [loading, setLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
   const [batchList, setBatchList] = useState([]);
-
+  const [collegeLoading, setCollegeLoading] = useState(false);
+  const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
     studentId: "",
     name: "",
     email: "",
     phone: "",
-    collegeUserId: userData.collegeId,
+    collegeUserId:
+      userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
     batchId: "",
     rollNo: "",
     department: "",
     section: "",
     passoutYear: "",
     gender: "",
-    colCode: "",
-    colName: "",
+
     semester: "",
     active: true,
   });
@@ -92,11 +86,9 @@ function StudentForm(props) {
     section: "",
     passoutYear: "",
     gender: "",
-    colCode: "",
-    colName: "",
+    collegeUserId: "",
     semester: "",
   });
-
   const resetErrorData = () => {
     setErrorData({
       name: "",
@@ -107,74 +99,103 @@ function StudentForm(props) {
       section: "",
       passoutYear: "",
       gender: "",
-      colCode: "",
-      colName: "",
       semester: "",
     });
   };
-
   const resetFormData = () => {
     setFormData({
       studentId: "",
       name: "",
       email: "",
       phone: "",
-      collegeUserId: userData.collegeId,
+      collegeUserId:
+        userData?.authority.toString() === SUPERADMIN
+          ? null
+          : userData.collegeId,
       rollNo: "",
       batchId: "",
       department: "",
       section: "",
       passoutYear: "",
       gender: "",
-      colCode: "",
-      colName: "",
       semester: "",
       active: true,
     });
   };
   useEffect(() => {
     if (isOpen) {
-      getBatchData();
+      if (userData.authority.toString() !== SUPERADMIN) {
+        getBatchOptionData();
+      } else {
+        getCollegeOptionData();
+      }
     }
   }, [isOpen]);
   useEffect(() => {
     if (studentData?._id) {
-      console.log("studentDatastudentData : ", studentData);
+      getBatchOptionData(studentData?.collegeUserId?._id);
       setFormData({
-        studentId: studentData._id ? studentData._id : "",
-        name: studentData.name ? studentData.name : "",
-        email: studentData.email ? studentData.email : "",
-        phone: studentData.phone ? studentData.phone : "",
-        rollNo: studentData.rollNo ? studentData.rollNo : "",
-        collegeUserId: userData.collegeId,
-        batchId: studentData.batchId ? studentData.batchId?._id : "",
-        department: studentData.department ? studentData.department : "",
-        section: studentData.section ? studentData.section : "",
-        passoutYear: studentData.passoutYear ? studentData.passoutYear : "",
-        gender: studentData.gender ? studentData.gender : "",
-        colCode: studentData.colCode ? studentData.colCode : "",
-        colName: studentData.colName ? studentData.colName : "",
-        semester: studentData.semester ? studentData.semester : "",
-        active: studentData.active !== undefined ? studentData.active : true,
+        studentId: studentData?._id ? studentData?._id : "",
+        name: studentData?.name ? studentData?.name : "",
+        email: studentData?.email ? studentData?.email : "",
+        phone: studentData?.phone ? studentData?.phone : "",
+        rollNo: studentData?.rollNo ? studentData?.rollNo : "",
+        collegeUserId:
+          userData?.authority.toString() === SUPERADMIN
+            ? studentData?.collegeUserId._id
+              ? studentData?.collegeUserId._id
+              : ""
+            : userData.collegeId,
+        batchId: studentData?.batchId
+          ? studentData?.batchId._id
+            ? studentData?.batchId._id
+            : ""
+          : "",
+        department: studentData?.department ? studentData?.department : "",
+        section: studentData?.section ? studentData?.section : "",
+        passoutYear: studentData?.passoutYear ? studentData?.passoutYear : "",
+        gender: studentData?.gender ? studentData?.gender : "",
+        colName: studentData?.colName ? studentData?.colName : "",
+        semester: studentData?.semester ? studentData?.semester : "",
+        active: studentData?.active !== undefined ? studentData?.active : true,
       });
     }
   }, [studentData]);
-  const getBatchData = async () => {
+  const getBatchOptionData = async (collegeId = "") => {
     try {
       setBatchLoading(true);
-      const response = await axiosInstance.get(`user/batches-option`);
+      const response =
+        userData.authority.toString() === SUPERADMIN && collegeId
+          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
+          : await axiosInstance.get(`user/batches-option`);
 
       if (response.success) {
         setBatchList(response.data.filter((e) => e.value !== "all"));
-        setBatchLoading(false);
       } else {
         openNotification("danger", response.error);
-        setBatchLoading(false);
       }
     } catch (error) {
-      console.log("getBatchsData error :", error.message);
+      console.log("getBatchOptionData error :", error.message);
       openNotification("danger", error.message);
+    } finally {
       setBatchLoading(false);
+    }
+  };
+  const getCollegeOptionData = async () => {
+    try {
+      setCollegeLoading(true);
+      const response = await axiosInstance.get(`admin/college-option`);
+
+      if (response.success) {
+        setCollegeList(response.data);
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getCollegeOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setCollegeLoading(false);
     }
   };
   const addNewStudentMethod = async (value) => {
@@ -228,7 +249,6 @@ function StudentForm(props) {
   };
   const formValidation = () => {
     try {
-      console.log("formData:  ", formData);
       studentValidationSchema.validateSync(formData, { abortEarly: false });
       return {
         name: "",
@@ -239,13 +259,11 @@ function StudentForm(props) {
         section: "",
         passoutYear: "",
         gender: "",
-        colCode: "",
-        colName: "",
+
         semester: "",
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
-      console.log("errorObject : ", errorObject);
       if (Object.keys(errorObject)?.length === 0) {
         return {
           name: "",
@@ -256,8 +274,7 @@ function StudentForm(props) {
           section: "",
           passoutYear: "",
           gender: "",
-          colCode: "",
-          colName: "",
+          collegeUserId: "",
           semester: "",
         };
       } else {
@@ -272,8 +289,9 @@ function StudentForm(props) {
           section: errorObject.section ? errorObject.section : "",
           passoutYear: errorObject.passoutYear ? errorObject.passoutYear : "",
           gender: errorObject.gender ? errorObject.gender : "",
-          colCode: errorObject.colCode ? errorObject.colCode : "",
-          colName: errorObject.colName ? errorObject.colName : "",
+          collegeUserId: errorObject.collegeUserId
+            ? errorObject.collegeUserId
+            : "",
           semester: errorObject.semester ? errorObject.semester : "",
         };
       }
@@ -286,7 +304,7 @@ function StudentForm(props) {
       resetErrorData();
       if (studentData?._id) {
         const newFormData = { ...formData };
-        await editStudentMethod(newFormData, studentData._id);
+        await editStudentMethod(newFormData, studentData?._id);
       } else {
         await addNewStudentMethod(formData);
       }
@@ -440,6 +458,39 @@ function StudentForm(props) {
             </div>
             {DisplayError(errorData.phone)}
           </div>
+          {userData?.authority.toString() === SUPERADMIN.toString() ? (
+            <>
+              {/*  College Name */}
+              <div className="col-span-1 gap-4 mb-4">
+                <div
+                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                >
+                  College Name
+                </div>
+                <div className="col-span-2">
+                  <Select
+                    placeholder="Select College"
+                    loading={collegeLoading}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        collegeUserId: e.value,
+                      });
+                      getBatchOptionData(e.value);
+                    }}
+                    value={collegeList.find(
+                      (info) => info.value === formData?.collegeUserId
+                    )}
+                    options={collegeList}
+                    className={errorData.collegeUserId && "select-error"}
+                  />
+                </div>
+                {DisplayError(errorData.collegeUserId)}
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
           {/* batchId */}
           <div className="col-span-1 gap-4 mb-4">
             <div
@@ -451,16 +502,13 @@ function StudentForm(props) {
               <Select
                 placeholder="Select Batch"
                 loading={batchLoading}
-                onChange={(value) => {
+                onChange={(e) => {
                   setFormData({
                     ...formData,
-                    batchId: value.value,
+                    batchId: e.value,
                   });
                 }}
-                // defaultValue={batchList.find(
-                //   (info) => info.value === formData?.batchId
-                // )}
-                value={batchList.find(
+                value={batchList?.find(
                   (info) => info.value === formData?.batchId
                 )}
                 options={batchList}
@@ -494,58 +542,6 @@ function StudentForm(props) {
             </div>
             {DisplayError(errorData.department)}
           </div>
-          {userData?.authority.toString() === SUPERADMIN.toString() ? (
-            <>
-              {/*  College Name */}
-              <div className="col-span-1 gap-4 mb-4">
-                <div
-                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-                >
-                  College Name
-                </div>
-                <div className="col-span-2">
-                  <Input
-                    type="text"
-                    placeholder="Please Enter College Name"
-                    className={errorData.colName && "select-error"}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        colName: e.target.value.trim(),
-                      });
-                    }}
-                    value={formData?.colName}
-                  />
-                </div>
-                {DisplayError(errorData.colName)}
-              </div>
-              {/* College Code */}
-              <div className="col-span-1 gap-4 mb-4">
-                <div
-                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-                >
-                  College Code
-                </div>
-                <div className="col-span-2">
-                  <Input
-                    type="text"
-                    placeholder="Please Enter College Code"
-                    className={errorData.colCode && "select-error"}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        colCode: e.target.value.trim(),
-                      });
-                    }}
-                    value={formData?.colCode}
-                  />
-                </div>
-                {DisplayError(errorData.colCode)}
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
 
           {/* Section */}
           <div className="col-span-1 gap-4 mb-4">
@@ -644,15 +640,16 @@ function StudentForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Active
+              Active1
             </div>
             <div className="col-span-2">
               <Switcher
                 checked={formData?.active}
-                onChange={(checked) => {
+                onChange={(val) => {
+                  console.log("value", val);
                   setFormData({
                     ...formData,
-                    active: checked,
+                    active: !val,
                   });
                 }}
               />

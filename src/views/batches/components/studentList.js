@@ -87,7 +87,6 @@ const StudentList = (props) => {
         `user/batch-wise-students`,
         formData
       );
-      console.log("response : ", response);
       if (response.success) {
         setStudentData(response.data);
         setTotalPage(
@@ -97,7 +96,6 @@ const StudentList = (props) => {
         );
         if (response.data) {
           const start = appConfig.pagePerData * (page - 1);
-          console.log("start", start);
           const end = start + response.data?.length;
           setResultTitle(
             `Result ${start + 1} - ${end} of ${response.pagination.total}`

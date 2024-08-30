@@ -29,7 +29,6 @@ const Assessment = () => {
       const response = await axiosInstance.post(`user/assessment`, formData);
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
-        console.log("response: ", response.data._id);
         navigate(`/app/admin/assessment/form/${response.data._id}`, {
           state: response.data,
         });
@@ -65,12 +64,11 @@ const Assessment = () => {
 
       if (formData?.title && formData.expiresAt) {
         setError("");
-        console.log("formData : ", formData);
         CreateAssessment(formData);
         // ;
       }
     } catch (error) {
-      console.log("");
+      console.log("onHandleBox error :",error);
     }
   };
   return (

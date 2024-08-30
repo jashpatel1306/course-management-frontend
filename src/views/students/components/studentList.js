@@ -74,14 +74,23 @@ const columnsWithBatch = [
 ];
 
 const StudentList = (props) => {
-  const { flag, parentCallback, setBatchesList, setData, parentCloseCallback } =
-    props;
+  const {
+    flag,
+    parentCallback,
+    setAllCollegeList,
+    setData,
+    parentCloseCallback,
+    setAllBatchList,
+  } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const { userData } = useSelector((state) => state.auth.user);
+
   const { authority } = useSelector((state) => state.auth.user.userData);
   const [currentTab, setCurrentTab] = useState();
+  const [currentCollegeTab, setCurrentCollegeTab] = useState();
   const [studentData, setStudentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
@@ -94,33 +103,49 @@ const StudentList = (props) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
-
+  const [collegeLoading, setCollegeLoading] = useState(false);
+  const [collegeList, setCollegeList] = useState([]);
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
   };
-  const getBatchData = async () => {
+  const getCollegeOptionData = async () => {
     try {
-      setBatchLoading(true);
-      const response = await axiosInstance.get(`user/batches-option`);
+      setCollegeLoading(true);
+      const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setBatchList(response.data);
-        setBatchLoading(false);
-        if (!currentTab) {
-          setCurrentTab(response.data[0].value);
-          const importBatchList = [...response.data];
-          importBatchList.shift();
-          setBatchesList(importBatchList);
-          fetchData();
-        }
+        setCollegeList(response.data);
+        setAllCollegeList(response.data);
+        setAllBatchList([]);
       } else {
         openNotification("danger", response.error);
-        setBatchLoading(false);
       }
     } catch (error) {
-      console.log("getBatchsData error :", error.message);
+      console.log("getCollegeOptionData error :", error.message);
       openNotification("danger", error.message);
+    } finally {
+      setCollegeLoading(false);
+    }
+  };
+  const getBatchOptionData = async (collegeId = "") => {
+    try {
+      setBatchLoading(true);
+      const response =
+        userData.authority.toString() === SUPERADMIN && collegeId
+          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
+          : await axiosInstance.get(`user/batches-option`);
+
+      if (response.success) {
+        setBatchList(response.data.filter((e) => e.value !== "all"));
+        setAllBatchList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getBatchOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
       setBatchLoading(false);
     }
   };
@@ -134,12 +159,17 @@ const StudentList = (props) => {
         pageNo: page,
         perPage: appConfig.pagePerData,
       };
+      if (userData?.authority.toString() === SUPERADMIN) {
+        formData = {
+          ...formData,
+          collegeId: currentCollegeTab ? currentCollegeTab : "all",
+        };
+      }
 
       const response = await axiosInstance.post(
         `user/batch-wise-students`,
         formData
       );
-      console.log("response : ", response);
       if (response.success) {
         setStudentData(response.data);
         setTotalPage(
@@ -163,14 +193,16 @@ const StudentList = (props) => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-      console.log("fetchData();fetchData();fetchData();: ");
-      getBatchData();
+      if (userData.authority.toString() !== SUPERADMIN) {
+        getBatchOptionData();
+      } else {
+        getCollegeOptionData();
+      }
       fetchData();
     }
   }, [apiFlag]);
   useEffect(() => {
     setApiFlag(true);
-    getBatchData();
   }, []);
   useEffect(() => {
     if (!flag) {
@@ -186,7 +218,7 @@ const StudentList = (props) => {
   const onHandleDeleteBox = async () => {
     try {
       const response = await axiosInstance.put(
-        `user/student/status/${selectObject.student_id}`
+        `user/student/status/${selectObject._id}`
       );
       if (response.success) {
         openNotification("success", response.message);
@@ -215,6 +247,24 @@ const StudentList = (props) => {
     <>
       <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
         <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+          {userData.authority.toString() === SUPERADMIN && (
+            <Select
+              isSearchable={true}
+              className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+              placeholder="College"
+              options={collegeList}
+              loading={collegeLoading}
+              value={collegeList.find(
+                (item) => item.value === currentCollegeTab
+              )}
+              onChange={(item) => {
+                setCurrentCollegeTab(item.value);
+                getBatchOptionData(item.value);
+                setApiFlag(true);
+                setPage(1);
+              }}
+            />
+          )}
           <Select
             isSearchable={true}
             className="w-[100%] md:mb-0 mb-4 sm:mb-0"
@@ -290,8 +340,8 @@ const StudentList = (props) => {
                       {currentTab === "all" ? (
                         authority.toString() === SUPERADMIN.toString() ? (
                           <>
-                            <Td>{item?.colCode || ""}</Td>
-                            <Td>{item?.colName || ""}</Td>
+                            <Td>{item?.collegeUserId?.collegeNo || ""}</Td>
+                            <Td>{item?.collegeUserId?.collegeName || ""}</Td>
                             <Td>{item?.batchId?.batchName}</Td>
                           </>
                         ) : (
@@ -301,8 +351,8 @@ const StudentList = (props) => {
                         )
                       ) : authority.toString() === SUPERADMIN.toString() ? (
                         <>
-                          <Td>{item?.colCode || ""}</Td>
-                          <Td>{item?.colName || ""}</Td>
+                          <Td>{item?.collegeUserId?.collegeNo || ""}</Td>
+                          <Td>{item?.collegeUserId?.collegeName || ""}</Td>
                         </>
                       ) : (
                         <></>

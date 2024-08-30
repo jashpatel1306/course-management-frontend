@@ -12,22 +12,28 @@ import axiosInstance from "apiServices/axiosInstance";
 import DisplayError from "views/common/displayError";
 import { FaFileAlt } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
+import { SUPERADMIN } from "constants/roles.constant";
 
 const Students = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const { userData } = useSelector((state) => state.auth.user);
+
   const [addBatchFlag, setAddBatchFlag] = useState(false);
   const [addFlag, setAddFlag] = useState(false);
   const [batchData, setBatchData] = useState();
   const [studentData, setStudentData] = useState();
   const [importLoading, setImportLoading] = useState(false);
+  const [batchLoading, setBatchLoading] = useState(false);
   const [IsOpen, setIsOpen] = useState(false);
   const [batchList, setBatchList] = useState([]);
+  const [allCollegeList, setAllCollegeList] = useState([]);
   const [selectImportData, setSelectImportData] = useState({
     file: null,
     batch: null,
+    college: null,
   });
   const [error, setError] = useState("");
   const handleAddNewBatchClick = () => {
@@ -41,6 +47,26 @@ const Students = () => {
   };
   const handleAddNewStudentCloseClick = () => {
     setAddFlag(false);
+  };
+  const getBatchOptionData = async (collegeId = "") => {
+    try {
+      setBatchLoading(true);
+      const response =
+        userData.authority.toString() === SUPERADMIN && collegeId
+          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
+          : await axiosInstance.get(`user/batches-option`);
+
+      if (response.success) {
+        setBatchList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getBatchOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setBatchLoading(false);
+    }
   };
   const beforeUpload = (files) => {
     let valid = true;
@@ -63,14 +89,18 @@ const Students = () => {
     }
     return valid;
   };
-  const ImportStudentData = async () => {
+  const ImportStudentData = async (adminStatus) => {
     try {
       setImportLoading(true);
-      const response = await axiosInstance.post(`user/students-bulk`, {
+      let apiData = {
         batchId: selectImportData.batch.value,
         excelFile: selectImportData.file,
-      });
-      if (response.status) {
+      };
+      if (adminStatus) {
+        apiData = { ...apiData, collegeId: selectImportData.college.value };
+      }
+      const response = await axiosInstance.post(`user/students-bulk`, apiData);
+      if (response.success) {
         openNotification("success", response.message);
         setIsOpen(false);
         setError("");
@@ -80,6 +110,7 @@ const Students = () => {
       setSelectImportData({
         file: null,
         batch: null,
+        college: null,
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -90,9 +121,14 @@ const Students = () => {
   };
   const onHandleBox = async () => {
     try {
-      console.log("selectImportData:  ", selectImportData);
       if (!selectImportData?.file?.name) {
         setError("Please Select CSV file.");
+      }
+      if (
+        userData.authority.toString() === SUPERADMIN &&
+        !selectImportData?.college?.value
+      ) {
+        setError("Please Select College Name.");
       }
       if (!selectImportData?.batch?.value) {
         setError("Please Select Batch Name.");
@@ -100,15 +136,22 @@ const Students = () => {
 
       if (selectImportData?.batch?.value && selectImportData?.file) {
         setError("");
-        await ImportStudentData();
+        if (
+          userData.authority.toString() === SUPERADMIN &&
+          selectImportData?.college?.value
+        ) {
+          await ImportStudentData("admin");
+        } else {
+          await ImportStudentData();
+        }
       }
     } catch (error) {
-      console.log("");
+      console.log("onHandleBox error :", error);
     }
   };
   return (
     <>
-      <Card>
+      <Card className="hidden">
         <div className="flex items-center justify-between ">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
@@ -141,13 +184,12 @@ const Students = () => {
             batchData={batchData}
           />
         </div>
+        <BatchForm
+          isOpen={addBatchFlag}
+          handleCloseClick={handleAddNewBatchCloseClick}
+          batchData={batchData}
+        />
       </Card>
-
-      <BatchForm
-        isOpen={addBatchFlag}
-        handleCloseClick={handleAddNewBatchCloseClick}
-        batchData={batchData}
-      />
 
       <Card className="mt-4">
         <div className="flex items-center justify-between ">
@@ -193,7 +235,8 @@ const Students = () => {
             parentCloseCallback={handleAddNewStudentCloseClick}
             parentCallback={handleAddNewStudentClick}
             setData={setStudentData}
-            setBatchesList={setBatchList}
+            setAllCollegeList={setAllCollegeList}
+            setAllBatchList={setBatchList}
           />
         </div>
       </Card>
@@ -218,6 +261,7 @@ const Students = () => {
           setSelectImportData({
             file: null,
             batch: null,
+            college: null,
           });
         }}
         onRequestClose={() => {
@@ -226,6 +270,7 @@ const Students = () => {
           setSelectImportData({
             file: null,
             batch: null,
+            college: null,
           });
         }}
       >
@@ -233,6 +278,33 @@ const Students = () => {
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
             Import Data
           </h5>
+          <div className="col-span-1 gap-4 mb-4">
+            {userData.authority.toString() === SUPERADMIN && (
+              <>
+                <div
+                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                >
+                  Select College Name
+                </div>
+                <div className="col-span-2">
+                  <Select
+                    isSearchable={true}
+                    className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+                    placeholder="Colleges"
+                    options={allCollegeList}
+                    value={selectImportData.college}
+                    onChange={(item) => {
+                      setSelectImportData({
+                        ...selectImportData,
+                        college: item,
+                      });
+                      getBatchOptionData(item.value);
+                    }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
@@ -245,6 +317,7 @@ const Students = () => {
                 className="w-[100%] md:mb-0 mb-4 sm:mb-0"
                 placeholder="Batches"
                 options={batchList}
+                loading={batchLoading}
                 value={selectImportData.batch}
                 onChange={(item) => {
                   setSelectImportData({ ...selectImportData, batch: item });
@@ -283,7 +356,6 @@ const Students = () => {
                     accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     beforeUpload={beforeUpload}
                     onChange={async (file) => {
-                      console.log("file:  ", file);
                       setSelectImportData({
                         ...selectImportData,
                         file: file[0],

@@ -91,7 +91,6 @@ function CollegeForm(props) {
   };
   useEffect(() => {
     if (userData) {
-      console.log("userData: ", userData);
       setFormData({
         collegeName: userData ? userData.collegeName : "",
         shortName: userData ? userData.shortName : "",
@@ -125,17 +124,16 @@ function CollegeForm(props) {
     try {
       setLoading(true);
       const formData = {
-        collegeName: value.collegeName,
-        shortName: value.shortName,
-        collegeNo: value.collegeNo,
-        contactPersonName: value.contactPersonName,
-        contactPersonNo: value.contactPersonNo,
-        email: value.email,
-        password: value.password,
-        active: value.active,
+        collegeName: value?.collegeName,
+        shortName: value?.shortName,
+        collegeNo: value?.collegeNo,
+        contactPersonName: value?.contactPersonName,
+        contactPersonNo: value?.contactPersonNo,
+        email: value?.email,
+        password: value?.password,
+        active: value?.active,
       };
       const response = await axiosInstance.post(`admin/college`, formData);
-      console.log("response : ", response);
       if (response.success) {
         setLoading(false);
         handleCloseClick();
@@ -156,14 +154,14 @@ function CollegeForm(props) {
 
       const formData = {
         userId: userId,
-        collegeName: value.collegeName,
-        shortName: value.shortName,
-        collegeNo: value.collegeNo,
-        contactPersonName: value.contactPersonName,
-        contactPersonNo: value.contactPersonNo,
-        email: value.email,
-        password: value.password,
-        active: value.active,
+        collegeName: value?.collegeName,
+        shortName: value?.shortName,
+        collegeNo: value?.collegeNo,
+        contactPersonName: value?.contactPersonName,
+        contactPersonNo: value?.contactPersonNo,
+        email: value?.email,
+        password: value?.password,
+        active: value?.active,
       };
       const response = await axiosInstance.post(`admin/college`, formData);
       if (response.success) {
@@ -191,7 +189,6 @@ function CollegeForm(props) {
   };
   const formValidation = () => {
     try {
-      console.log("formData:  ", formData);
       addvalidationSchema.validateSync(formData, { abortEarly: false });
       return {
         collegeName: "",
@@ -237,19 +234,15 @@ function CollegeForm(props) {
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
-    console.log("errorObject Data: ", errorObject);
     if (!errorObject.status) {
       resetErrorData();
       if (userData?.userId) {
-        console.log("edit");
         await editCollegeMethod(formData, userData?.userId);
       } else {
-        console.log("add");
         await addNewCollegeMethod(formData);
       }
     } else {
       setErrorData(errorObject);
-      console.log("error : .............");
     }
   };
   return (
@@ -288,7 +281,6 @@ function CollegeForm(props) {
                   }}
                   variant="solid"
                   color="red-500"
-
                 >
                   Reset
                 </Button>
@@ -323,7 +315,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    email: e.target.value.trim(),
+                    email: e.target.value?.trim(),
                   });
                 }}
                 value={formData?.email}
@@ -425,7 +417,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    password: e.target.value.trim(),
+                    password: e.target.value?.trim(),
                   });
                 }}
                 value={formData?.password}
@@ -497,7 +489,6 @@ function CollegeForm(props) {
             <div className="col-span-2">
               <Switcher
                 onChange={(e) => {
-                  console.log("active:  ", !e);
                   setFormData({
                     ...formData,
                     active: !e,

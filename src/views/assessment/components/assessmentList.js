@@ -48,7 +48,6 @@ const AssessmentList = () => {
         `user/get-all-assessments`,
         formData
       );
-      console.log("response : ", response);
       if (response.success) {
         setAssesssmentData(response.data);
         setTotalPage(
@@ -57,7 +56,6 @@ const AssessmentList = () => {
             : 0
         );
         const start = appConfig.pagePerData * (page - 1);
-        console.log("start", start);
         const end = start + response.data?.length;
         setResultTitle(
           `Result ${start + 1} - ${end} of ${response.pagination.total}`

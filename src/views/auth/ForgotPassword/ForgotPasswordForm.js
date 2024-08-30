@@ -49,7 +49,6 @@ const ForgotPasswordForm = (props) => {
 
     try {
       const response = await axiosInstance.post("user/verify-otp", otpData);
-      console.log("response:  ",response)
       if (response?.status) {
         navigate(`/reset-password/${response?.user_id}`);
       } else {

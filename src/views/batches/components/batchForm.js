@@ -88,7 +88,6 @@ function BatchForm(props) {
   };
   useEffect(() => {
     if (batchData) {
-      console.log("batchData: ", batchData);
       setFormData({
         batchName: batchData ? batchData?.batchName : "",
         batchNumber: batchData ? batchData?.batchNumber : "",
@@ -121,7 +120,6 @@ function BatchForm(props) {
         active: value.active,
       };
       const response = await axiosInstance.post(`user/batch`, formData);
-      console.log("response : ", response);
       if (response.success) {
         setLoading(false);
         handleCloseClick();
@@ -178,7 +176,6 @@ function BatchForm(props) {
   };
   const formValidation = () => {
     try {
-      console.log("formData:  ", formData);
       addvalidationSchema.validateSync(formData, { abortEarly: false });
       return {
         batchName: "",
@@ -188,7 +185,6 @@ function BatchForm(props) {
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
-      console.log("errorObject : ", formData, errorObject);
       if (Object.keys(errorObject)?.length === 0) {
         return {
           batchName: "",
@@ -212,19 +208,15 @@ function BatchForm(props) {
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
-    console.log("errorObject Data: ", errorObject);
     if (!errorObject.status) {
       resetErrorData();
       if (batchData?.batchId) {
-        console.log("edit");
         await editBatchMethod(formData, batchData?.batchId);
       } else {
-        console.log("add");
         await addNewBatchMethod(formData);
       }
     } else {
       setErrorData(errorObject);
-      console.log("error : .............");
     }
   };
   return (
@@ -401,7 +393,6 @@ function BatchForm(props) {
             <div className="col-span-2">
               <Switcher
                 onChange={(e) => {
-                  console.log("active:  ", !e);
                   setFormData({
                     ...formData,
                     active: !e,

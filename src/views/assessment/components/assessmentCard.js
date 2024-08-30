@@ -11,7 +11,12 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import DisplayError from "views/common/displayError";
-const AssessmentCard = ({ variant = "full", assessmentData,batchList, setApiFlag }) => {
+const AssessmentCard = ({
+  variant = "full",
+  assessmentData,
+  batchList,
+  setApiFlag,
+}) => {
   const navigate = useNavigate();
 
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -37,7 +42,6 @@ const AssessmentCard = ({ variant = "full", assessmentData,batchList, setApiFlag
       );
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
-        console.log("response: ", response.data._id);
         setApiFlag(true);
         setIsOpen(false);
         setError("");
@@ -72,13 +76,11 @@ const AssessmentCard = ({ variant = "full", assessmentData,batchList, setApiFlag
           batches: formData.map((info) => info._id),
         };
 
-        console.log("formData : ", apiData);
-
         updateAssessment(apiData);
         // ;
       }
     } catch (error) {
-      console.log("");
+      console.log("onHandleBox error :", error);
     }
   };
   return (

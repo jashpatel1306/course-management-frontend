@@ -30,9 +30,12 @@ const appsRoute = [
   {
     key: "apps.batches.datails",
     path: `${ADMIN_PREFIX_PATH}/batche-details/:id`,
-    component: React.lazy(() => import("views/batches/components/batchDetails")),
+    component: React.lazy(() =>
+      import("views/batches/components/batchDetails")
+    ),
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
+
   {
     key: "apps.students",
     path: `${ADMIN_PREFIX_PATH}/students`,
@@ -60,7 +63,9 @@ const appsRoute = [
   {
     key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment/form/:assessmentId`,
-    component: React.lazy(() => import("views/assessment/components/assessmentForm")),
+    component: React.lazy(() =>
+      import("views/assessment/components/assessmentForm")
+    ),
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
@@ -74,6 +79,14 @@ const appsRoute = [
     path: `${ADMIN_PREFIX_PATH}/colleges`,
     component: React.lazy(() => import("views/colleges")),
     authority: [SUPERADMIN],
+  },
+  {
+    key: "apps.college.datails",
+    path: `${ADMIN_PREFIX_PATH}/college-details/:id`,
+    component: React.lazy(() =>
+      import("views/colleges/components/collegeDetails")
+    ),
+    authority: [SUPERADMIN, STAFF],
   },
   {
     key: "apps.staff",
