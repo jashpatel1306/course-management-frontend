@@ -1,4 +1,4 @@
-import { Button, Card, Upload } from "components/ui";
+import { Button, Card } from "components/ui";
 import React, { useState } from "react";
 import { HiPlusCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";

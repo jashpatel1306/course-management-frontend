@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Dialog,
-  Button,
-  Pagination,
-  Input,
-} from "components/ui";
+import { Table, Dialog, Button, Pagination, Input } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
   HiOutlinePencil,
@@ -24,19 +18,6 @@ import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;
-
-const columnsSuperAdmin = [
-  "College Code",
-  "College Name",
-  "Roll No",
-  "Name",
-  "Email",
-  "Dept",
-  "Section",
-  "Gender",
-  "Sem",
-  "Active",
-];
 
 const columns = [
   "Roll No",
@@ -154,11 +135,7 @@ const StudentList = (props) => {
       setDeleteIsOpen(false);
     }
   };
-  const customColumns = () => {
-    return authority.toString() === SUPERADMIN.toString()
-      ? columnsSuperAdmin
-      : columns;
-  };
+
   return (
     <>
       <div className="lg:flex items-center justify-between mb-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
@@ -207,7 +184,7 @@ const StudentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {customColumns()?.map((item) => {
+                  {columns?.map((item) => {
                     return <Th key={item}>{item}</Th>;
                   })}
                 </Tr>
@@ -220,7 +197,7 @@ const StudentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {customColumns()?.map((item) => {
+                  {columns?.map((item) => {
                     return <Th key={item}>{item}</Th>;
                   })}
                 </Tr>
@@ -229,15 +206,6 @@ const StudentList = (props) => {
                 {studentData?.map((item, key) => {
                   return (
                     <Tr key={item?._id}>
-                      {authority.toString() === SUPERADMIN.toString() ? (
-                        <>
-                          <Td>{item?.colCode || ""}</Td>
-                          <Td>{item?.colName || ""}</Td>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
                       <Td>{item?.email}</Td>

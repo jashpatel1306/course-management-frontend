@@ -8,14 +8,6 @@ import DisplayError from "views/common/displayError";
 import { FormNumericInput } from "components/shared";
 import { SUPERADMIN } from "constants/roles.constant";
 
-const departmentList = [
-  { label: "Computer Science", value: "cs" },
-  { label: "Electrical Engineering", value: "ee" },
-  { label: "Mechanical Engineering", value: "me" },
-  { label: "Civil Engineering", value: "ce" },
-  { label: "Mathematics", value: "math" },
-];
-
 const genderList = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
@@ -60,6 +52,8 @@ function StudentForm(props) {
   const [batchList, setBatchList] = useState([]);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
+  const [departmentList, setDepartmentList] = useState([]);
+  const [departmentLoading, setDepartmentLoading] = useState(false);
   const [formData, setFormData] = useState({
     studentId: "",
     name: "",
@@ -196,6 +190,25 @@ function StudentForm(props) {
       openNotification("danger", error.message);
     } finally {
       setCollegeLoading(false);
+    }
+  };
+  const getDepartmentOptionData = async (collegeId) => {
+    try {
+      setDepartmentLoading(true);
+      const response = await axiosInstance.get(
+        `user/department-options/${collegeId}`
+      );
+
+      if (response.success) {
+        setDepartmentList(response.data);
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getDepartmenteOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setDepartmentLoading(false);
     }
   };
   const addNewStudentMethod = async (value) => {
@@ -477,6 +490,7 @@ function StudentForm(props) {
                         collegeUserId: e.value,
                       });
                       getBatchOptionData(e.value);
+                      getDepartmentOptionData(e.value);
                     }}
                     value={collegeList.find(
                       (info) => info.value === formData?.collegeUserId
@@ -533,7 +547,8 @@ function StudentForm(props) {
                     department: e.value,
                   });
                 }}
-                value={departmentList.find(
+                loading={departmentLoading}
+                value={departmentList?.find(
                   (info) => info.value === formData?.department
                 )}
                 options={departmentList}
@@ -640,7 +655,7 @@ function StudentForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Active1
+              Active
             </div>
             <div className="col-span-2">
               <Switcher

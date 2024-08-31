@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Avatar, Card } from "components/ui";
 import { useSelector } from "react-redux";
 
@@ -7,7 +7,7 @@ const TopTrainer = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const [gyms, setGyms] = useState([
+  const [gyms] = useState([
     {
       trainer_name: "Eileen Horton",
       trainer_rating: 4.9,
@@ -40,7 +40,6 @@ const TopTrainer = () => {
       {gyms.map((info, index) => {
         return (
           <>
-           
             <div
               className={`p-2 hover:bg-${themeColor}-200 rounded-xl cursor-pointer`}
               onClick={() => {}}
@@ -49,7 +48,7 @@ const TopTrainer = () => {
                 <Avatar
                   className={`border-${themeColor}-${primaryColorLevel} mr-4 border-2 dark:bg-${themeColor}-${primaryColorLevel}`}
                   size={50}
-                  src={`/img/avatars/thumb-${index+1}.jpg`}
+                  src={`/img/avatars/thumb-${index + 1}.jpg`}
                   shape="circle"
                 />
 

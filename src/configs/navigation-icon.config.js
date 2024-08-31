@@ -31,7 +31,6 @@ import {
   HiDocumentText,
 } from "react-icons/hi";
 import {
-  MdPrivacyTip,
   MdSubscriptions,
   MdTransferWithinAStation,
 } from "react-icons/md";
