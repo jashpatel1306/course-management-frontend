@@ -40,7 +40,6 @@ const adminNavigationConfig = [
     subMenu: [],
   },
 
-
   {
     key: "apps.contentHub",
     path: `${ADMIN_PREFIX_PATH}/content-hub`,
@@ -111,17 +110,36 @@ const adminNavigationConfig = [
     title: "Policy",
     icon: "policy",
     type: NAV_ITEM_TYPE_ITEM,
-    authority:  [ADMIN, SUPERADMIN],
+    authority: [ADMIN, SUPERADMIN],
     subMenu: [],
   },
   {
-    key: "apps.setting",
-    path: `${ADMIN_PREFIX_PATH}/setting`,
-    title: "Settings",
+    key: "apps.configuration",
+    path: ``,
+    title: "General Configuration",
     icon: "settings",
-    type: NAV_ITEM_TYPE_ITEM,
+    type: NAV_ITEM_TYPE_COLLAPSE,
     authority: [ADMIN, SUPERADMIN],
-    subMenu: [],
+    subMenu: [
+      {
+        key: "configuration.departments",
+        path: `${ADMIN_PREFIX_PATH}/configuration/departments`,
+        title: "Departments",
+        icon: "",
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [ADMIN, SUPERADMIN],
+        subMenu: [],
+      },
+      // {
+      //   key: "appconfigurations.policy",
+      //   path: `${ADMIN_PREFIX_PATH}/configuration/policy`,
+      //   title: "Policy",
+      //   icon: "policy",
+      //   type: NAV_ITEM_TYPE_ITEM,
+      //   authority: [SUPERADMIN],
+      //   subMenu: [],
+      // },
+    ],
   },
 ];
 

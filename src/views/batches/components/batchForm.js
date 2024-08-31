@@ -44,7 +44,7 @@ const addvalidationSchema = Yup.object().shape({
   // .min(1, "At least one course ID is required"),
 });
 function BatchForm(props) {
-  const { handleCloseClick, batchData, isOpen } = props;
+  const { handleCloseClick, batchData, isOpen, collegeId } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -114,7 +114,7 @@ function BatchForm(props) {
       const formData = {
         batchName: value.batchName,
         batchNumber: value.batchNumber,
-        collegeId: userData.collegeId,
+        collegeId: collegeId ? collegeId : userData.collegeId,
         instructorIds: value.instructorIds.map((info) => info.value),
         courses: value.courses.map((info) => info.value),
         active: value.active,
@@ -142,7 +142,7 @@ function BatchForm(props) {
         batchId: batchId,
         batchName: value.batchName,
         batchNumber: value.batchNumber,
-        collegeId: userData.collegeId,
+        collegeId: collegeId ? collegeId : userData.collegeId,
         instructorIds: value.instructorIds.map((info) => info.value),
         courses: value.courses.map((info) => info.value),
         active: value.active,

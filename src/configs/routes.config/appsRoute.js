@@ -101,9 +101,15 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN],
   },
   {
-    key: "apps.setting",
-    path: `${ADMIN_PREFIX_PATH}/setting`,
-    component: React.lazy(() => import("views/setting")),
+    key: "configuration.policy",
+    path: `${ADMIN_PREFIX_PATH}/configuration/policy`,
+    component: React.lazy(() => import("views/configuration/policy")),
+    authority: [SUPERADMIN],
+  },
+  {
+    key: "configuration.departments",
+    path: `${ADMIN_PREFIX_PATH}/configuration/departments`,
+    component: React.lazy(() => import("views/configuration/departments")),
     authority: [ADMIN, SUPERADMIN],
   },
 ];

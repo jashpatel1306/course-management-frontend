@@ -54,16 +54,14 @@ const BatchDetails = () => {
   }, []);
   return (
     <>
-      <Card className="mb-4">
-        <div className="flex items-center justify-between ">
+      <Card>
+        <div className="flex items-center justify-between mb-4">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
             Batch Details
           </div>
         </div>
-      </Card>
-      <Card>
         {!batchLoading && (
           <>
             <div className={` border-2  text-white rounded-xl py-4`}>
@@ -71,7 +69,7 @@ const BatchDetails = () => {
                 <div
                   className={`bg-${themeColor}-${primaryColorLevel} text-base font-semibold rounded-full p-1 px-3`}
                 >
-                 {batchData?.batchNumber}
+                  {batchData?.batchNumber}
                 </div>
 
                 <div
