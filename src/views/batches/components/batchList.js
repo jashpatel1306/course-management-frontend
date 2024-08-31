@@ -96,7 +96,7 @@ const BatchList = (props) => {
                   {batchData?.map((item, key) => {
                     return (
                       <Tr key={item?._id}>
-                        <Td>{item?.batchNumber}</Td>
+                        <Td>{key+1}</Td>
                         <Td>{item?.batchName}</Td>
                         <Td>120</Td>
                         <Td>python</Td>

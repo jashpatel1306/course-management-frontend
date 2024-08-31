@@ -119,7 +119,8 @@ function StudentForm(props) {
   useEffect(() => {
     if (isOpen) {
       if (userData.authority.toString() !== SUPERADMIN) {
-        getBatchOptionData();
+        getBatchOptionData(userData.collegeId);
+        getDepartmentOptionData(userData.collegeId);
       } else {
         getCollegeOptionData();
       }
@@ -229,7 +230,6 @@ function StudentForm(props) {
       setLoading(false);
     }
   };
-
   const editStudentMethod = async (value, studentId) => {
     try {
       setLoading(true);
@@ -310,7 +310,6 @@ function StudentForm(props) {
       }
     }
   };
-
   const SubmitHandle = async () => {
     const errorObject = formValidation();
     if (!errorObject.status) {
@@ -334,6 +333,7 @@ function StudentForm(props) {
             className={`text-xl font-semibold text-${themeColor}-${primaryColorLevel}`}
           >
             {studentData ? "Update Student" : "Add New Student"}
+            {userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId}
           </div>
         }
         isOpen={isOpen}
