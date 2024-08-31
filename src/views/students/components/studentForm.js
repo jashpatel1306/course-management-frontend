@@ -129,6 +129,7 @@ function StudentForm(props) {
   useEffect(() => {
     if (studentData?._id) {
       getBatchOptionData(studentData?.collegeUserId?._id);
+      getDepartmentOptionData(studentData?.collegeUserId?._id);
       setFormData({
         studentId: studentData?._id ? studentData?._id : "",
         name: studentData?.name ? studentData?.name : "",
@@ -146,7 +147,11 @@ function StudentForm(props) {
             ? studentData?.batchId._id
             : ""
           : "",
-        department: studentData?.department ? studentData?.department : "",
+        department: studentData?.department
+        ? studentData?.department?._id
+          ? studentData?.department?._id
+          : ""
+        : "",
         section: studentData?.section ? studentData?.section : "",
         passoutYear: studentData?.passoutYear ? studentData?.passoutYear : "",
         gender: studentData?.gender ? studentData?.gender : "",
@@ -333,7 +338,6 @@ function StudentForm(props) {
             className={`text-xl font-semibold text-${themeColor}-${primaryColorLevel}`}
           >
             {studentData ? "Update Student" : "Add New Student"}
-            {userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId}
           </div>
         }
         isOpen={isOpen}
