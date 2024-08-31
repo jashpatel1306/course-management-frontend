@@ -160,17 +160,19 @@ const StudentList = (props) => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-      if (userData.authority.toString() !== SUPERADMIN) {
-        getBatchOptionData();
-      } else {
-        getCollegeOptionData();
-        getBatchOptionData(collegeId);
-      }
+
       fetchData();
     }
   }, [apiFlag]);
+
   useEffect(() => {
     setApiFlag(true);
+    if (userData.authority.toString() !== SUPERADMIN) {
+      getBatchOptionData();
+    } else {
+      getCollegeOptionData();
+      getBatchOptionData(collegeId);
+    }
   }, []);
   useEffect(() => {
     if (!flag) {
@@ -305,7 +307,7 @@ const StudentList = (props) => {
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
                       <Td>{item?.email}</Td>
-                      <Td>{item?.department}</Td>
+                      <Td>{item?.department?._id?item?.department?.department:"NO"}</Td>
                       <Td>{item?.phone}</Td>
                       <Td>{item?.section}</Td>
                       <Td className="capitalize">{item?.gender}</Td>

@@ -48,7 +48,7 @@ const BatchScroller = (props) => {
       const response = await axiosInstance.get(`user/batches/${id}`);
 
       if (response.success) {
-        response.data.shift();
+        // response.data.shift();
         setBatchesData(response.data);
         setIsLoading(false);
       } else {

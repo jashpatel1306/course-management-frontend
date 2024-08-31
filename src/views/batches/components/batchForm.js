@@ -26,10 +26,9 @@ const courseList = [
 ];
 const addvalidationSchema = Yup.object().shape({
   batchName: Yup.string()
-    .required("Batch name is required")
+  
     .min(3, "Batch name must be at least 1 character long"),
 
-  batchNumber: Yup.string().required("Batch number is required"),
   instructorIds: Yup.array()
     .of(Yup.object())
     .nullable()
@@ -296,7 +295,7 @@ function BatchForm(props) {
             {DisplayError(errorData.batchName)}
           </div>
           {/* Batch Number */}
-          <div className="col-span-1 gap-4 mb-4">
+          <div className="col-span-1 gap-4 mb-4 hidden">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
