@@ -25,9 +25,10 @@ const courseList = [
   { label: "Database Design", value: "64e4e6f4b8a3d45b68a2c325" },
 ];
 const addvalidationSchema = Yup.object().shape({
-  batchName: Yup.string()
-  
-    .min(3, "Batch name must be at least 1 character long"),
+  batchName: Yup.string().min(
+    3,
+    "Batch name must be at least 1 character long"
+  ),
 
   instructorIds: Yup.array()
     .of(Yup.object())
@@ -50,6 +51,8 @@ function BatchForm(props) {
   );
   const { userData } = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
+  const [instructorsList, setInstructorsList] = useState([]);
+  const [instructorsLoading, setInstructorsLoading] = useState(false);
   const [formData, setFormData] = useState({
     batchName: "",
     batchNumber: "",
@@ -85,6 +88,25 @@ function BatchForm(props) {
       active: false,
     });
   };
+  const getInstructorsOptionData = async (collegeId) => {
+    try {
+      setInstructorsLoading(true);
+      const response = await axiosInstance.get(
+        `user/instructor-options/${collegeId}`
+      );
+
+      if (response.success) {
+        setInstructorsList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getBatchOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setInstructorsLoading(false);
+    }
+  };
   useEffect(() => {
     if (batchData) {
       setFormData({
@@ -106,7 +128,13 @@ function BatchForm(props) {
       });
     }
   }, [batchData]);
+  useEffect(() => {
+    if(isOpen)
+    {
 
+      getInstructorsOptionData(collegeId ? collegeId : userData.collegeId);
+    }
+  }, [isOpen]);
   const addNewBatchMethod = async (value) => {
     try {
       setLoading(true);
@@ -286,7 +314,7 @@ function BatchForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    batchName: e.target.value.trim(),
+                    batchName: e.target.value,
                   });
                 }}
                 value={formData?.batchName}
@@ -337,7 +365,7 @@ function BatchForm(props) {
                 isMulti
                 className={errorData?.instructorIds && "select-error"}
                 options={instructorsList}
-                // loading={trainerloading}
+                loading={instructorsLoading}
                 placeholder="Please Select Instructors"
                 // defaultValue={instructorsList.filter((instructor) =>
                 //   formData?.instructorIds.includes(instructor.value)

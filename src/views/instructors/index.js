@@ -1,31 +1,72 @@
-import React from "react";
-import ReactQuill from "react-quill";
+import { Button, Card } from "components/ui";
+import React, { useState } from "react";
+import { HiPlusCircle } from "react-icons/hi";
+import { useSelector } from "react-redux";
+import InstructorForm from "./components/instructorForm";
+import InstructorList from "./components/instructorList";
 const Instructors = () => {
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
+  const { userData } = useSelector((state) => state.auth.user);
+
+  const [addFlag, setAddFlag] = useState(false);
+  const [instructorData, setInstructorData] = useState();
+  const [IsOpen, setIsOpen] = useState(false);
+  const [batchList, setBatchList] = useState([]);
+  const [allCollegeList, setAllCollegeList] = useState([]);
+
+  const handleAddNewInstructorClick = () => {
+    setAddFlag(true);
+  };
+  const handleAddNewInstructorCloseClick = () => {
+    setAddFlag(false);
+  };
+
   return (
     <>
-      <div>
-        <iframe
-          style={{
-            width: "100%",
-            height: 500,
-            outline: "1px solid #252525",
-            border: 0,
-            borderRadius: 8,
-            marginBottom: 16,
-            // zIndex: 100,
-          }}
-          src="https://codesandbox.io/p/sandbox/panthil-g5wj8f"
-        ></iframe>
-      </div>
-
-      <div className="">
-        <ReactQuill
-          // modules={answerModules}
-          theme="snow"
-          placeholder="Add an answer..."
-          className="bg-white h-96"
+      <Card className="mt-4">
+        <div className="flex items-center justify-between ">
+          <div
+            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+          >
+            Instructors Details
+          </div>
+          <div className="flex gap-x-4">
+            <Button
+              size="sm"
+              variant="solid"
+              icon={<HiPlusCircle color={"#fff"} />}
+              onClick={async () => {
+                handleAddNewInstructorCloseClick();
+                //setSelectObject(item)
+                setInstructorData();
+                setTimeout(() => {
+                  handleAddNewInstructorClick();
+                }, 50);
+              }}
+            >
+              Add New Instructor
+            </Button>
+          </div>
+        </div>
+      </Card>
+      <Card className="mt-4">
+        <InstructorList
+          flag={addFlag}
+          parentCloseCallback={handleAddNewInstructorCloseClick}
+          parentCallback={handleAddNewInstructorClick}
+          setData={setInstructorData}
+          setAllCollegeList={setAllCollegeList}
         />
-      </div>
+      </Card>
+      <InstructorForm
+        isOpen={addFlag}
+        handleCloseClick={handleAddNewInstructorCloseClick}
+        setData={setInstructorData}
+        instructorData={instructorData}
+      />
     </>
   );
 };

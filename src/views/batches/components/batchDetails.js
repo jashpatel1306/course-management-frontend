@@ -1,11 +1,12 @@
-import { Card } from "components/ui";
+import { Button, Card } from "components/ui";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import StudentList from "./studentList";
 import StudentForm from "views/students/components/studentForm";
+import { HiArrowNarrowLeft } from "react-icons/hi";
 
 const BatchDetails = () => {
   const { id } = useParams();
@@ -13,10 +14,12 @@ const BatchDetails = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const navigate = useNavigate();
   const [addFlag, setAddFlag] = useState(false);
 
   const [batchData, setBatchData] = useState();
   const [batchLoading, setBatchLoading] = useState(false);
+
   const [studentData, setStudentData] = useState();
 
   const [apiFlag, setApiFlag] = useState(false);
@@ -37,11 +40,12 @@ const BatchDetails = () => {
         setBatchLoading(false);
       }
     } catch (error) {
-      console.log("get-all-batch error:", error);
+      console.log("fetchData-batch error:", error);
       openNotification("danger", error.message);
       setBatchLoading(false);
     }
   };
+
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
@@ -54,82 +58,93 @@ const BatchDetails = () => {
   }, []);
   return (
     <>
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <div
-            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
-          >
-            Batch Details
+      {!batchLoading && (
+        <>
+          <div className="flex items-center mb-4">
+            <div className="text-xl font-semibold text-center mr-4">
+              <Button
+                className={`back-button px-1 font-bold text-${themeColor}-${primaryColorLevel} border-2 border-${themeColor}-${primaryColorLevel} dark:text-white`}
+                size="sm"
+                icon={<HiArrowNarrowLeft size={30} />}
+                onClick={async () => {
+                  navigate(
+                    `/app/admin/college-details/${batchData?.collegeId}`
+                  );
+                }}
+              />
+            </div>
+            <h4
+              className={`text-2xl font-semibold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+            >
+              Batch Details
+            </h4>
           </div>
-        </div>
-        {!batchLoading && (
-          <>
-            <div className={` border-2  text-white rounded-xl py-4`}>
-              <div className={`flex gap-x-3 items-center p-2  px-4 `}>
-                <div
-                  className={`bg-${themeColor}-${primaryColorLevel} text-base font-semibold rounded-full p-1 px-3`}
-                >
-                  {batchData?.batchNumber}
+          <Card>
+            <>
+              <div className="space-y-4">
+                <div className="flex gap-x-4 items-center">
+                  <span className="text-base font-semibold text-gray-700 ">
+                    Batch Name:
+                  </span>
+                  <span
+                    className={` text-${themeColor}-${primaryColorLevel} text-lg font-semibold`}
+                  >
+                    {batchData?.batchName}
+                  </span>
                 </div>
 
-                <div
-                  className={`text-${themeColor}-${primaryColorLevel} text-base font-semibold capitalize`}
-                >
-                  {batchData?.batchName}
-                </div>
-              </div>
-              <div className={`flex justify-between  items-center p-2 px-4`}>
-                <div className="flex flex-wrap gap-3">
-                  {batchData?.courses.length ? (
-                    batchData?.courses?.map((item) => {
-                      return (
-                        <>
-                          <div
-                            className={`bg-${themeColor}-${primaryColorLevel} text-base font-semibold rounded p-1 px-3`}
-                          >
-                            Courses-{item}
-                          </div>
-                        </>
-                      );
-                    })
-                  ) : (
-                    <>
+                <div className="flex gap-x-4 items-center">
+                  <span className="text-base font-semibold text-gray-700">
+                    Courses
+                  </span>
+                  <div className="flex flex-wrap gap-3">
+                    {batchData?.courses.length ? (
+                      batchData?.courses?.map((item, index) => (
+                        <div
+                          key={index}
+                          className={`bg-${themeColor}-${primaryColorLevel} text-white text-base font-semibold rounded p-1 px-4 capitalize`}
+                        >
+                          {item}
+                        </div>
+                      ))
+                    ) : (
                       <div
-                        className={`bg-${themeColor}-${primaryColorLevel} text-base font-semibold rounded p-1 px-3`}
+                        className={`bg-${themeColor}-${primaryColorLevel} text-white text-base font-semibold rounded p-1 px-4 capitalize`}
                       >
                         No Courses Added
                       </div>
-                    </>
-                  )}
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  {batchData?.instructorIds.length ? (
-                    batchData?.instructorIds?.map((item) => {
-                      return (
-                        <>
-                          <div
-                            className={`text-${themeColor}-${primaryColorLevel} bg-${themeColor}-100 text-base font-semibold rounded p-1 px-3`}
-                          >
-                            Instructor-{item}
-                          </div>
-                        </>
-                      );
-                    })
-                  ) : (
-                    <>
+
+                <div className="flex  gap-x-4 items-center">
+                  <span className="text-base font-semibold text-gray-700">
+                    Instructors
+                  </span>
+                  <div className="flex flex-wrap gap-3">
+                    {batchData?.instructorIds.length ? (
+                      batchData?.instructorIds?.map((item, index) => (
+                        <div
+                          key={index}
+                          className={`bg-${themeColor}-100 text-${themeColor}-${primaryColorLevel} text-base font-semibold rounded p-1 px-4 capitalize`}
+                        >
+                          {item?.name}
+                        </div>
+                      ))
+                    ) : (
                       <div
-                        className={`bg-${themeColor}-${primaryColorLevel} text-base font-semibold rounded p-1 px-3`}
+                        className={`bg-${themeColor}-${primaryColorLevel} text-white text-base font-semibold rounded p-1 px-4 capitalize`}
                       >
                         No Instructor Added
                       </div>
-                    </>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
-      </Card>
+            </>
+          </Card>
+        </>
+      )}
       <Card className="mt-4 p-1">
         <div
           className={`text-xl mb-2 font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}

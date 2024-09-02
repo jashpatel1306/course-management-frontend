@@ -303,11 +303,15 @@ const StudentList = (props) => {
               <TBody>
                 {studentData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id}>
+                    <Tr key={item?._id} className="capitalize">
                       <Td>{item?.rollNo}</Td>
-                      <Td>{item?.name}</Td>
-                      <Td>{item?.email}</Td>
-                      <Td>{item?.department?._id?item?.department?.department:"NO"}</Td>
+                      <Td >{item?.name}</Td>
+                      <Td className="lowercase">{item?.email.toLowerCase()}</Td>
+                      <Td>
+                        {item?.department?._id
+                          ? item?.department?.department
+                          : "NO"}
+                      </Td>
                       <Td>{item?.phone}</Td>
                       <Td>{item?.section}</Td>
                       <Td className="capitalize">{item?.gender}</Td>

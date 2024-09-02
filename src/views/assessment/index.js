@@ -141,7 +141,7 @@ const Assessment = () => {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    title: e.target.value.trim(),
+                    title: e.target.value,
                   });
                 }}
                 value={formData?.title}
