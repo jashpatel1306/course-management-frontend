@@ -18,7 +18,7 @@ const adminNavigationConfig = [
     title: "Dashboard",
     icon: "dashboard",
     type: NAV_ITEM_TYPE_ITEM,
-    authority: [ADMIN, SUPERADMIN, STUDENT, INSTRUCTOR, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: [],
   },
   {

@@ -1,11 +1,20 @@
-import { USER_PREFIX_PATH } from "constants/route.constant";
+import { STUDENT_PREFIX_PATH } from "constants/route.constant";
 import { NAV_ITEM_TYPE_ITEM } from "constants/navigation.constant";
 import { STUDENT } from "constants/roles.constant";
 
 const studentNavigationConfig = [
   {
+    key: "apps.student.dashboard",
+    path: `${STUDENT_PREFIX_PATH}/dashboard`,
+    title: "Dashboard",
+    icon: "dashboard",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [STUDENT],
+    subMenu: [],
+  },
+  {
     key: "apps.student.mycourses",
-    path: `${USER_PREFIX_PATH}/students`,
+    path: `${STUDENT_PREFIX_PATH}/courses`,
     title: "My Courses",
     icon: "student",
     type: NAV_ITEM_TYPE_ITEM,
@@ -14,7 +23,7 @@ const studentNavigationConfig = [
   },
   {
     key: "apps.student.assessment",
-    path: `${USER_PREFIX_PATH}/assessment`,
+    path: `${STUDENT_PREFIX_PATH}/assessment`,
     title: "Assessment",
     icon: "assessment",
     type: NAV_ITEM_TYPE_ITEM,
@@ -23,7 +32,7 @@ const studentNavigationConfig = [
   },
   {
     key: "apps.certificate",
-    path: `${USER_PREFIX_PATH}/certificate`,
+    path: `${STUDENT_PREFIX_PATH}/certificate`,
     title: "Certificate",
     icon: "documentation",
     type: NAV_ITEM_TYPE_ITEM,

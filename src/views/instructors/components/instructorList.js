@@ -7,7 +7,7 @@ import {
   Pagination,
   Input,
   Select,
-  Badge,
+  Avatar,
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
@@ -27,26 +27,54 @@ import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
-const column = ["Department", "status", "Action"];
+const columns = [
+  "Avatar",
+  "Name",
+  "Email",
+  "Phone No",
+  "Experience In Years",
+  "Location",
+  "Active",
+];
 
-const DepartmentList = (props) => {
-  const { flag, parentCallback, setData, parentCloseCallback } = props;
+const InstructorList = (props) => {
+  const {
+    flag,
+    parentCallback,
+    setAllCollegeList,
+    setData,
+    parentCloseCallback,
+    setAllBatchList,
+  } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const { authority } = useSelector((state) => state.auth.user.userData);
-
   const { userData } = useSelector((state) => state.auth.user);
-  const [currentTab, setCurrentTab] = useState(userData.collegeId);
-  const [studentData, setDepartmentData] = useState([]);
+
+  const { authority, collegeId } = useSelector(
+    (state) => state.auth.user.userData
+  );
+  const [currentTab, setCurrentTab] = useState();
+  const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
+  const [instructorData, setInstructorData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedText] = useDebounce(searchText, 1000);
+  const [batchLoading, setBatchLoading] = useState(false);
 
+  const [batchList, setBatchList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
+  const onPaginationChange = (val) => {
+    setPage(val);
+    setApiFlag(true);
+  };
   const getCollegeOptionData = async () => {
     try {
       setCollegeLoading(true);
@@ -54,6 +82,7 @@ const DepartmentList = (props) => {
 
       if (response.success) {
         setCollegeList(response.data);
+        setAllCollegeList(response.data);
       } else {
         openNotification("danger", response.error);
       }
@@ -67,18 +96,43 @@ const DepartmentList = (props) => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get(
-        `user/departments/${currentTab}`
+      // const bodyData =
+      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
+      let formData = {
+        search: removeSpecials(debouncedText),
+        pageNo: page,
+        perPage: appConfig.pagePerData,
+      };
+      if (userData?.authority.toString() === SUPERADMIN) {
+        formData = {
+          ...formData,
+          collegeId: currentCollegeTab ? currentCollegeTab : "all",
+        };
+      } else {
+        formData = {
+          ...formData,
+          collegeId: "all",
+        };
+      }
+
+      const response = await axiosInstance.post(
+        `user/get-instructors/college`,
+        formData
       );
       if (response.success) {
-        setDepartmentData(response.data);
+        setInstructorData(response.data);
+        setTotalPage(
+          response.pagination.total
+            ? Math.ceil(response.pagination.total / appConfig.pagePerData)
+            : 0
+        );
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
         setIsLoading(false);
       }
     } catch (error) {
-      console.log("get-all-departments error:", error);
+      console.log("get-all-instructor error:", error);
       openNotification("danger", error.message);
       setIsLoading(false);
     }
@@ -88,14 +142,16 @@ const DepartmentList = (props) => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-      if (authority.toString() === SUPERADMIN) {
-        getCollegeOptionData();
-      }
+
       fetchData();
     }
   }, [apiFlag]);
+
   useEffect(() => {
     setApiFlag(true);
+    if (userData.authority.toString() === SUPERADMIN) {
+      getCollegeOptionData();
+    }
   }, []);
   useEffect(() => {
     if (!flag) {
@@ -103,10 +159,15 @@ const DepartmentList = (props) => {
     }
   }, [flag]);
 
+  useEffect(() => {
+    setPage(1);
+    setApiFlag(true);
+  }, [debouncedText]);
+
   const onHandleDeleteBox = async () => {
     try {
       const response = await axiosInstance.put(
-        `user/student/status/${selectObject._id}`
+        `user/instructor/status/${selectObject._id}`
       );
       if (response.success) {
         openNotification("success", response.message);
@@ -125,25 +186,55 @@ const DepartmentList = (props) => {
 
   return (
     <>
-      {userData.authority.toString() === SUPERADMIN && (
-        <div className="lg:flex items-center justify-between mt-2 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]"></div>
-          <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+      <div className="lg:flex items-center justify-between w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+          {userData.authority.toString() === SUPERADMIN && (
             <Select
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
-              value={collegeList.find((item) => item.value === currentTab)}
+              value={collegeList.find(
+                (item) => item.value === currentCollegeTab
+              )}
               onChange={(item) => {
-                setCurrentTab(item.value);
+                setCurrentCollegeTab(item.value);
                 setApiFlag(true);
+                setPage(1);
               }}
             />
-          </div>
+          )}
         </div>
-      )}
+        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+          <Input
+            placeholder="Search By Name, Email"
+            className=" input-wrapper md:mb-0 mb-4"
+            value={searchText}
+            prefix={
+              <HiOutlineSearch
+                className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+              />
+            }
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              setPage(1);
+              setApiFlag(true);
+            }}
+            suffix={
+              searchText && (
+                <AiOutlineClose
+                  className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                  onClick={() => {
+                    setSearchText("");
+                    setApiFlag(true);
+                  }}
+                />
+              )
+            }
+          />
+        </div>
+      </div>
 
       <div className="mt-2">
         {isLoading ? (
@@ -151,71 +242,49 @@ const DepartmentList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {column?.map((item, index) => {
-                    return (
-                      <Th
-                        key={item}
-                        className={`${
-                          index + 1 === column.length ? "flex justify-end" : ""
-                        }`}
-                      >
-                        {item}
-                      </Th>
-                    );
+                  {columns?.map((item) => {
+                    return <Th key={item}>{item}</Th>;
                   })}
                 </Tr>
               </THead>
               <TableRowSkeleton columns={9} rows={10} />
             </Table>
           </>
-        ) : studentData && studentData?.length ? (
+        ) : instructorData && instructorData?.length ? (
           <>
             <Table>
               <THead>
                 <Tr>
-                  {column?.map((item, index) => {
-                    return (
-                      <Th
-                        key={item}
-                        className={`${
-                          index + 1 === column.length ? "flex justify-end" : ""
-                        }`}
-                      >
-                        {item}
-                      </Th>
-                    );
+                  {columns?.map((item) => {
+                    return <Th key={item}>{item}</Th>;
                   })}
                 </Tr>
               </THead>
               <TBody>
-                {studentData?.map((item, key) => {
+                {instructorData?.map((item, key) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
-                      <Td>{item?.department}</Td>
                       <Td>
-                        {item?.active ? (
-                          <div className="flex items-center gap-2">
-                            <Badge className="bg-emerald-500" />
-                            <span
-                              className={`capitalize font-semibold text-emerald-500`}
-                            >
-                              Active
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <Badge className="bg-red-500" />
-                            <span
-                              className={`capitalize font-semibold text-red-500`}
-                            >
-                              Inactive
-                            </span>
-                          </div>
-                        )}
+                        <Avatar
+                          shape="circle"
+                          size="lg"
+                          className="mr-4"
+                          src={
+                            item?.userId?.avatar
+                              ? item?.userId?.avatar
+                              : "https://espo-live.s3.us-west-1.amazonaws.com/content/images/logo/30698015106821034319.webp"
+                          }
+                        />
                       </Td>
+                      <Td>{item?.name}</Td>
+                      <Td className="lowercase">{item?.email}</Td>
+
+                      <Td>{item?.phone}</Td>
+                      <Td>{item?.experienceInYears}</Td>
+                      <Td>{item?.location}</Td>
 
                       <Td>
-                        <div className="flex justify-end ">
+                        <div className="flex ">
                           <Button
                             shape="circle"
                             variant="solid"
@@ -250,6 +319,14 @@ const DepartmentList = (props) => {
                 })}
               </TBody>
             </Table>
+
+            <div className="flex items-center justify-center mt-4">
+              <Pagination
+                total={totalPage}
+                currentPage={page}
+                onChange={onPaginationChange}
+              />
+            </div>
           </>
         ) : (
           <>
@@ -277,9 +354,9 @@ const DepartmentList = (props) => {
       >
         <div className="px-6 pb-6">
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-            Confirm Deactivation of Department
+            Confirm Deactivation of Instructor
           </h5>
-          <p>Are you sure you want to deactivate this student?</p>
+          <p>Are you sure you want to deactivate this instructor?</p>
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button
@@ -300,4 +377,4 @@ const DepartmentList = (props) => {
   );
 };
 
-export default DepartmentList;
+export default InstructorList;

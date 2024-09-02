@@ -48,7 +48,7 @@ const StudentList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
   const [resultTitle, setResultTitle] = useState(
-    `Result 1 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
+    `Result 0 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
   );
   const onPaginationChange = (val) => {
     setPage(val);
@@ -205,13 +205,13 @@ const StudentList = (props) => {
               <TBody>
                 {studentData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id}>
+                    <Tr key={item?._id} className="capitalize">
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
-                      <Td>{item?.email}</Td>
+                      <Td className="lowercase">{item?.email}</Td>
                       <Td>{item?.department}</Td>
                       <Td>{item?.section}</Td>
-                      <Td className="capitalize">{item?.gender}</Td>
+                      <Td>{item?.gender}</Td>
                       <Td>{item?.semester}</Td>
 
                       <Td>

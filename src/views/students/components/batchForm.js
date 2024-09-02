@@ -278,7 +278,7 @@ function BatchForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    batchName: e.target.value.trim(),
+                    batchName: e.target.value,
                   });
                 }}
                 value={formData?.batchName}

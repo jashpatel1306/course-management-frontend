@@ -2,7 +2,11 @@ import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Table } from "components/ui";
 import React, { useRef, useState, useEffect } from "react";
 import { FaChevronRight } from "react-icons/fa";
-import { HiOutlinePencil, HiPlusCircle } from "react-icons/hi";
+import {
+  HiArrowNarrowLeft,
+  HiOutlinePencil,
+  HiPlusCircle,
+} from "react-icons/hi";
 import { useSelector } from "react-redux";
 import openNotification from "views/common/notification";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -13,13 +17,11 @@ const { Tr, Th, Td, THead, TBody } = Table;
 const columns = [
   "Batch Number",
   "Batch Name",
-  // "Total Student",
   "Courses",
   "Instructor Name",
-  // "Action",
   "View",
 ];
-const BatchScroller = (props) => {
+const CollegeDetails = (props) => {
   const { flag } = props;
   const { id } = useParams();
   const location = useLocation();
@@ -35,7 +37,7 @@ const BatchScroller = (props) => {
   const [apiFlag, setApiFlag] = useState(false);
   const [addBatchFlag, setAddBatchFlag] = useState(false);
   const [batchData, setBatchData] = useState();
-
+  const [collegeLoading, setCollegeLoading] = useState(false);
   const handleAddNewBatchClick = () => {
     setAddBatchFlag(true);
   };
@@ -43,12 +45,27 @@ const BatchScroller = (props) => {
     setAddBatchFlag(false);
     setApiFlag(true);
   };
+  const fetchCollegeData = async () => {
+    try {
+      const response = await axiosInstance.get(`admin/college/${id}`);
+      if (response.success) {
+        setCollegeData(response.data);
+        setCollegeLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setCollegeLoading(false);
+      }
+    } catch (error) {
+      console.log("fetchCollegeData error:", error);
+      openNotification("danger", error.message);
+      setCollegeLoading(false);
+    }
+  };
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`user/batches/${id}`);
 
       if (response.success) {
-        // response.data.shift();
         setBatchesData(response.data);
         setIsLoading(false);
       } else {
@@ -66,6 +83,9 @@ const BatchScroller = (props) => {
       setApiFlag(false);
       setIsLoading(true);
       fetchData();
+      if (!location.state) {
+        fetchCollegeData();
+      }
     }
   }, [apiFlag]);
   useEffect(() => {
@@ -76,19 +96,71 @@ const BatchScroller = (props) => {
       setApiFlag(true);
     }
   }, [flag]);
-
+  console.log("collegeData: ", collegeData);
   return (
     <>
-      <Card>
-        <div
-          className={`text-${themeColor}-${primaryColorLevel} text-base font-semibold capitalize`}
-        >
-          collegeNo : {collegeData.collegeNo}
+      <div className="flex items-center mb-4">
+        <div className="text-xl font-semibold text-center mr-4">
+          <Button
+            className={`back-button px-1 font-bold text-${themeColor}-${primaryColorLevel} border-2 border-${themeColor}-${primaryColorLevel} dark:text-white`}
+            size="sm"
+            icon={<HiArrowNarrowLeft size={30} />}
+            onClick={async () => {
+              navigate("/app/admin/colleges");
+            }}
+          />
         </div>
-        <div
-          className={`text-${themeColor}-${primaryColorLevel} text-base font-semibold capitalize`}
+        <h4
+          className={`text-2xl font-semibold text-${themeColor}-${primaryColorLevel} dark:text-white`}
         >
-          collegeName : {collegeData.collegeName}
+          College Details
+        </h4>
+      </div>
+      <Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center">
+            <span className="text-base font-semibold text-gray-700 ">
+              College No:
+            </span>
+            <span
+              className={`ml-2 text-${themeColor}-${primaryColorLevel} text-lg font-semibold`}
+            >
+              {collegeData?.collegeNo}
+            </span>
+          </div>
+
+          <div className="flex items-center">
+            <span className="text-base font-semibold text-gray-700">
+              College Name:
+            </span>
+            <span
+              className={`ml-2 text-${themeColor}-${primaryColorLevel} text-lg font-semibold`}
+            >
+              {collegeData?.collegeName}
+            </span>
+          </div>
+
+          <div className="flex items-center">
+            <span className="text-base font-semibold text-gray-700">
+              Contact Person Name:
+            </span>
+            <span
+              className={`ml-2 text-${themeColor}-${primaryColorLevel} text-lg font-semibold`}
+            >
+              {collegeData?.contactPersonName}
+            </span>
+          </div>
+
+          <div className="flex items-center">
+            <span className="text-base font-semibold text-gray-700">
+              Contact Person No:
+            </span>
+            <span
+              className={`ml-2 text-${themeColor}-${primaryColorLevel} text-lg font-semibold`}
+            >
+              {collegeData?.contactPersonNo}
+            </span>
+          </div>
         </div>
       </Card>
 
@@ -144,11 +216,15 @@ const BatchScroller = (props) => {
                 <TBody>
                   {batchesData?.map((item, key) => {
                     return (
-                      <Tr key={item?._id}>
+                      <Tr key={item?._id} className="capitalize">
                         <Td>{key + 1}</Td>
                         <Td>{item?.batchName}</Td>
                         <Td>python</Td>
-                        <Td>{item?.instructorIds[0]?.toString()}</Td>
+                        <Td>
+                          {item.instructorIds
+                            .map((instructor) => instructor.name)
+                            .join(", ")}
+                        </Td>
 
                         {/* <Td>
                           <div className=" flex gap-2 ">
@@ -206,4 +282,4 @@ const BatchScroller = (props) => {
   );
 };
 
-export default BatchScroller;
+export default CollegeDetails;

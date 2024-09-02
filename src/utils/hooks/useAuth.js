@@ -8,6 +8,7 @@ import useQuery from "./useQuery";
 import axiosInstance from "apiServices/axiosInstance";
 import { setThemeColor, setThemeColorLevel } from "store/theme/themeSlice";
 import { themeConfig } from "configs/theme.config";
+import { INSTRUCTOR, STUDENT } from "constants/roles.constant";
 
 function useAuth() {
   const dispatch = useDispatch();
@@ -36,7 +37,6 @@ function useAuth() {
         dispatch(onSignInSuccess(token));
         const userData = data;
         if (userData) {
-         
           dispatch(
             setUser({
               avatar: userData.avatar ? userData.avatar : "",
@@ -53,7 +53,22 @@ function useAuth() {
         }
 
         const redirectUrl = query.get(REDIRECT_URL_KEY);
-        navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath);
+        console.log("userData.role  :", userData.role, redirectUrl);
+        if (userData.role === INSTRUCTOR) {
+          navigate(
+            redirectUrl
+              ? redirectUrl
+              : appConfig.instructorAuthenticatedEntryPath
+          );
+        } else if (userData.role === STUDENT) {
+          navigate(
+            redirectUrl ? redirectUrl : appConfig.studentAuthenticatedEntryPath
+          );
+        } else {
+          navigate(
+            redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
+          );
+        }
         return response;
       } else {
         return response;

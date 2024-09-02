@@ -95,13 +95,14 @@ const BatchList = (props) => {
                 <TBody>
                   {batchData?.map((item, key) => {
                     return (
-                      <Tr key={item?._id}>
-                        <Td>{key+1}</Td>
+                      <Tr key={item?._id} className="capitalize">
+                        <Td>{key + 1}</Td>
                         <Td>{item?.batchName}</Td>
                         <Td>120</Td>
                         <Td>python</Td>
                         <Td>
-                          {item.instructorIds.toString().replaceAll(",", ", ")}
+                          {item.instructorIds?.map((instructor) => instructor.name)
+                            .join(", ")}
                         </Td>
 
                         <Td>

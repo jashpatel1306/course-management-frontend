@@ -109,7 +109,7 @@ const AdminList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
   const [resultTitle, setResultTitle] = useState(
-    `Result 1 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
+    `Result 0 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
   );
   const onPaginationChange = (val) => {
     setPage(val);
@@ -301,7 +301,7 @@ const AdminList = (props) => {
                       <Td>{item?.collegeName}</Td>
                       <Td>{item?.shortName}</Td>
                       <Td>{item?.collegeNo}</Td>
-                      <Td>{item?.userId.email}</Td>
+                      <Td className="lowercase">{item?.userId?.email}</Td>
                       <Td>{item?.contactPersonName}</Td>
                       <Td>{item?.contactPersonNo}</Td>
 

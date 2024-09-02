@@ -22,7 +22,7 @@ const AssessmentList = () => {
   const [currentTab, setCurrentTab] = useState();
   const [page, setPage] = useState(1);
   const [resultTitle, setResultTitle] = useState(
-    `Result 1 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
+    `Result 0 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
   );
   const [batchLoading, setBatchLoading] = useState(false);
   const [batchList, setBatchList] = useState([]);

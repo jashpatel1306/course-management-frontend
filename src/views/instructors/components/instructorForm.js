@@ -7,43 +7,26 @@ import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { FormNumericInput } from "components/shared";
 import { SUPERADMIN } from "constants/roles.constant";
+import CreatableSelect from "react-select/creatable";
 
-const genderList = [
-  { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
-  { label: "Other", value: "other" },
-];
-
-function StudentForm(props) {
-  const { handleCloseClick, studentData, isOpen } = props;
+function InstructorForm(props) {
+  const { handleCloseClick, instructorData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
   const { userData } = useSelector((state) => state.auth.user);
-  const studentValidationSchema = Yup.object().shape({
+  const instructorValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
-    collegeUserId: Yup.string().required("College User ID is required"),
-    batchId: Yup.string().required("Batch ID is required"),
-    rollNo: Yup.string().required("Roll no is required"),
-    department: Yup.string().required("Department is required"),
-    section: Yup.string().required("Section is required"),
-    passoutYear: Yup.number()
-      .required("Passout Year is required")
-      .positive("Must be a positive number"),
-    gender: Yup.string().required("Gender is required"),
-    collegeUserId: Yup.string().when([], {
-      is: (userData) =>
-        userData?.authority.toString() === SUPERADMIN.toString(),
-      then: Yup.string().required("College Name is required"),
-      otherwise: Yup.string().notRequired(),
-    }),
-    semester: Yup.number()
-      .required("Semester is required")
+    collegeId: Yup.string().required("College Id is required"),
+    skills: Yup.array().required("Skills is required"),
+    location: Yup.string().required("Location is required"),
+    experienceInYears: Yup.number()
+      .required("Experience In Years is required")
       .positive("Must be a positive number"),
     active: Yup.boolean(),
   });
@@ -55,137 +38,82 @@ function StudentForm(props) {
   const [departmentList, setDepartmentList] = useState([]);
   const [departmentLoading, setDepartmentLoading] = useState(false);
   const [formData, setFormData] = useState({
-    studentId: "",
+   
     name: "",
     email: "",
     phone: "",
-    collegeUserId:
+    collegeId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
-    batchId: "",
-    rollNo: "",
-    department: "",
-    section: "",
-    passoutYear: "",
-    gender: "",
-
-    semester: "",
+    skills: [],
+    location: "",
+    experienceInYears: "",
     active: true,
   });
   const [errorData, setErrorData] = useState({
     name: "",
     email: "",
     phone: "",
-    department: "",
-    rollNo: "",
-    section: "",
-    passoutYear: "",
-    gender: "",
-    collegeUserId: "",
-    semester: "",
+    skills: "",
+    location: "",
+    collegeId: "",
+    experienceInYears: "",
   });
-
   const resetErrorData = () => {
     setErrorData({
       name: "",
       email: "",
       phone: "",
-      department: "",
-      rollNo: "",
-      section: "",
-      passoutYear: "",
-      gender: "",
-      semester: "",
+      skills: "",
+      location: "",
+      collegeId: "",
+      experienceInYears: "",
     });
   };
-
   const resetFormData = () => {
     setFormData({
-      studentId: "",
       name: "",
       email: "",
       phone: "",
-      collegeUserId:
+      collegeId:
         userData?.authority.toString() === SUPERADMIN
           ? null
           : userData.collegeId,
-      rollNo: "",
-      batchId: "",
-      department: "",
-      section: "",
-      passoutYear: "",
-      gender: "",
-      semester: "",
+      skills: [],
+      location: "",
+      experienceInYears: "",
       active: true,
     });
   };
-
   useEffect(() => {
     if (isOpen) {
-      if (userData.authority.toString() !== SUPERADMIN) {
-        getBatchOptionData(userData.collegeId);
-        getDepartmentOptionData(userData.collegeId);
-      } else {
+      if (userData.authority.toString() === SUPERADMIN) {
         getCollegeOptionData();
       }
     }
   }, [isOpen]);
-
   useEffect(() => {
-    if (studentData?._id) {
-      getBatchOptionData(studentData?.collegeUserId?._id);
-      getDepartmentOptionData(studentData?.collegeUserId?._id);
+    if (instructorData?._id) {
       setFormData({
-        studentId: studentData?._id ? studentData?._id : "",
-        name: studentData?.name ? studentData?.name : "",
-        email: studentData?.email ? studentData?.email : "",
-        phone: studentData?.phone ? studentData?.phone : "",
-        rollNo: studentData?.rollNo ? studentData?.rollNo : "",
-        collegeUserId:
+        name: instructorData?.name ? instructorData?.name : "",
+        email: instructorData?.email ? instructorData?.email : "",
+        phone: instructorData?.phone ? instructorData?.phone : "",
+        skills: instructorData?.skills ? instructorData?.skills : null,
+        collegeId:
           userData?.authority.toString() === SUPERADMIN
-            ? studentData?.collegeUserId._id
-              ? studentData?.collegeUserId._id
+            ? instructorData?.collegeId
+              ? instructorData?.collegeId
               : ""
             : userData.collegeId,
-        batchId: studentData?.batchId
-          ? studentData?.batchId._id
-            ? studentData?.batchId._id
-            : ""
+
+        location: instructorData?.location ? instructorData?.location : "",
+        experienceInYears: instructorData?.experienceInYears
+          ? instructorData?.experienceInYears
           : "",
-        department: studentData?.department
-        ? studentData?.department?._id
-          ? studentData?.department?._id
-          : ""
-        : "",
-        section: studentData?.section ? studentData?.section : "",
-        passoutYear: studentData?.passoutYear ? studentData?.passoutYear : "",
-        gender: studentData?.gender ? studentData?.gender : "",
-        colName: studentData?.colName ? studentData?.colName : "",
-        semester: studentData?.semester ? studentData?.semester : "",
-        active: studentData?.active !== undefined ? studentData?.active : true,
+        active:
+          instructorData?.active !== undefined ? instructorData?.active : true,
       });
     }
-  }, [studentData]);
-
-  const getBatchOptionData = async (collegeId = "") => {
-    try {
-      setBatchLoading(true);
-      const response =
-        userData.authority.toString() === SUPERADMIN && collegeId
-          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
-          : await axiosInstance.get(`user/batches-option`);
-
-      if (response.success) {
-        setBatchList(response.data.filter((e) => e.value !== "all"));
-      } else {
-        openNotification("danger", response.error);
-      }
-    } catch (error) {
-      console.log("getBatchOptionData error :", error.message);
-      openNotification("danger", error.message);
-    } finally {
-      setBatchLoading(false);
-    }
-  };
+  }, [instructorData]);
   const getCollegeOptionData = async () => {
     try {
       setCollegeLoading(true);
@@ -203,29 +131,11 @@ function StudentForm(props) {
       setCollegeLoading(false);
     }
   };
-  const getDepartmentOptionData = async (collegeId) => {
-    try {
-      setDepartmentLoading(true);
-      const response = await axiosInstance.get(
-        `user/department-options/${collegeId}`
-      );
 
-      if (response.success) {
-        setDepartmentList(response.data);
-      } else {
-        openNotification("danger", response.error);
-      }
-    } catch (error) {
-      console.log("getDepartmenteOptionData error :", error.message);
-      openNotification("danger", error.message);
-    } finally {
-      setDepartmentLoading(false);
-    }
-  };
-  const addNewStudentMethod = async (value) => {
+  const addNewInstructorMethod = async (value) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post(`user/student`, value);
+      const response = await axiosInstance.post(`user/instructor`, value);
       if (response.success) {
         setLoading(false);
         resetErrorData();
@@ -240,11 +150,11 @@ function StudentForm(props) {
       setLoading(false);
     }
   };
-  const editStudentMethod = async (value, studentId) => {
+  const editInstructorMethod = async (value, instructorId) => {
     try {
       setLoading(true);
       const response = await axiosInstance.put(
-        `user/student/${studentId}`,
+        `user/instructor/${instructorId}`,
         value
       );
       if (response.success) {
@@ -272,18 +182,14 @@ function StudentForm(props) {
   };
   const formValidation = () => {
     try {
-      studentValidationSchema.validateSync(formData, { abortEarly: false });
+      instructorValidationSchema.validateSync(formData, { abortEarly: false });
       return {
         name: "",
         email: "",
         phone: "",
-        rollNo: "",
-        department: "",
-        section: "",
-        passoutYear: "",
-        gender: "",
-
-        semester: "",
+        skills: "",
+        location: "",
+        experienceInYears: "",
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -292,13 +198,10 @@ function StudentForm(props) {
           name: "",
           email: "",
           phone: "",
-          department: "",
-          rollNo: "",
-          section: "",
-          passoutYear: "",
-          gender: "",
-          collegeUserId: "",
-          semester: "",
+          skills: "",
+          location: "",
+          collegeId: "",
+          experienceInYears: "",
         };
       } else {
         return {
@@ -306,16 +209,13 @@ function StudentForm(props) {
           status: true,
           name: errorObject.name ? errorObject.name : "",
           email: errorObject.email ? errorObject.email : "",
-          rollNo: errorObject.rollNo ? errorObject.rollNo : "",
+          skills: errorObject.skills ? errorObject.skills : "",
           phone: errorObject.phone ? errorObject.phone : "",
-          department: errorObject.department ? errorObject.department : "",
-          section: errorObject.section ? errorObject.section : "",
-          passoutYear: errorObject.passoutYear ? errorObject.passoutYear : "",
-          gender: errorObject.gender ? errorObject.gender : "",
-          collegeUserId: errorObject.collegeUserId
-            ? errorObject.collegeUserId
+          location: errorObject.location ? errorObject.location : "",
+          experienceInYears: errorObject.experienceInYears
+            ? errorObject.experienceInYears
             : "",
-          semester: errorObject.semester ? errorObject.semester : "",
+          collegeId: errorObject.collegeId ? errorObject.collegeId : "",
         };
       }
     }
@@ -324,17 +224,17 @@ function StudentForm(props) {
     const errorObject = formValidation();
     if (!errorObject.status) {
       resetErrorData();
-      if (studentData?._id) {
+      if (instructorData?._id) {
         const newFormData = { ...formData };
-        await editStudentMethod(newFormData, studentData?._id);
+        await editInstructorMethod(newFormData, instructorData?._id);
       } else {
-        await addNewStudentMethod(formData);
+        await addNewInstructorMethod(formData);
       }
     } else {
       setErrorData(errorObject);
     }
   };
-
+  console.log("formData:  ", formData);
   return (
     <>
       <Drawer
@@ -342,7 +242,7 @@ function StudentForm(props) {
           <div
             className={`text-xl font-semibold text-${themeColor}-${primaryColorLevel}`}
           >
-            {studentData ? "Update Student" : "Add New Student"}
+            {instructorData ? "Update Instructor" : "Add New Instructor"}
           </div>
         }
         isOpen={isOpen}
@@ -360,7 +260,7 @@ function StudentForm(props) {
         footer={
           <div className="flex w-full justify-between items-center">
             <div>
-              {!studentData?._id && (
+              {!instructorData?._id && (
                 <Button
                   type="reset"
                   onClick={() => {
@@ -380,7 +280,7 @@ function StudentForm(props) {
               onClick={SubmitHandle}
               loading={loading}
             >
-              {studentData ? "Update" : "Submit"}
+              {instructorData ? "Update" : "Submit"}
             </Button>
           </div>
         }
@@ -398,7 +298,7 @@ function StudentForm(props) {
             <div className="col-span-2">
               <Input
                 type="text"
-                placeholder="Please Enter Student Name"
+                placeholder="Please Enter Instructor Name"
                 className={errorData.name && "select-error"}
                 onChange={(e) => {
                   setFormData({
@@ -421,7 +321,7 @@ function StudentForm(props) {
             <div className="col-span-2">
               <Input
                 type="email"
-                placeholder="Please Enter Student Email"
+                placeholder="Please Enter Instructor Email"
                 className={errorData.email && "select-error"}
                 onChange={(e) => {
                   setFormData({
@@ -433,29 +333,6 @@ function StudentForm(props) {
               />
             </div>
             {DisplayError(errorData.email)}
-          </div>
-          {/* Roll No */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Roll No
-            </div>
-            <div className="col-span-2">
-              <Input
-                type="text"
-                placeholder="Please Enter Student Roll No"
-                className={errorData.rollNo && "select-error"}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    rollNo: e.target.value,
-                  });
-                }}
-                value={formData?.rollNo}
-              />
-            </div>
-            {DisplayError(errorData.rollNo)}
           </div>
           {/* Phone */}
           <div className="col-span-1 gap-4 mb-4">
@@ -496,106 +373,83 @@ function StudentForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeUserId: e.value,
+                        collegeId: e.value,
                       });
-                      getBatchOptionData(e.value);
-                      getDepartmentOptionData(e.value);
                     }}
                     value={collegeList.find(
-                      (info) => info.value === formData?.collegeUserId
+                      (info) => info.value === formData?.collegeId
                     )}
                     options={collegeList}
-                    className={errorData.collegeUserId && "select-error"}
+                    className={errorData.collegeId && "select-error"}
                   />
                 </div>
-                {DisplayError(errorData.collegeUserId)}
+                {DisplayError(errorData.collegeId)}
               </div>
             </>
           ) : (
             <></>
           )}
-          {/* batchId */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Batch
-            </div>
-            <div className="col-span-2">
-              <Select
-                placeholder="Select Batch"
-                loading={batchLoading}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    batchId: e.value,
-                  });
-                }}
-                value={batchList?.find(
-                  (info) => info.value === formData?.batchId
-                )}
-                options={batchList}
-                className={errorData.batchId && "select-error"}
-              />
-            </div>
-            {DisplayError(errorData.batchId)}
-          </div>
+
           {/* Department */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Department
+              skills
             </div>
             <div className="col-span-2">
               <Select
+                isClearable
+                isMulti
                 placeholder="Select Department"
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    department: e.value,
+                    skills: e.map((e) => {
+                      return {
+                        label: e.label,
+                        value: e.value,
+                      };
+                    }),
                   });
                 }}
-                loading={departmentLoading}
-                value={departmentList?.find(
-                  (info) => info.value === formData?.department
-                )}
-                options={departmentList}
-                className={errorData.department && "select-error"}
+                value={formData.skills}
+                componentAs={CreatableSelect}
+                className={errorData.skills && "select-error"}
               />
             </div>
-            {DisplayError(errorData.department)}
+            {DisplayError(errorData.skills)}
           </div>
 
-          {/* Section */}
+          {/* Location */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Section
+              Location
             </div>
             <div className="col-span-2">
               <Input
                 type="text"
-                placeholder="Please Enter Student Section"
-                className={errorData.section && "select-error"}
+                placeholder="Please Enter Instructor Location"
+                className={errorData.location && "select-error"}
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    section: e.target.value,
+                    location: e.target.value,
                   });
                 }}
-                value={formData?.section}
+                value={formData?.location}
               />
             </div>
-            {DisplayError(errorData.section)}
+            {DisplayError(errorData.location)}
           </div>
-          {/* Passout Year */}
+          {/* Experience In Years */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Passout Year
+              Experience In Years
             </div>
             <div className="col-span-2">
               <FormNumericInput
@@ -603,61 +457,14 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    passoutYear: e.target.value,
+                    experienceInYears: e.target.value,
                   });
                 }}
-                value={formData?.passoutYear}
-                className={errorData.passoutYear && "select-error"}
+                value={formData?.experienceInYears}
+                className={errorData.experienceInYears && "select-error"}
               />
             </div>
-            {DisplayError(errorData.passoutYear)}
-          </div>
-          {/* Gender */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Gender
-            </div>
-            <div className="col-span-2">
-              <Select
-                placeholder="Select Gender"
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    gender: e.value,
-                  });
-                }}
-                value={genderList.find(
-                  (info) => info.value === formData?.gender
-                )}
-                options={genderList}
-                className={errorData.gender && "select-error"}
-              />
-            </div>
-            {DisplayError(errorData.gender)}
-          </div>
-          {/* Semester */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Semester
-            </div>
-            <div className="col-span-2">
-              <FormNumericInput
-                placeholder="Enter Semester"
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    semester: e.target.value,
-                  });
-                }}
-                value={formData?.semester}
-                className={errorData.semester && "select-error"}
-              />
-            </div>
-            {DisplayError(errorData.semester)}
+            {DisplayError(errorData.experienceInYears)}
           </div>
           {/* Active */}
           <div className="col-span-1 gap-4 mb-4">
@@ -685,4 +492,4 @@ function StudentForm(props) {
   );
 }
 
-export default StudentForm;
+export default InstructorForm;
