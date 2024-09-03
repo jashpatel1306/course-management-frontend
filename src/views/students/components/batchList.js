@@ -124,7 +124,7 @@ const BatchScroller = (props) => {
                 key={item}
                 className={`flex cursor-pointer shadow-lg justify-start gap-x-3 items-center p-2 px-4 border-2 border-${themeColor}-${primaryColorLevel} bg-${themeColor}-100 text-white rounded-xl`}
                 onClick={() => {
-                  navigate(`/app/admin/batche-details/${item._id}`);
+                  navigate(`/app/admin/batch-details/${item._id}`);
                 }}
               >
                 <div

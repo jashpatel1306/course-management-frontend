@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import StudentList from "./studentList";
 import StudentForm from "views/students/components/studentForm";
 import { HiArrowNarrowLeft } from "react-icons/hi";
+import { SUPERADMIN } from "constants/roles.constant";
 
 const BatchDetails = () => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const BatchDetails = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const { authority } = useSelector((state) => state.auth.user.userData);
   const navigate = useNavigate();
   const [addFlag, setAddFlag] = useState(false);
 
@@ -67,9 +69,13 @@ const BatchDetails = () => {
                 size="sm"
                 icon={<HiArrowNarrowLeft size={30} />}
                 onClick={async () => {
-                  navigate(
-                    `/app/admin/college-details/${batchData?.collegeId}`
-                  );
+                  if (authority.toString() === SUPERADMIN) {
+                    navigate(
+                      `/app/admin/college-details/${batchData?.collegeId}`
+                    );
+                  } else {
+                    navigate(`/app/admin/batches`);
+                  }
                 }}
               />
             </div>

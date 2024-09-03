@@ -225,25 +225,6 @@ const CollegeDetails = (props) => {
                             .map((instructor) => instructor.name)
                             .join(", ")}
                         </Td>
-
-                        {/* <Td>
-                          <div className=" flex gap-2 ">
-                            <Button
-                              shape="circle"
-                              variant="solid"
-                              size="sm"
-                              icon={<HiOutlinePencil />}
-                              onClick={async () => {
-                                item.batchId = item._id;
-                                // parentCloseCallback();
-                                // setData(item);
-                                setTimeout(() => {
-                                  // parentCallback();
-                                }, 100);
-                              }}
-                            />
-                          </div>
-                        </Td> */}
                         <Td>
                           <Button
                             shape="circle"
@@ -251,7 +232,7 @@ const CollegeDetails = (props) => {
                             variant="twoTone"
                             className={`flex justify-center items-center gap-1 text-${themeColor}-${primaryColorLevel} border-2 font-semibold border-${themeColor}-${primaryColorLevel}`}
                             onClick={() => {
-                              navigate(`/app/admin/batche-details/${item._id}`);
+                              navigate(`/app/admin/batch-details/${item._id}`);
                             }}
                           >
                             View
