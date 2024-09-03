@@ -45,7 +45,7 @@ const StudentList = (props) => {
     setAllCollegeList,
     setData,
     parentCloseCallback,
-    setAllBatchList,
+    setAllBatchList,refreshFlag
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -179,7 +179,11 @@ const StudentList = (props) => {
       setApiFlag(true);
     }
   }, [flag]);
-
+  useEffect(() => {
+    if (refreshFlag) {
+      setApiFlag(true);
+    }
+  }, [refreshFlag]);
   useEffect(() => {
     setPage(1);
     setApiFlag(true);

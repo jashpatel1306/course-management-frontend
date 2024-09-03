@@ -28,8 +28,8 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
-    key: "apps.batches.datails",
-    path: `${ADMIN_PREFIX_PATH}/batche-details/:id`,
+    key: "apps.batches.details",
+    path: `${ADMIN_PREFIX_PATH}/batch-details/:id`,
     component: React.lazy(() =>
       import("views/batches/components/batchDetails")
     ),
@@ -46,6 +46,22 @@ const appsRoute = [
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students`,
     component: React.lazy(() => import("views/contentHub/studentsContent")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
+    key: "contentHub.students",
+    path: `${ADMIN_PREFIX_PATH}/content-hub/students/course-forms/:course_id`,
+    component: React.lazy(() =>
+      import("views/contentHub/studentsContent/components/courseContentForm")
+    ),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
+    key: "contentHub.students",
+    path: `${ADMIN_PREFIX_PATH}/content-hub/students/course/:course_id`,
+    component: React.lazy(() =>
+      import("views/contentHub/studentsContent/components/courseView")
+    ),
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {

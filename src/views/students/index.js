@@ -237,6 +237,7 @@ const Students = () => {
             setData={setStudentData}
             setAllCollegeList={setAllCollegeList}
             setAllBatchList={setBatchList}
+            refreshFlag={!IsOpen}
           />
         </div>
       </Card>

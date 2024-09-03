@@ -209,7 +209,12 @@ const StudentList = (props) => {
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
                       <Td className="lowercase">{item?.email}</Td>
-                      <Td>{item?.department}</Td>
+                      <Td>
+                        {" "}
+                        {item?.department?._id
+                          ? item?.department?.department
+                          : "NO"}
+                      </Td>
                       <Td>{item?.section}</Td>
                       <Td>{item?.gender}</Td>
                       <Td>{item?.semester}</Td>

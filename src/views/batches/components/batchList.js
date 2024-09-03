@@ -141,7 +141,7 @@ const BatchList = (props) => {
                             variant="twoTone"
                             className={`flex justify-center items-center gap-1 text-${themeColor}-${primaryColorLevel} border-2 font-semibold border-${themeColor}-${primaryColorLevel}`}
                             onClick={() => {
-                              navigate(`/app/admin/batche-details/${item._id}`);
+                              navigate(`/app/admin/batch-details/${item._id}`);
                             }}
                           >
                             View

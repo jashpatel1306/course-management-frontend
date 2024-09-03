@@ -39,7 +39,7 @@ const DepartmentList = (props) => {
 
   const { userData } = useSelector((state) => state.auth.user);
   const [currentTab, setCurrentTab] = useState(userData.collegeId);
-  const [studentData, setDepartmentData] = useState([]);
+  const [departmentData, setDepartmentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
@@ -168,7 +168,7 @@ const DepartmentList = (props) => {
               <TableRowSkeleton columns={9} rows={10} />
             </Table>
           </>
-        ) : studentData && studentData?.length ? (
+        ) : departmentData && departmentData?.length ? (
           <>
             <Table>
               <THead>
@@ -188,7 +188,7 @@ const DepartmentList = (props) => {
                 </Tr>
               </THead>
               <TBody>
-                {studentData?.map((item, key) => {
+                {departmentData?.map((item, key) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
                       <Td>{item?.department}</Td>

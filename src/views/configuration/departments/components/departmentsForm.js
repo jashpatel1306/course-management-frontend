@@ -18,7 +18,7 @@ function DepartmentForm(props) {
   const { authority, collegeId } = useSelector(
     (state) => state.auth.user.userData
   );
-
+  console.log("collegeId : ", collegeId, authority.toString() !== SUPERADMIN);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     college: authority.toString() !== SUPERADMIN ? collegeId : "",
@@ -32,7 +32,7 @@ function DepartmentForm(props) {
 
   const resetFormData = () => {
     setFormData({
-      college: "",
+      college: authority.toString() !== SUPERADMIN ? collegeId : "",
       department: "",
       active: true,
     });
@@ -129,6 +129,12 @@ function DepartmentForm(props) {
       console.log("onHandleBox error :", error);
     }
   };
+  console.log(
+    "formData:  ",
+    collegeId,
+    authority.toString() !== SUPERADMIN,
+    formData
+  );
   return (
     <>
       <Dialog
