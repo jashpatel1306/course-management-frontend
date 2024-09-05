@@ -1,14 +1,22 @@
-import { Button, Card } from "components/ui";
-import React from "react";
-import { HiArrowNarrowLeft, HiOutlinePencil } from "react-icons/hi";
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Button, Card, Switcher } from "components/ui";
+import React, { useState } from "react";
+import {
+  HiArrowNarrowLeft,
+  HiOutlinePencil,
+  HiPlusCircle,
+} from "react-icons/hi";
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
 import { IoIosArrowDown } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { FaCheckCircle, FaFile, FaPlus, FaVideo } from "react-icons/fa";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { RiArticleFill } from "react-icons/ri";
+
 const CourseContentForm = () => {
   const navigate = useNavigate();
   const { course_id } = useParams();
@@ -16,6 +24,8 @@ const CourseContentForm = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const [sectionOpenFlag, setSectionOpenFlag] = useState(false);
+  const [sectionData, setSectionData] = useState([]);
   return (
     <>
       <div className="flex items-center mb-4">
@@ -47,82 +57,179 @@ const CourseContentForm = () => {
             variant="twoTone"
             icon={<HiOutlinePencil />}
             className={`border border-${themeColor}-${primaryColorLevel}`}
+            onClick={async () => {
+              navigate("/app/student/quiz");
+            }}
           >
             <span>Edit</span>
           </Button>
         </div>
       </Card>
 
-      <div className="mt-4">
-        <div className=" p-2  rounded-2xl w-1/2 bg-white">
-          {/* Section 1 */}
-          <Disclosure>
-            {({ open }) => (
-              <>
-                <DisclosureButton className="flex justify-start items-center gap-4 w-full p-2 text-lg font-medium  ">
-                  <IoIosArrowDown
-                    className={`${open ? "transform rotate-180" : ""}`}
-                    size={25}
-                  />
-                  <span>Section 1: First Step and Introduction</span>
-                </DisclosureButton>
+      <Card className="mt-4 bg-white">
+        <div
+          className={`flex justify-between items-center text-${themeColor}-${primaryColorLevel} text-lg font-semibold `}
+        >
+          <div className="flex justify-start items-center gap-2 ">
+            <div>
+              <IoIosArrowDown
+                className={`${sectionOpenFlag ? "transform rotate-180" : ""}`}
+                size={25}
+                onClick={() => {
+                  setSectionOpenFlag(!sectionOpenFlag);
+                }}
+              />
+            </div>
+            <div>Section 1 :</div>
+            {/* <FaFile /> */}
 
-                <DisclosurePanel className="py-4 px-12 flex flex-col gap-y-4 w-full">
-                  <div className="bg-gray-200 w-full rounded-lg">
-                    <Disclosure as="div" className="mb-2">
-                      {({ open }) => (
-                        <>
-                          <DisclosureButton className="flex justify-start items-center gap-4 w-full p-2 text-lg font-medium">
-                            <IoIosArrowDown
-                              className={`${
-                                open ? "transform rotate-180" : ""
-                              }`}
-                              size={25}
-                            />
-                            <span>Lecture 1</span>
-                          </DisclosureButton>
-                          <DisclosurePanel className="pl-12 py-4 w-full	 mt-1 rounded-b-lg bg-gray-100">
-                            <div className="flex flex-col px-2 gap-y-2">
-                              <p>Some Tips to get you started</p>
-                              <p>what is HTML?</p>
-                              <p>Course Exercise and video quality</p>
-                            </div>
-                          </DisclosurePanel>
-                        </>
-                      )}
-                    </Disclosure>
-                  </div>
-
-                  <div className="bg-gray-200 w-full rounded-lg ">
-                    <Disclosure as="div" className="mb-2">
-                      {({ open }) => (
-                        <>
-                          <DisclosureButton className="flex justify-start items-center gap-4 w-full p-2 text-lg font-medium">
-                            <IoIosArrowDown
-                              className={`${
-                                open ? "transform rotate-180" : ""
-                              }`}
-                              size={25}
-                            />
-                            <span>Lecture 2</span>
-                          </DisclosureButton>
-                          <DisclosurePanel className="pl-12 py-4 w-full	 mt-1 rounded-b-lg bg-gray-100">
-                            <div className="flex flex-col px-2 gap-y-2">
-                              <p>Lorem Ipsum 1</p>
-                              <p>Lorem Ipsum 2</p>
-                              <p>Lorem Ipsum 3</p>
-                            </div>
-                          </DisclosurePanel>
-                        </>
-                      )}
-                    </Disclosure>
-                  </div>
-                </DisclosurePanel>
-              </>
-            )}
-          </Disclosure>
+            <div
+              className="flex capitalize gap-4 items-center"
+              onClick={() => {}}
+            >
+              Introduction to Visual Communication
+              <div>
+                <HiOutlinePencil />
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div>
+              Publish
+              {/* Unpublish OR  */}
+            </div>
+            <Switcher defaultChecked />
+          </div>
         </div>
-      </div>
+        {sectionOpenFlag ? (
+          <>
+            <div className="m-6 mx-8">
+              <div className="mt-4  bg-gray-100 border-2 border-gray-300 rounded-lg">
+                <div className="bg-white w-full rounded-lg ">
+                  <div
+                    className={`flex justify-between items-center text-lg font-semibold gap-2 px-3 p-3`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FaCheckCircle />
+
+                      <div>Lecture 1 :</div>
+
+                      <FaFile />
+
+                      <div
+                        className="flex capitalize gap-4 items-center"
+                        onClick={() => {}}
+                      >
+                        Introduction for Course
+                        <div className="flex items-center gap-4">
+                          <MdEdit />
+                          <MdDelete />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-center items-center gap-4 ">
+                      <Button
+                        size="sm"
+                        variant="plain"
+                        className={`text-base hover:bg-${themeColor}-100 bg-gray-50 border-2 border-gray-400 rounded-lg  `}
+                        icon={<HiPlusCircle size={20} />}
+                        onClick={() => {
+                          // setIsOpen(true);
+                        }}
+                      >
+                        <span>Add Content</span>
+                      </Button>
+                      <IoIosArrowDown
+                        className={`${
+                          sectionOpenFlag ? "transform rotate-180" : ""
+                        }`}
+                        size={25}
+                        onClick={() => {
+                          setSectionOpenFlag(!sectionOpenFlag);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-center bg-gray-100 rounded-b-lg p-4 w-full">
+                    <div className="w-1/2 flex flex-col justify-center gap-y-4  items-center border-2 border-dashed border-gray-500  py-4 px-4 bg-gray-200 rounded-lg">
+                      
+                        <p className="text-gray-500 text-lg">
+                          Select the main type of content. Files and links can
+                          be added as resources.
+                        </p>
+                        <div className="flex justify-center gap-4 ">
+                          {/* Video Button */}
+                          <div className="border-2 border-gray-500 rounded-md flex flex-col items-center w-18 h-18 bg-white">
+                            <div className="flex-grow flex justify-center items-center p-3 px-4 ">
+                              <FaVideo size={25} />
+                            </div>
+                            <div className="bg-gray-400 w-full text-center py-1  text-white px-4 rounded-b-sm">
+                              Video
+                            </div>
+                          </div>
+
+                          {/* Article Button */}
+                          <div className="border-2 border-gray-500 rounded-md flex flex-col items-center w-18 h-18 bg-white">
+                            <div className="flex-grow flex justify-center items-center p-3 px-4 ">
+                              <RiArticleFill size={25} />
+                            </div>
+                            <div className="bg-gray-400 w-full text-center py-1 text-white px-4 rounded-b-sm">
+                              Article
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <Button
+                size="md"
+                variant="plain"
+                className={`text-lg hover:bg-${themeColor}-100 bg-gray-50 border-2 border-dashed border-gray-400 rounded-lg  `}
+                icon={<HiPlusCircle size={20} />}
+                onClick={() => {
+                  // setIsOpen(true);
+                }}
+              >
+                <span>Add Lecture</span>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </Card>
+
+      <Card className="mt-4">
+        <div
+          className={`flex justify-center p-2 text-${themeColor}-${primaryColorLevel} border-2 border-dashed border-gray-400 rounded-lg  bg-gray-50`}
+        >
+          <div>
+            <Button
+              size="md"
+              variant="plain"
+              className={`text-${themeColor}-${primaryColorLevel} text-lg hover:bg-${themeColor}-100`}
+              icon={<HiPlusCircle size={20} />}
+              onClick={() => {
+                // setIsOpen(true);
+              }}
+            >
+              <span>Add New Section</span>
+            </Button>
+            {/* <Button
+              size="md"
+              variant="plain"
+              className={`text-${themeColor}-${primaryColorLevel} text-lg hover:bg-${themeColor}-100`}
+              icon={<HiPlusCircle size={20} />}
+              onClick={() => {}}
+            >
+              <span>Coding Exercise</span>
+            </Button> */}
+          </div>
+        </div>
+      </Card>
     </>
   );
 };

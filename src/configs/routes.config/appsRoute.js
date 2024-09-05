@@ -1,5 +1,8 @@
 import React from "react";
-import { ADMIN_PREFIX_PATH } from "constants/route.constant";
+import {
+  ADMIN_PREFIX_PATH,
+  STUDENT_PREFIX_PATH,
+} from "constants/route.constant";
 import {
   ADMIN,
   SUPERADMIN,
@@ -9,6 +12,28 @@ import {
 } from "constants/roles.constant";
 
 const appsRoute = [
+  {
+    key: "apps.quiz",
+    path: `${STUDENT_PREFIX_PATH}/quiz`,
+    component: React.lazy(() => import("views/studentPanel/quiz")),
+    authority: [],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
+    key: "apps.viewCourse",
+    path: `${STUDENT_PREFIX_PATH}/viewCourse`,
+    component: React.lazy(() => import("views/studentPanel/myCourses/viewCourses")),
+    authority: [],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
   {
     key: "apps.admin",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
