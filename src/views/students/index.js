@@ -388,7 +388,7 @@ const Students = () => {
             Cancel
           </Button>
           <Button variant="solid" onClick={onHandleBox} loading={importLoading}>
-            Okay
+            Submit
           </Button>
         </div>
       </Dialog>

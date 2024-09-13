@@ -2,76 +2,112 @@ import { Button } from "components/ui";
 import React from "react";
 import { FaRegEye } from "react-icons/fa";
 import { HiEye, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
-function generateRandomName(minLength, maxLength) {
-  const alphabet = "abcdefghijklmnopqrstuvwxyz";
-  const nameLength =
-    Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-  let randomName = "";
+import { useNavigate } from "react-router-dom";
+const getRandomBgColorClass = () => {
+  // Define an array of possible Tailwind background color classes
+  const bgColors = [
+    "bg-red-500",
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-indigo-500",
+    "bg-teal-500",
+    "bg-orange-500",
+    "bg-sky-500",
+  ];
 
-  for (let i = 0; i < nameLength; i++) {
-    const randomIndex = Math.floor(Math.random() * alphabet.length);
-    randomName += alphabet[randomIndex];
-  }
+  // Generate a random index
+  const randomIndex = Math.floor(Math.random() * bgColors.length);
 
-  // Capitalize the first letter
-  return randomName.charAt(0).toUpperCase() + randomName.slice(1);
-}
-
+  // Return a random background color class
+  return bgColors[randomIndex];
+};
 const CourseCard = ({ index, item }) => {
-  return (
-    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-white">
-      {/* Header Section */}
-      <div className="group relative w-60 h-40 flex justify-center items-center bg-sky-500 ">
-        {index % 2 === 0 ? (
-          <img
-            className=" w-60 h-40"
-            src="https://rainbowit.net/html/histudy/assets/images/course/course-online-01.jpg" // Replace with the image URL or component
-            alt="Course Cover"
-          />
-        ) : (
-          <div className="text-white font-bold text-7xl uppercase">
-            {generateRandomName(2, 4)}
-          </div>
-        )}
-        <div className="w-60 h-40  rounded absolute  bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
-          <Button
-            shape="circle"
-            variant="solid"
-            className="mr-2"
-            size="sm"
-            icon={<HiOutlinePencil />}
-          />
-          <Button
-            shape="circle"
-            variant="solid"
-            color="yellow-700"
-            className="mr-2"
-            size="sm"
-            icon={<FaRegEye />}
-          />
-          <Button
-            shape="circle"
-            color="red-700"
-            variant="solid"
-            size="sm"
-            icon={<HiOutlineTrash />}
-          />
-        </div>
-      </div>
+  const navigate = useNavigate();
 
-      {/* Course Details */}
-      <div className="p-4">
-        <h5 className="text-lg font-bold">React Front To Back {index}</h5>
-        <div className="flex justify-start gap-2 py-2 text-white">
-          <h4 className="bg-blue-200 text-xs px-2 py-1 rounded">
-            {index * 5} Sections
-          </h4>
-          <h4 className="bg-purple-200 text-xs px-2 py-1 rounded">
-            {index * 5 + 5} Topics
-          </h4>
+  return (
+    <>
+      <div
+        className={`max-w-sm rounded-lg overflow-hidden shadow-lg bg-white `}
+        key={index}
+      >
+        {/* Header Section */}
+        <div
+          className={`group relative w-60 h-40 flex justify-center items-center  ${getRandomBgColorClass()}`}
+        >
+          {item?.coverImage ? (
+            <img
+              className=" w-60 h-40 "
+              src={
+                item?.coverImage ||
+                "https://rainbowit.net/html/histudy/assets/images/course/course-online-01.jpg"
+              }
+              alt="Course Cover"
+            />
+          ) : (
+            <div className="text-white font-bold text-7xl uppercase">
+              {item?.courseName
+                .split(" ") // Split the phrase by spaces
+                .map((word) => word[0].toUpperCase()) // Get the first letter of each word and make it uppercase
+                .join("")}
+            </div>
+          )}
+          <div className="w-60 h-40  rounded absolute  bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
+            <Button
+              shape="circle"
+              variant="solid"
+              className="mr-2"
+              size="sm"
+              icon={<HiOutlinePencil />}
+              onClick={() => {
+                navigate(
+                  `/app/admin/content-hub/students/course-forms/${item._id}`
+                );
+              }}
+            />
+            <Button
+              shape="circle"
+              variant="solid"
+              color="yellow-700"
+              className="mr-2"
+              size="sm"
+              icon={<FaRegEye />}
+              onClick={() => {
+                navigate(
+                  `/app/admin/content-hub/students/course-forms/${item._id}`
+                );
+              }}
+            />
+            {/* <Button
+              shape="circle"
+              color="red-700"
+              variant="solid"
+              size="sm"
+              icon={<HiOutlineTrash />}
+            /> */}
+          </div>
         </div>
-        {/* Progress Bar */}
-        {/* <div className="mt-4">
+
+        {/* Course Details */}
+        <div className={`p-4 `}>
+          <h5 className="text-lg font-bold">{item?.courseName}</h5>
+          <div className="flex justify-start gap-2 py-2 text-white">
+            <h4 className="bg-blue-200 text-xs px-2 py-1 rounded">
+              {item?.totalSections} Sections
+            </h4>
+            <h4 className="bg-purple-200 text-xs px-2 py-1 rounded">
+              {item?.totalLectures} Lectures
+            </h4>
+          </div>
+          {item.isPublic ? (
+            <p className="text-base font-bold text-green-500">Publish</p>
+          ) : (
+            <p className="text-base font-bold text-red-500">Unpublish</p>
+          )}
+          {/* Progress Bar */}
+          {/* <div className="mt-4">
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Complete</span>
             <span>90%</span>
@@ -87,8 +123,9 @@ const CourseCard = ({ index, item }) => {
         </div>
 
         */}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

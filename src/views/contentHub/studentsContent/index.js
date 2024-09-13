@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import CourseCard from "./components/courseCards";
 import { useNavigate } from "react-router-dom";
 import CourseForm from "./components/courseForm";
+import CourseList from "./components/courseList";
 const StudentsContent = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -54,13 +55,13 @@ const StudentsContent = () => {
         setCourseData={setCourseData}
         courseData={courseData}
       />
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
-          {[...Array(12).keys()].map((item, index) => {
-            return <CourseCard key={item} index={index} />;
-          })}
-        </div>
-      </div>
+       <CourseList
+          flag={addCourseFlag}
+          parentCloseCallback={handleAddNewCourseCloseClick}
+          parentCallback={handleAddNewCourseClick}
+          setData={setCourseData}
+        />
+    
     </>
   );
 };
