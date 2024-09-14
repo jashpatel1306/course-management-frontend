@@ -11,30 +11,28 @@ import { FcImageFile } from "react-icons/fc";
 import { HiTrash } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
-const addValidationSchema = Yup.object().shape({
-  courseName: Yup.string()
-    .required("Course name is required")
-    .min(3, "Course name must be at least 3 character long"),
-
-  collegeId: Yup.string().required("College Id is required"),
-  courseDescription: Yup.string()
-    .required("Course description is required")
-    .min(3, "Course description must be at least 3 character long"),
-  coverImage: Yup.mixed().required("Cover Image Required"),
-});
 function CourseForm(props) {
-  const { handleCloseClick, courseData, isOpen, collegeId } = props;
+  const { handleCloseClick, courseData, isOpen, collegeId, setCourseData } =
+    props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.auth.user);
+
+  const addValidationSchema = Yup.object().shape({
+    courseName: Yup.string()
+      .required("Course name is required")
+      .min(3, "Course name must be at least 3 character long"),
+    courseDescription: Yup.string()
+      .required("Course description is required")
+      .min(3, "Course description must be at least 3 character long"),
+    coverImage: Yup.mixed(),
+  });
   const [loading, setLoading] = useState(false);
 
   const [coverImageUrl, setCoverImageUrl] = useState("");
-  const [collegeLoading, setCollegeLoading] = useState(false);
-  const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
     courseName: "",
     collegeId: "",
@@ -50,6 +48,7 @@ function CourseForm(props) {
       coverImage: null,
       active: true,
     });
+    setCoverImageUrl("");
   };
   const [errorData, setErrorData] = useState({
     courseName: "",
@@ -104,51 +103,45 @@ function CourseForm(props) {
     return valid;
   };
   useEffect(() => {
+    console.log("courseData : ", courseData);
     if (courseData) {
       setFormData({
         courseName: courseData ? courseData?.courseName : "",
         collegeId: courseData ? courseData?.collegeId : "",
         courseDescription: courseData ? courseData?.courseDescription : "",
         active: courseData ? courseData.active : true,
+        coverImage: null,
       });
+      if (courseData.coverImage) {
+        setCoverImageUrl(courseData.coverImage);
+      } else {
+        setCoverImageUrl("");
+      }
     }
   }, [courseData]);
-  useEffect(() => {
-    if (isOpen) {
-      if (userData.authority.toString() === SUPERADMIN) {
-        getCollegeOptionData();
-      }
-    }
-  }, [isOpen]);
-  const getCollegeOptionData = async () => {
-    try {
-      setCollegeLoading(true);
-      const response = await axiosInstance.get(`admin/college-option`);
-
-      if (response.success) {
-        setCollegeList(response.data);
-      } else {
-        openNotification("danger", response.error);
-      }
-    } catch (error) {
-      console.log("getCollegeOptionData error :", error.message);
-      openNotification("danger", error.message);
-    } finally {
-      setCollegeLoading(false);
-    }
-  };
   const addNewCourseMethod = async (value) => {
     try {
       setLoading(true);
       const formData = {
         courseName: value.courseName,
-        collegeId: collegeId ? collegeId : userData.collegeId,
+        // collegeId: collegeId ? collegeId : userData.collegeId,
         courseDescription: value.courseDescription,
+
         active: value.active,
       };
+      if (value.coverImage) {
+        formData.image = value.coverImage;
+      }
+      if (userData?.authority.toString() !== SUPERADMIN) {
+        formData.collegeId = collegeId ? collegeId : userData.collegeId;
+      }
       const response = await axiosInstance.post(`user/course`, formData);
-      if (response.success) {
+      if (response.success && response.data._id) {
         setLoading(false);
+        setCourseData(response.data);
+        navigate(
+          `/app/admin/content-hub/students/course-forms/${response?.data?._id}`
+        );
         handleCloseClick();
         resetFormData();
       } else {
@@ -168,16 +161,27 @@ function CourseForm(props) {
       const formData = {
         courseId: courseId,
         courseName: value.courseName,
-        collegeId: collegeId ? collegeId : userData.collegeId,
+        // collegeId: collegeId ? collegeId : userData.collegeId,
         courseDescription: value.courseDescription,
+
         active: value.active,
       };
+      if (value.coverImage) {
+        formData.image = value.coverImage;
+      }
+      if (userData?.authority.toString() !== SUPERADMIN) {
+        formData.collegeId = collegeId ? collegeId : userData.collegeId;
+      }
       const response = await axiosInstance.put(
         `user/course/${formData.courseId}`,
         formData
       );
       if (response.success) {
         setLoading(false);
+        setCourseData(response.data);
+        navigate(
+          `/app/admin/content-hub/students/course-forms/${response?.data?._id}`
+        );
         handleCloseClick();
         resetFormData();
       } else {
@@ -236,12 +240,11 @@ function CourseForm(props) {
     const errorObject = formValidation();
     if (!errorObject.status) {
       resetErrorData();
-      navigate("/app/admin/content-hub/students/course-forms/1234567890");
-      //   if (courseData?.courseId) {
-      //     await editCourseMethod(formData, courseData?.courseId);
-      //   } else {
-      //     await addNewCourseMethod(formData);
-      //   }
+      if (courseData?._id) {
+        await editCourseMethod(formData, courseData?._id);
+      } else {
+        await addNewCourseMethod(formData);
+      }
     } else {
       setErrorData(errorObject);
     }
@@ -366,38 +369,7 @@ function CourseForm(props) {
             )}
             {DisplayError(errorData.coverImage)}
           </div>
-          {userData?.authority.toString() === SUPERADMIN.toString() ? (
-            <>
-              {/*  College Name */}
-              <div className="col-span-1 gap-4 mb-4">
-                <div
-                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-                >
-                  College Name
-                </div>
-                <div className="col-span-2">
-                  <Select
-                    placeholder="Select College"
-                    loading={collegeLoading}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        collegeId: e.value,
-                      });
-                    }}
-                    value={collegeList.find(
-                      (info) => info.value === formData?.collegeId
-                    )}
-                    options={collegeList}
-                    className={errorData.collegeId && "select-error"}
-                  />
-                </div>
-                {DisplayError(errorData.collegeId)}
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
+
           {/* Course Name */}
           <div className="col-span-1 gap-4 mb-4">
             <div
