@@ -13,6 +13,7 @@ import openNotification from "views/common/notification";
 import "react-quill/dist/quill.snow.css";
 import ImageResize from "quill-image-resize-module-react";
 import { FcImageFile } from "react-icons/fc";
+import FileUpload from "views/common/fileUpload";
 Quill.register("modules/imageResize", ImageResize);
 const modules = {
   toolbar: [
@@ -66,6 +67,7 @@ const LectureForm = (props) => {
   const [error, setError] = useState("");
   const [lectureName, setLectureName] = useState(lecture?.name);
   const [lectureFormFlag, setLectureFormFlag] = useState(false);
+  const [file, setFile] = useState();
   const [lectureForm, setLectureForm] = useState({
     type: "",
     content: "",
@@ -160,36 +162,89 @@ const LectureForm = (props) => {
       });
     }
   }, [lectureOpen]);
-  const UpdateLectureContent = async () => {
-    // try {
-    //   setLectureLoading(true);
-    //   const response = await axiosInstance.put(`user/lecture/${lecture.id}`, {
-    //     content: quillRef.getEditor().root.innerHTML,
-    //   });
-    //   if (response.success) {
-    //     openNotification("success", response.message);
-    //   } else {
-    //     openNotification("danger", response.message);
-    //   }
-    // } catch (error) {
-    //   console.log("onFormSubmit error: ", error);
-    //   openNotification("danger", error.message);
-    // } finally {
-    //   setLectureLoading(false);
-    // }
+  const beforeUpload = (files) => {
+    let valid = true;
+
+    const allowedFileType = [
+      "application/pdf", // PDF
+      "application/vnd.ms-powerpoint", // PPT (old)
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation", // PPTX (new)
+      "application/msword", // DOC (old)
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX (new)
+    ];
+    const maxFileSize = 5000000;
+    for (let file of files) {
+      if (!allowedFileType.includes(file.type)) {
+        valid = false;
+      }
+      if (file.size >= maxFileSize) {
+        valid = false;
+      }
+    }
+    if (valid) {
+    }
+    return valid;
+  };
+  const UpdateLectureContent = async (formData) => {
+    try {
+      setLectureLoading(true);
+      const response = await axiosInstance.put(
+        `user/lecture-content/${lecture.id}`,
+        formData
+      );
+      if (response.success) {
+        openNotification("success", response.message);
+        setLectureForm({
+          type: "",
+          content: "",
+          title: "",
+        });
+        setLectureFormFlag(false);
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log("onFormSubmit error: ", error);
+      openNotification("danger", error.message);
+    } finally {
+      setLectureLoading(false);
+    }
   };
   const onHandleContentBox = async () => {
     try {
-     
-      if (!lectureForm.content) {
-        setError("Please Enter a lecture Content");
+      if (lectureForm.type === "text") {
+        if (!lectureForm.content) {
+          setError("Please Enter a Content");
+        }
+        if (!lectureForm.title) {
+          setError("Please Enter a Content Title");
+        }
+        if (lectureForm.title && lectureForm.content) {
+          setError("");
+          await UpdateLectureContent(lectureForm);
+        }
       }
-      if (!lectureForm.title) {
-        setError("Please Enter a lecture Title");
-      }
-      if (lectureForm.title && lectureForm.content) {
-        setError("");
-        await UpdateLectureContent();
+      if (lectureForm.type === "file") {
+        if (!file) {
+          setError("Please Upload a Content file");
+        }
+
+        if (!lectureForm.title) {
+          setError("Please Enter a Content Title");
+        }
+        const filePath = await FileUpload(file, "content/files");
+        console.log("filePath : ", filePath);
+        if (filePath.status) {
+          await UpdateLectureContent({
+            type: "file",
+            content: filePath.data,
+            title: lectureForm.title,
+          });
+          setFile(null);
+        } else {
+          setError(filePath.message);
+        }
       }
     } catch (error) {
       console.log("onHandleBox error :", error);
@@ -308,7 +363,7 @@ const LectureForm = (props) => {
                                   }}
                                   modules={modules}
                                   formats={formats}
-                                  bounds={"#root"}
+                                  bounds={"#editer"}
                                   theme="snow"
                                   placeholder="Add your content here..."
                                   className="bg-white"
@@ -399,26 +454,43 @@ const LectureForm = (props) => {
                           {lectureForm.type === "file" && (
                             <>
                               <div className="w-full  gap-y-4  items-center border-2 border-gray-300  py-4 px-4 bg-gray-200 rounded-lg">
-                                <p className="text-gray-500 text-lg font-bold mb-2 ml-2">
+                                <div className="col-span-1 gap-4 mb-4">
+                                  <div
+                                    className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                                  >
+                                    File Title
+                                  </div>
+                                  <div className="col-span-2">
+                                    <Input
+                                      className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+                                      placeholder="Article Title"
+                                      value={lectureForm.title}
+                                      onChange={(e) => {
+                                        setLectureForm({
+                                          ...lectureForm,
+                                          title: e.target.value,
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                                <div
+                                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                                >
                                   File Content
-                                </p>
-                                <div className="w-full bg-white rounded-lg">
+                                </div>
+                                <div className="w-full rounded-lg">
                                   <Upload
                                     draggable
-                                    showList={false}
+                                    showList={true}
                                     label="File Upload"
-                                    // beforeUpload={beforeUpload}
+                                    beforeUpload={beforeUpload}
+                                    className="bg-white"
                                     onChange={(file) => {
-                                      // setFormData({
-                                      //   ...formData,
-                                      //   coverImage: file[0],
-                                      // });
-                                      // setCoverImageUrl(
-                                      //   URL.createObjectURL(file[0])
-                                      // );
+                                      setFile(file[0]);
                                     }}
                                   >
-                                    <div className="my-8 text-center">
+                                    <div className="w-full my-8 text-center ">
                                       <div className="text-6xl w-full mb-4 flex justify-center">
                                         <FcImageFile />
                                       </div>
@@ -433,13 +505,19 @@ const LectureForm = (props) => {
                                         </span>
                                       </p>
                                       <p className="mt-1 opacity-60 dark:text-white">
-                                        Support: txt, pdf
+                                        Support: PDF, PPTX, DOC, DOCX
                                       </p>
                                     </div>
                                   </Upload>
                                 </div>
-                                <div className="flex justify-end my-2 mr-2">
-                                  <Button variant="solid">Save</Button>
+                                <div className="flex justify-between my-2 mr-2">
+                                  <div>{DisplayError(error)}</div>
+                                  <Button
+                                    variant="solid"
+                                    onClick={onHandleContentBox}
+                                  >
+                                    Save
+                                  </Button>
                                 </div>
                               </div>
                             </>
@@ -513,8 +591,31 @@ const LectureForm = (props) => {
                   </>
                 ) : (
                   <>
-                    <div className="flex justify-center bg-gray-100 rounded-b-lg p-4 w-full">
-                      <p>lecture content display</p>
+                    <div className="flex flex-col justify-center bg-gray-100 rounded-b-lg p-4 w-full">
+                      {lectureData?.lectureContent?.length > 0 ? (
+                        <>
+                          {lectureData?.lectureContent?.map((info) => {
+                            return (
+                              <div className="w-full flex gap-4 items-center border-2 border-gray-300  py-2 px-4 bg-gray-200 rounded-lg mb-2">
+                                <p className=" text-lg font-bold">
+                                  {info.type === "video" ? (
+                                    <FaVideo size={20} />
+                                  ) : info.type === "text" ? (
+                                    <RiArticleFill size={20} />
+                                  ) : (
+                                    <FaFileAlt size={20} />
+                                  )}{" "}
+                                </p>
+                                <p className="text-gray-500 text-lg font-bold">
+                                  {info.title}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </>
                 )}

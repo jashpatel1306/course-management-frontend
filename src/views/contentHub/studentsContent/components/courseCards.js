@@ -1,8 +1,14 @@
-import { Button } from "components/ui";
-import React from "react";
+import axiosInstance from "apiServices/axiosInstance";
+import { Button, Dialog, Select } from "components/ui";
+import { SUPERADMIN } from "constants/roles.constant";
+import React, { useEffect, useState } from "react";
+import { CgAssign } from "react-icons/cg";
 import { FaRegEye } from "react-icons/fa";
 import { HiEye, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import DisplayError from "views/common/displayError";
+import openNotification from "views/common/notification";
 const getRandomBgColorClass = () => {
   // Define an array of possible Tailwind background color classes
   const bgColors = [
@@ -25,8 +31,86 @@ const getRandomBgColorClass = () => {
   return bgColors[randomIndex];
 };
 const CourseCard = ({ index, item }) => {
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
   const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.auth.user);
+  const [IsOpen, setIsOpen] = useState(false);
+  const [allCollegeList, setAllCollegeList] = useState([]);
+  const [selectAssignData, setSelectAssignData] = useState({
+    college: null,
+  });
+  const [collegeLoading, setCollegeLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [assignLoading, setAssignLoading] = useState(false);
+  const getCollegeOptionData = async () => {
+    try {
+      setCollegeLoading(true);
+      const response = await axiosInstance.get(`admin/college-option`);
 
+      if (response.success) {
+        setAllCollegeList(response.data);
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getCollegeOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setCollegeLoading(false);
+    }
+  };
+  const AssignCourseData = async (adminStatus) => {
+    try {
+      setAssignLoading(true);
+      let apiData = {
+        batchId: selectAssignData.batch.value,
+        excelFile: selectAssignData.file,
+      };
+      if (adminStatus) {
+        apiData = { ...apiData, collegeId: selectAssignData.college.value };
+      }
+      const response = await axiosInstance.post(`user/students-bulk`, apiData);
+      if (response.success) {
+        openNotification("success", response.message);
+        setIsOpen(false);
+        setError("");
+      } else {
+        openNotification("danger", response.message);
+      }
+      setSelectAssignData({
+        file: null,
+        batch: null,
+        college: null,
+      });
+    } catch (error) {
+      console.log("onFormSubmit error: ", error);
+      openNotification("danger", error.message);
+    } finally {
+      setAssignLoading(false);
+    }
+  };
+  const onHandleBox = async () => {
+    try {
+      if (!selectAssignData?.college?.value) {
+        setError("Please Select College Name.");
+      }
+
+      if (selectAssignData?.college?.value) {
+        setError("");
+        await AssignCourseData();
+      }
+    } catch (error) {
+      console.log("onHandleBox error :", error);
+    }
+  };
+  useEffect(() => {
+    if (IsOpen) {
+      getCollegeOptionData();
+    }
+  }, [IsOpen]);
   return (
     <>
       <div
@@ -80,13 +164,18 @@ const CourseCard = ({ index, item }) => {
                 );
               }}
             />
-            {/* <Button
-              shape="circle"
-              color="red-700"
-              variant="solid"
-              size="sm"
-              icon={<HiOutlineTrash />}
-            /> */}
+            {userData?.authority.toString() === SUPERADMIN && (
+              <Button
+                shape="circle"
+                color="green-700"
+                variant="solid"
+                size="sm"
+                icon={<CgAssign size={20} />}
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              />
+            )}
           </div>
         </div>
 
@@ -125,6 +214,77 @@ const CourseCard = ({ index, item }) => {
         */}
         </div>
       </div>
+      <Dialog
+        isOpen={IsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setIsOpen(false);
+          setError("");
+          setSelectAssignData({
+            college: null,
+          });
+        }}
+        onRequestClose={() => {
+          setIsOpen(false);
+          setError("");
+          setSelectAssignData({
+            college: null,
+          });
+        }}
+      >
+        <div className="px-6 pb-4">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Assign Course To Colleges
+          </h5>
+          <div className="col-span-1 gap-4 mb-4">
+            {userData.authority.toString() === SUPERADMIN && (
+              <>
+                <div
+                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                >
+                  Select College Name
+                </div>
+                <div className="col-span-2">
+                  <Select
+                    isMulti
+                    isSearchable={true}
+                    className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+                    placeholder="Colleges"
+                    options={allCollegeList}
+                    value={selectAssignData.college}
+                    onChange={(item) => {
+                      setSelectAssignData({
+                        ...selectAssignData,
+                        college: item,
+                      });
+                    }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+          {DisplayError(error)}
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setIsOpen(false);
+              setError("");
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleBox} loading={assignLoading}>
+            Submit
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 };
