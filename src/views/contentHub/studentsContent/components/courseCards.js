@@ -1,5 +1,5 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Dialog, Select } from "components/ui";
+import { Button, Dialog, Select, Tooltip } from "components/ui";
 import { SUPERADMIN } from "constants/roles.constant";
 import React, { useEffect, useState } from "react";
 import { CgAssign } from "react-icons/cg";
@@ -40,7 +40,8 @@ const CourseCard = ({ index, item }) => {
   const [IsOpen, setIsOpen] = useState(false);
   const [allCollegeList, setAllCollegeList] = useState([]);
   const [selectAssignData, setSelectAssignData] = useState({
-    college: null,
+    collegeId: null,
+    courseId: null,
   });
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [error, setError] = useState("");
@@ -62,17 +63,19 @@ const CourseCard = ({ index, item }) => {
       setCollegeLoading(false);
     }
   };
-  const AssignCourseData = async (adminStatus) => {
+
+  const AssignCourseData = async () => {
     try {
       setAssignLoading(true);
       let apiData = {
-        batchId: selectAssignData.batch.value,
-        excelFile: selectAssignData.file,
+        collegeId: selectAssignData.collegeId.value,
+        courseId: selectAssignData.courseId,
       };
-      if (adminStatus) {
-        apiData = { ...apiData, collegeId: selectAssignData.college.value };
-      }
-      const response = await axiosInstance.post(`user/students-bulk`, apiData);
+
+      const response = await axiosInstance.post(
+        `user/assign-course-college`,
+        apiData
+      );
       if (response.success) {
         openNotification("success", response.message);
         setIsOpen(false);
@@ -81,9 +84,8 @@ const CourseCard = ({ index, item }) => {
         openNotification("danger", response.message);
       }
       setSelectAssignData({
-        file: null,
-        batch: null,
-        college: null,
+        collegeId: null,
+        courseId: null,
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -94,11 +96,11 @@ const CourseCard = ({ index, item }) => {
   };
   const onHandleBox = async () => {
     try {
-      if (!selectAssignData?.college?.value) {
+      if (!selectAssignData?.collegeId?.value) {
         setError("Please Select College Name.");
       }
 
-      if (selectAssignData?.college?.value) {
+      if (selectAssignData?.collegeId?.value && selectAssignData?.courseId) {
         setError("");
         await AssignCourseData();
       }
@@ -114,7 +116,7 @@ const CourseCard = ({ index, item }) => {
   return (
     <>
       <div
-        className={`max-w-sm rounded-lg overflow-hidden shadow-lg bg-white `}
+        className={`w-60 rounded-lg overflow-hidden shadow-lg bg-white `}
         key={index}
       >
         {/* Header Section */}
@@ -131,11 +133,14 @@ const CourseCard = ({ index, item }) => {
               alt="Course Cover"
             />
           ) : (
-            <div className="text-white font-bold text-7xl uppercase">
-              {item?.courseName
-                .split(" ") // Split the phrase by spaces
-                .map((word) => word[0].toUpperCase()) // Get the first letter of each word and make it uppercase
-                .join("")}
+            <div className="w-full h-full flex justify-center items-center text-white font-bold text-5xl uppercase bg-red-300">
+              <p>
+                {item?.courseName
+                  .split(" ") // Split the phrase by spaces
+                  .map((word) => word[0].toUpperCase()) // Get the first letter of each word and make it uppercase
+                  .slice(0, 4)
+                  .join("")}
+              </p>
             </div>
           )}
           <div className="w-60 h-40  rounded absolute  bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
@@ -172,7 +177,15 @@ const CourseCard = ({ index, item }) => {
                 size="sm"
                 icon={<CgAssign size={20} />}
                 onClick={() => {
-                  setIsOpen(true);
+                  if (item.isPublish) {
+                    setSelectAssignData({
+                      collegeId: null,
+                      courseId: item._id,
+                    });
+                    setIsOpen(true);
+                  } else {
+                    openNotification("warning", "Course is not published.");
+                  }
                 }}
               />
             )}
@@ -181,7 +194,11 @@ const CourseCard = ({ index, item }) => {
 
         {/* Course Details */}
         <div className={`p-4 `}>
-          <h5 className="text-lg font-bold">{item?.courseName}</h5>
+          <Tooltip title={item?.courseName} placement="bottom">
+            <h5 className="text-lg font-bold line-clamp-1	">
+              {item?.courseName}
+            </h5>
+          </Tooltip>
           <div className="flex justify-start gap-2 py-2 text-white">
             <h4 className="bg-blue-200 text-xs px-2 py-1 rounded">
               {item?.totalSections} Sections
@@ -190,7 +207,7 @@ const CourseCard = ({ index, item }) => {
               {item?.totalLectures} Lectures
             </h4>
           </div>
-          {item.isPublic ? (
+          {item.isPublish ? (
             <p className="text-base font-bold text-green-500">Publish</p>
           ) : (
             <p className="text-base font-bold text-red-500">Unpublish</p>
@@ -226,20 +243,23 @@ const CourseCard = ({ index, item }) => {
           setIsOpen(false);
           setError("");
           setSelectAssignData({
-            college: null,
+            collegeId: null,
+            courseId: null,
           });
         }}
         onRequestClose={() => {
           setIsOpen(false);
           setError("");
           setSelectAssignData({
-            college: null,
+            collegeId: null,
+            courseId: null,
           });
         }}
       >
         <div className="px-6 pb-4">
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-            Assign Course To Colleges
+            Assign Course To Colleges{" "}
+            {selectAssignData.courseId ? "true" : "false"}
           </h5>
           <div className="col-span-1 gap-4 mb-4">
             {userData.authority.toString() === SUPERADMIN && (
@@ -251,16 +271,16 @@ const CourseCard = ({ index, item }) => {
                 </div>
                 <div className="col-span-2">
                   <Select
-                    isMulti
                     isSearchable={true}
                     className="w-[100%] md:mb-0 mb-4 sm:mb-0"
                     placeholder="Colleges"
                     options={allCollegeList}
-                    value={selectAssignData.college}
+                    loading={collegeLoading}
+                    value={selectAssignData.collegeId}
                     onChange={(item) => {
                       setSelectAssignData({
                         ...selectAssignData,
-                        college: item,
+                        collegeId: item,
                       });
                     }}
                   />

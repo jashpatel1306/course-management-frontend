@@ -43,24 +43,7 @@ const CourseList = (props) => {
 
   const fetchData = async () => {
     try {
-      // const bodyData =
-      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
-      let formData = {
-        search: removeSpecials(debouncedText),
-        pageNo: page,
-        perPage: appConfig.pagePerData,
-      };
-      if (userData?.authority.toString() !== SUPERADMIN && currentCollegeTab) {
-        formData = {
-          ...formData,
-          collegeId: currentCollegeTab,
-        };
-      }
-
-      const response = await axiosInstance.post(
-        `user/college-wise-courses`,
-        formData
-      );
+      const response = await axiosInstance.get(`student/student-wise-courses`);
       if (response.success) {
         setCourseData(response.data);
         setTotalPage(

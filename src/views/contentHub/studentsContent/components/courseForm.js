@@ -38,7 +38,7 @@ function CourseForm(props) {
     collegeId: "",
     courseDescription: "",
     coverImage: null,
-    active: true,
+    isPublish: false,
   });
   const resetFormData = () => {
     setFormData({
@@ -46,7 +46,7 @@ function CourseForm(props) {
       collegeId: "",
       courseDescription: "",
       coverImage: null,
-      active: true,
+      isPublish: false,
     });
     setCoverImageUrl("");
   };
@@ -55,7 +55,7 @@ function CourseForm(props) {
     collegeId: "",
     courseDescription: "",
     coverImage: "",
-    active: true,
+    isPublish: false,
   });
   const resetErrorData = () => {
     setErrorData({
@@ -63,7 +63,7 @@ function CourseForm(props) {
       collegeId: "",
       courseDescription: "",
       coverImage: "",
-      active: true,
+      isPublish: false,
     });
   };
   const beforeUpload = (files) => {
@@ -109,7 +109,7 @@ function CourseForm(props) {
         courseName: courseData ? courseData?.courseName : "",
         collegeId: courseData ? courseData?.collegeId : "",
         courseDescription: courseData ? courseData?.courseDescription : "",
-        active: courseData ? courseData.active : true,
+        isPublish: courseData ? courseData.isPublish : false,
         coverImage: null,
       });
       if (courseData.coverImage) {
@@ -127,7 +127,7 @@ function CourseForm(props) {
         // collegeId: collegeId ? collegeId : userData.collegeId,
         courseDescription: value.courseDescription,
 
-        active: value.active,
+        isPublish: value.isPublish,
       };
       if (value.coverImage) {
         formData.image = value.coverImage;
@@ -164,7 +164,7 @@ function CourseForm(props) {
         // collegeId: collegeId ? collegeId : userData.collegeId,
         courseDescription: value.courseDescription,
 
-        active: value.active,
+        isPublish: value.isPublish,
       };
       if (value.coverImage) {
         formData.image = value.coverImage;
@@ -422,17 +422,17 @@ function CourseForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Course Status
+              Course Publish Status
             </div>
             <div className="col-span-2">
               <Switcher
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    active: !e,
+                    isPublish: !e,
                   });
                 }}
-                checked={formData?.active}
+                checked={formData?.isPublish}
               />
             </div>
           </div>

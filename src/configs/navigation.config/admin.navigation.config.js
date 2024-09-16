@@ -69,6 +69,15 @@ const adminNavigationConfig = [
     ],
   },
   {
+    key: "apps.assigncourses",
+    path: `${ADMIN_PREFIX_PATH}/assign-courses`,
+    title: "Assign Course",
+    icon: "assign",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    subMenu: [],
+  },
+  {
     key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment`,
     title: "Assessment",

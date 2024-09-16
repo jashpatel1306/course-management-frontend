@@ -99,9 +99,16 @@ const BatchList = (props) => {
                         <Td>{key + 1}</Td>
                         <Td>{item?.batchName}</Td>
                         <Td>120</Td>
-                        <Td>python</Td>
                         <Td>
-                          {item.instructorIds?.map((instructor) => instructor.name)
+                          <p className="capitalize w-full max-w-lg">
+                            {item.courses
+                              .map((course) => course.courseName)
+                              .join(", ")}
+                          </p>
+                        </Td>
+                        <Td>
+                          {item.instructorIds
+                            ?.map((instructor) => instructor.name)
                             .join(", ")}
                         </Td>
 

@@ -96,6 +96,12 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
+    key: "apps.assigncourses",
+    path: `${ADMIN_PREFIX_PATH}/assign-courses`,
+    component: React.lazy(() => import("views/contentHub/assignCourse")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
     key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment`,
     component: React.lazy(() => import("views/assessment")),

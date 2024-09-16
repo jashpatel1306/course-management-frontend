@@ -175,11 +175,13 @@ const AssessmentList = () => {
           })}
         </div>
         <div className="flex items-center justify-center mt-4">
-          <Pagination
-            total={totalPage}
-            currentPage={page}
-            onChange={onPaginationChange}
-          />
+          {totalPage > 1 && (
+            <Pagination
+              total={totalPage}
+              currentPage={page}
+              onChange={onPaginationChange}
+            />
+          )}
         </div>
       </Card>
     </>

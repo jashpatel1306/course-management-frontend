@@ -45,7 +45,8 @@ const StudentList = (props) => {
     setAllCollegeList,
     setData,
     parentCloseCallback,
-    setAllBatchList,refreshFlag
+    setAllBatchList,
+    refreshFlag,
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -53,9 +54,7 @@ const StudentList = (props) => {
   );
   const { userData } = useSelector((state) => state.auth.user);
 
-  const { authority, collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
+  const { collegeId } = useSelector((state) => state.auth.user.userData);
   const [currentTab, setCurrentTab] = useState();
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [studentData, setStudentData] = useState([]);
@@ -309,7 +308,7 @@ const StudentList = (props) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
                       <Td>{item?.rollNo}</Td>
-                      <Td >{item?.name}</Td>
+                      <Td>{item?.name}</Td>
                       <Td className="lowercase">{item?.email.toLowerCase()}</Td>
                       <Td>
                         {item?.department?._id
@@ -359,11 +358,13 @@ const StudentList = (props) => {
             </Table>
 
             <div className="flex items-center justify-center mt-4">
-              <Pagination
-                total={totalPage}
-                currentPage={page}
-                onChange={onPaginationChange}
-              />
+              {totalPage > 1 && (
+                <Pagination
+                  total={totalPage}
+                  currentPage={page}
+                  onChange={onPaginationChange}
+                />
+              )}
             </div>
           </>
         ) : (

@@ -53,6 +53,8 @@ function BatchForm(props) {
   const [loading, setLoading] = useState(false);
   const [instructorsList, setInstructorsList] = useState([]);
   const [instructorsLoading, setInstructorsLoading] = useState(false);
+  const [coursesLoading, setCoursesLoading] = useState(false);
+  const [coursesList, setCoursesList] = useState([]);
   const [formData, setFormData] = useState({
     batchName: "",
     batchNumber: "",
@@ -107,6 +109,24 @@ function BatchForm(props) {
       setInstructorsLoading(false);
     }
   };
+  const getCoursesOptionData = async (collegeId = "") => {
+    try {
+      setCoursesLoading(true);
+      const response = await axiosInstance.get(
+        `user/college-wise-courses-options/${collegeId}`
+      );
+      if (response.success) {
+        setCoursesList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getCoursesOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setCoursesLoading(false);
+    }
+  };
   useEffect(() => {
     if (batchData) {
       setFormData({
@@ -129,10 +149,9 @@ function BatchForm(props) {
     }
   }, [batchData]);
   useEffect(() => {
-    if(isOpen)
-    {
-
+    if (isOpen) {
       getInstructorsOptionData(collegeId ? collegeId : userData.collegeId);
+      getCoursesOptionData(collegeId ? collegeId : userData.collegeId);
     }
   }, [isOpen]);
   const addNewBatchMethod = async (value) => {
@@ -142,8 +161,8 @@ function BatchForm(props) {
         batchName: value.batchName,
         batchNumber: value.batchNumber,
         collegeId: collegeId ? collegeId : userData.collegeId,
-        instructorIds: value.instructorIds.map((info) => info.value),
-        courses: value.courses.map((info) => info.value),
+        instructorIds: value?.instructorIds?.map((info) => info.value),
+        courses: value?.courses?.map((info) => info.value),
         active: value.active,
       };
       const response = await axiosInstance.post(`user/batch`, formData);
@@ -391,20 +410,17 @@ function BatchForm(props) {
             <div className="col-span-2">
               <Select
                 isMulti
-                className={errorData?.courses && "select-error"}
-                options={courseList}
-                // loading={trainerloading}
                 placeholder="Please Select Courses"
-                // defaultValue={courseList.filter((courses) =>
-                //   formData?.courses.includes(courses.value)
-                // )}
-                value={formData.courses}
+                className={errorData?.courses && "select-error"}
+                loading={coursesLoading}
                 onChange={(value) => {
                   setFormData({
                     ...formData,
                     courses: value,
                   });
                 }}
+                value={formData?.courses}
+                options={coursesList}
               />
             </div>
             {DisplayError(errorData.courses)}

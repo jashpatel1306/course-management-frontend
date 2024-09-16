@@ -28,24 +28,15 @@ import { SUPERADMIN } from "constants/roles.constant";
 const { Tr, Th, Td, THead, TBody } = Table;
 
 const columns = [
-  "Avatar",
-  "Name",
-  "Email",
-  "Phone No",
-  "Experience In Years",
-  "Location",
-  "Active",
+  "Batch Number",
+  "Batch Name",
+  "Total Student",
+  "Courses",
+  "Instructor Name",
 ];
 
 const InstructorList = (props) => {
-  const {
-    flag,
-    parentCallback,
-    setAllCollegeList,
-    setData,
-    parentCloseCallback,
-    setAllBatchList,
-  } = props;
+  const { flag, setAllCollegeList } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -96,36 +87,12 @@ const InstructorList = (props) => {
 
   const fetchData = async () => {
     try {
-      // const bodyData =
-      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
-      let formData = {
-        search: removeSpecials(debouncedText),
-        pageNo: page,
-        perPage: appConfig.pagePerData,
-      };
-      if (userData?.authority.toString() === SUPERADMIN) {
-        formData = {
-          ...formData,
-          collegeId: currentCollegeTab ? currentCollegeTab : "all",
-        };
-      } else {
-        formData = {
-          ...formData,
-          collegeId: "all",
-        };
-      }
-
-      const response = await axiosInstance.post(
-        `user/get-instructors/college`,
-        formData
+      const response = await axiosInstance.get(
+        `user/batches/${currentCollegeTab ? currentCollegeTab : "all"}`
       );
+
       if (response.success) {
         setInstructorData(response.data);
-        setTotalPage(
-          response.pagination.total
-            ? Math.ceil(response.pagination.total / appConfig.pagePerData)
-            : 0
-        );
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -186,12 +153,13 @@ const InstructorList = (props) => {
 
   return (
     <>
-      <div className="lg:flex items-center justify-between w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+      <div className="flex justify-end">
+        
+        <div className="w-96">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
               isSearchable={true}
-              className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+              className="md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
@@ -205,34 +173,6 @@ const InstructorList = (props) => {
               }}
             />
           )}
-        </div>
-        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
-          <Input
-            placeholder="Search By Name, Email"
-            className=" input-wrapper md:mb-0 mb-4"
-            value={searchText}
-            prefix={
-              <HiOutlineSearch
-                className={`text-xl text-${themeColor}-${primaryColorLevel}`}
-              />
-            }
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              setPage(1);
-              setApiFlag(true);
-            }}
-            suffix={
-              searchText && (
-                <AiOutlineClose
-                  className={`text-xl text-${themeColor}-${primaryColorLevel}`}
-                  onClick={() => {
-                    setSearchText("");
-                    setApiFlag(true);
-                  }}
-                />
-              )
-            }
-          />
         </div>
       </div>
 
@@ -264,71 +204,26 @@ const InstructorList = (props) => {
                 {instructorData?.map((item, key) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
+                      <Td>{key + 1}</Td>
+                      <Td>{item?.batchName}</Td>
+                      <Td>120</Td>
                       <Td>
-                        <Avatar
-                          shape="circle"
-                          size="lg"
-                          className="mr-4"
-                          src={
-                            item?.userId?.avatar
-                              ? item?.userId?.avatar
-                              : "https://espo-live.s3.us-west-1.amazonaws.com/content/images/logo/30698015106821034319.webp"
-                          }
-                        />
+                        <p className="capitalize w-full max-w-lg">
+                          {item.courses
+                            .map((course) => course.courseName)
+                            .join(", ")}
+                        </p>
                       </Td>
-                      <Td>{item?.name}</Td>
-                      <Td className="lowercase">{item?.email}</Td>
-
-                      <Td>{item?.phone}</Td>
-                      <Td>{item?.experienceInYears}</Td>
-                      <Td>{item?.location}</Td>
-
                       <Td>
-                        <div className="flex ">
-                          <Button
-                            shape="circle"
-                            variant="solid"
-                            className="mr-2"
-                            size="sm"
-                            icon={<HiOutlinePencil />}
-                            onClick={async () => {
-                              parentCloseCallback();
-                              setData(item);
-                              setTimeout(() => {
-                                parentCallback();
-                              }, 50);
-                            }}
-                          />
-                          {item?.active && (
-                            <Button
-                              shape="circle"
-                              color="red-700"
-                              variant="solid"
-                              size="sm"
-                              icon={<HiOutlineTrash />}
-                              onClick={() => {
-                                setSelectObject(item);
-                                setDeleteIsOpen(true);
-                              }}
-                            />
-                          )}
-                        </div>
+                        {item.instructorIds
+                          ?.map((instructor) => instructor.name)
+                          .join(", ")}
                       </Td>
                     </Tr>
                   );
                 })}
               </TBody>
             </Table>
-
-            <div className="flex items-center justify-center mt-4">
-            {totalPage > 1 && (
-                  <Pagination
-                    total={totalPage}
-                    currentPage={page}
-                    onChange={onPaginationChange}
-                  />
-                )}
-            </div>
           </>
         ) : (
           <>

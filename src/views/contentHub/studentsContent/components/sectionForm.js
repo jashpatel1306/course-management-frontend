@@ -117,7 +117,6 @@ const SectionForm = (props) => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-
       fetchSectionData();
     }
   }, [apiFlag]);
@@ -169,6 +168,7 @@ const SectionForm = (props) => {
                             lectureIndex={index}
                             sectionId={section.id}
                             courseId={courseId}
+                            setSectionData={setApiFlag}
                           />
                         </>
                       );
