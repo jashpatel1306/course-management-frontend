@@ -36,9 +36,12 @@ axiosInstance.interceptors.request.use(
         delete config?.data?.image;
       }
       if (config?.data?.excelFile) {
-        
         formData.append("excelFile", config?.data?.excelFile);
         delete config?.data?.excelFile;
+      }
+      if (config?.data?.part) {
+        formData.append("file", config?.data?.part);
+        delete config?.data?.part;
       }
       if (config?.data?.images) {
         config?.data?.images.map((img) => formData.append("images", img));
