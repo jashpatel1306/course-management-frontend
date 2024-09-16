@@ -32,7 +32,7 @@ const columns = [
   "Name",
   "Email",
   "Phone No",
-  "Experience In Years",
+  "Courses",
   "Location",
   "Active",
 ];
@@ -280,7 +280,13 @@ const InstructorList = (props) => {
                       <Td className="lowercase">{item?.email}</Td>
 
                       <Td>{item?.phone}</Td>
-                      <Td>{item?.experienceInYears}</Td>
+                      <Td>
+                        <p className="capitalize w-full max-w-lg">
+                          {item.courses
+                            .map((course) => course.courseName)
+                            .join(", ")}
+                        </p>
+                      </Td>
                       <Td>{item?.location}</Td>
 
                       <Td>
@@ -293,7 +299,13 @@ const InstructorList = (props) => {
                             icon={<HiOutlinePencil />}
                             onClick={async () => {
                               parentCloseCallback();
-                              setData(item);
+                              const infoData = {
+                                ...item,
+                                courses: item.courses.map(
+                                  (course) => course._id
+                                ),
+                              };
+                              setData(infoData);
                               setTimeout(() => {
                                 parentCallback();
                               }, 50);
@@ -321,13 +333,13 @@ const InstructorList = (props) => {
             </Table>
 
             <div className="flex items-center justify-center mt-4">
-            {totalPage > 1 && (
-                  <Pagination
-                    total={totalPage}
-                    currentPage={page}
-                    onChange={onPaginationChange}
-                  />
-                )}
+              {totalPage > 1 && (
+                <Pagination
+                  total={totalPage}
+                  currentPage={page}
+                  onChange={onPaginationChange}
+                />
+              )}
             </div>
           </>
         ) : (

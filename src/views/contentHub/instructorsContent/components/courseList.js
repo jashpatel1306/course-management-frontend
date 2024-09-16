@@ -43,7 +43,24 @@ const CourseList = (props) => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get(`student/student-wise-courses`);
+      // const bodyData =
+      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
+      let formData = {
+        search: removeSpecials(debouncedText),
+        pageNo: page,
+        perPage: appConfig.pagePerData,
+      };
+      if (userData?.authority.toString() !== SUPERADMIN && currentCollegeTab) {
+        formData = {
+          ...formData,
+          collegeId: currentCollegeTab,
+        };
+      }
+
+      const response = await axiosInstance.post(
+        `user/college-wise-instructor-courses`,
+        formData
+      );
       if (response.success) {
         setCourseData(response.data);
         setTotalPage(
@@ -110,8 +127,8 @@ const CourseList = (props) => {
       <div>
         {isLoading ? (
           <>
-            <div className="flex justify-start">
-              <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
                 {[...Array(18).keys()].map((item, index) => {
                   return (
                     <>
@@ -149,8 +166,8 @@ const CourseList = (props) => {
         ) : courseData && courseData?.length ? (
           <>
             <div>
-              <div className="flex justify-center">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
+              <div className="flex justify-start">
+                <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
                   {courseData.map((item, index) => {
                     return <CourseCard item={item} index={index} />;
                   })}

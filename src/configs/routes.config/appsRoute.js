@@ -96,6 +96,14 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
+    key: "contentHub.instructors",
+    path: `${ADMIN_PREFIX_PATH}/content-hub/instructors/course-forms/:course_id`,
+    component: React.lazy(() =>
+      import("views/contentHub/instructorsContent/components/courseContentForm")
+    ),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+  {
     key: "apps.assigncourses",
     path: `${ADMIN_PREFIX_PATH}/assign-courses`,
     component: React.lazy(() => import("views/contentHub/assignCourse")),

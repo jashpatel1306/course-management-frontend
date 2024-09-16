@@ -7,23 +7,7 @@ import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { FormNumericInput } from "components/shared";
-const instructorsList = [
-  { label: "Panthil Malaviya", value: "64e4e6f4b8a3d45b68a2c123" },
-  { label: "Alice Johnson", value: "64e4e6f4b8a3d45b68a2c124" },
-  { label: "Bob Smith", value: "64e4e6f4b8a3d45b68a2c125" },
-  { label: "Charlie Brown", value: "64e4e6f4b8a3d45b68a2c126" },
-  { label: "Diana Prince", value: "64e4e6f4b8a3d45b68a2c127" },
-];
-const courseList = [
-  { label: "Introduction to Programming", value: "64e4e6f4b8a3d45b68a2c321" },
-  { label: "Advanced JavaScript", value: "64e4e6f4b8a3d45b68a2c322" },
-  {
-    label: "Data Structures and Algorithms",
-    value: "64e4e6f4b8a3d45b68a2c323",
-  },
-  { label: "Web Development with React", value: "64e4e6f4b8a3d45b68a2c324" },
-  { label: "Database Design", value: "64e4e6f4b8a3d45b68a2c325" },
-];
+
 const addvalidationSchema = Yup.object().shape({
   batchName: Yup.string().min(
     3,
@@ -140,7 +124,7 @@ function BatchForm(props) {
             : [],
         courses:
           batchData && batchData?.courses?.length
-            ? courseList.filter((courses) =>
+            ? coursesList.filter((courses) =>
                 batchData?.courses.includes(courses.value)
               )
             : [],

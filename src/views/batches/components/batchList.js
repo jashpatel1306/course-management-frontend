@@ -120,9 +120,18 @@ const BatchList = (props) => {
                               size="sm"
                               icon={<HiOutlinePencil />}
                               onClick={async () => {
-                                item.batchId = item._id;
+                                const infoData = {
+                                  ...item,
+                                  batchId: item._id,
+                                  instructorIds: item.instructorIds.map(
+                                    (instructor) => instructor._id
+                                  ),
+                                  courses: item.courses.map(
+                                    (course) => course._id
+                                  ),
+                                };
                                 parentCloseCallback();
-                                setData(item);
+                                setData(infoData);
                                 setTimeout(() => {
                                   parentCallback();
                                 }, 100);

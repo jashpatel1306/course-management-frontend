@@ -88,11 +88,9 @@ const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
       } else {
         openNotification("danger", response.message);
       }
-    } else {
-      openNotification(
-        "warning",
-        "Cannot reorder content while the lecture is published."
-      );
+    }else
+    {
+      openNotification("warning", "Cannot reorder content while the lecture is published.");
     }
   };
 
@@ -389,7 +387,7 @@ const LectureForm = (props) => {
         Header: "",
         accessor: "title",
         Cell: (props) => {
-          console.log("props: ", props);
+          console.log("props: ",props)
           return (
             <>
               <>
