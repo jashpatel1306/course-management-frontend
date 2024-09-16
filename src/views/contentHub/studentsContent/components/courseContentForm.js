@@ -105,7 +105,7 @@ const CourseContentForm = () => {
         <Card>
           <div className="flex justify-between items-center">
             <div
-              className={`text-lg font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+              className={`text-lg font-bold capitalize text-${themeColor}-${primaryColorLevel} dark:text-white`}
             >
               {courseData?.courseName}
             </div>

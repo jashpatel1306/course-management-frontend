@@ -349,8 +349,8 @@ const AdminList = (props) => {
                           variant="twoTone"
                           className={`flex justify-center items-center gap-1 text-${themeColor}-${primaryColorLevel} border-2 font-semibold border-${themeColor}-${primaryColorLevel}`}
                           onClick={() => {
-                            navigate(`/app/admin/college-details/${item._id}`,{
-                              state:item
+                            navigate(`/app/admin/college-details/${item._id}`, {
+                              state: item,
                             });
                           }}
                         >
@@ -365,11 +365,13 @@ const AdminList = (props) => {
             </Table>
 
             <div className="flex items-center justify-center mt-4">
-              <Pagination
-                total={totalPage}
-                currentPage={page}
-                onChange={onPaginationChange}
-              />
+              {totalPage > 1 && (
+                <Pagination
+                  total={totalPage}
+                  currentPage={page}
+                  onChange={onPaginationChange}
+                />
+              )}
             </div>
           </>
         ) : (

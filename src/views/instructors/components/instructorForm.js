@@ -10,7 +10,7 @@ import { SUPERADMIN } from "constants/roles.constant";
 import CreatableSelect from "react-select/creatable";
 
 function InstructorForm(props) {
-  const { handleCloseClick, instructorData, isOpen } = props;
+  const { handleCloseClick, instructorData, isOpen, collegeId } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -29,6 +29,11 @@ function InstructorForm(props) {
       .required("Experience In Years is required")
       .positive("Must be a positive number"),
     active: Yup.boolean(),
+    courses: Yup.array()
+      .of(Yup.object())
+      .nullable()
+      .default([])
+      .required("At least one course ID is required"),
   });
   const [loading, setLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
@@ -37,14 +42,17 @@ function InstructorForm(props) {
   const [collegeList, setCollegeList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
   const [departmentLoading, setDepartmentLoading] = useState(false);
+  const [coursesLoading, setCoursesLoading] = useState(false);
+  const [coursesList, setCoursesList] = useState([]);
+
   const [formData, setFormData] = useState({
-   
     name: "",
     email: "",
     phone: "",
     collegeId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
     skills: [],
+    courses: [],
     location: "",
     experienceInYears: "",
     active: true,
@@ -69,6 +77,24 @@ function InstructorForm(props) {
       experienceInYears: "",
     });
   };
+  const getCoursesOptionData = async (collegeId = "") => {
+    try {
+      setCoursesLoading(true);
+      const response = await axiosInstance.get(
+        `user/college-wise-instructor-courses-options/${collegeId}`
+      );
+      if (response.success) {
+        setCoursesList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getCoursesOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setCoursesLoading(false);
+    }
+  };
   const resetFormData = () => {
     setFormData({
       name: "",
@@ -79,6 +105,7 @@ function InstructorForm(props) {
           ? null
           : userData.collegeId,
       skills: [],
+      courses: [],
       location: "",
       experienceInYears: "",
       active: true,
@@ -86,13 +113,19 @@ function InstructorForm(props) {
   };
   useEffect(() => {
     if (isOpen) {
-      if (userData.authority.toString() === SUPERADMIN) {
+      if (userData?.authority.toString() === SUPERADMIN) {
         getCollegeOptionData();
+      } else {
+        if (userData.collegeId) {
+          getCoursesOptionData(userData.collegeId);
+        }
       }
     }
   }, [isOpen]);
   useEffect(() => {
     if (instructorData?._id) {
+      console.log("setFormData instructorData: ", coursesList);
+
       setFormData({
         name: instructorData?.name ? instructorData?.name : "",
         email: instructorData?.email ? instructorData?.email : "",
@@ -109,6 +142,12 @@ function InstructorForm(props) {
         experienceInYears: instructorData?.experienceInYears
           ? instructorData?.experienceInYears
           : "",
+        courses:
+          instructorData && instructorData?.courses?.length
+            ? coursesList.filter((courses) =>
+                instructorData?.courses.includes(courses.value)
+              )
+            : [],
         active:
           instructorData?.active !== undefined ? instructorData?.active : true,
       });
@@ -190,6 +229,7 @@ function InstructorForm(props) {
         skills: "",
         location: "",
         experienceInYears: "",
+        courses: "",
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -202,6 +242,7 @@ function InstructorForm(props) {
           location: "",
           collegeId: "",
           experienceInYears: "",
+          courses: "",
         };
       } else {
         return {
@@ -215,6 +256,8 @@ function InstructorForm(props) {
           experienceInYears: errorObject.experienceInYears
             ? errorObject.experienceInYears
             : "",
+          courses: errorObject.courses ? errorObject.courses : "",
+
           collegeId: errorObject.collegeId ? errorObject.collegeId : "",
         };
       }
@@ -225,10 +268,16 @@ function InstructorForm(props) {
     if (!errorObject.status) {
       resetErrorData();
       if (instructorData?._id) {
-        const newFormData = { ...formData };
+        const newFormData = {
+          ...formData,
+          courses: formData?.courses?.map((info) => info.value),
+        };
         await editInstructorMethod(newFormData, instructorData?._id);
       } else {
-        await addNewInstructorMethod(formData);
+        await addNewInstructorMethod({
+          ...formData,
+          courses: formData?.courses?.map((info) => info.value),
+        });
       }
     } else {
       setErrorData(errorObject);
@@ -375,6 +424,7 @@ function InstructorForm(props) {
                         ...formData,
                         collegeId: e.value,
                       });
+                      getCoursesOptionData(e.value);
                     }}
                     value={collegeList.find(
                       (info) => info.value === formData?.collegeId
@@ -465,6 +515,31 @@ function InstructorForm(props) {
               />
             </div>
             {DisplayError(errorData.experienceInYears)}
+          </div>
+          {/* Select Courses */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Select Courses
+            </div>
+            <div className="col-span-2">
+              <Select
+                isMulti
+                placeholder="Please Select Courses"
+                className={errorData?.courses && "select-error"}
+                loading={coursesLoading}
+                onChange={(value) => {
+                  setFormData({
+                    ...formData,
+                    courses: value,
+                  });
+                }}
+                value={formData?.courses}
+                options={coursesList}
+              />
+            </div>
+            {DisplayError(errorData.courses)}
           </div>
           {/* Active */}
           <div className="col-span-1 gap-4 mb-4">

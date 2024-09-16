@@ -135,12 +135,12 @@ function CourseForm(props) {
       if (userData?.authority.toString() !== SUPERADMIN) {
         formData.collegeId = collegeId ? collegeId : userData.collegeId;
       }
-      const response = await axiosInstance.post(`user/course`, formData);
+      const response = await axiosInstance.post(`user/instructor-course`, formData);
       if (response.success && response.data._id) {
         setLoading(false);
         setCourseData(response.data);
         navigate(
-          `/app/admin/content-hub/students/course-forms/${response?.data?._id}`
+          `/app/admin/content-hub/instructors/course-forms/${response?.data?._id}`
         );
         handleCloseClick();
         resetFormData();
@@ -173,14 +173,14 @@ function CourseForm(props) {
         formData.collegeId = collegeId ? collegeId : userData.collegeId;
       }
       const response = await axiosInstance.put(
-        `user/course/${formData.courseId}`,
+        `user/instructor-course/${formData.courseId}`,
         formData
       );
       if (response.success) {
         setLoading(false);
         setCourseData(response.data);
         navigate(
-          `/app/admin/content-hub/students/course-forms/${response?.data?._id}`
+          `/app/admin/content-hub/instructors/course-forms/${response?.data?._id}`
         );
         handleCloseClick();
         resetFormData();

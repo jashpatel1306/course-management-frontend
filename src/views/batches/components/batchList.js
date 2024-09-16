@@ -99,9 +99,16 @@ const BatchList = (props) => {
                         <Td>{key + 1}</Td>
                         <Td>{item?.batchName}</Td>
                         <Td>120</Td>
-                        <Td>python</Td>
                         <Td>
-                          {item.instructorIds?.map((instructor) => instructor.name)
+                          <p className="capitalize w-full max-w-lg">
+                            {item.courses
+                              .map((course) => course.courseName)
+                              .join(", ")}
+                          </p>
+                        </Td>
+                        <Td>
+                          {item.instructorIds
+                            ?.map((instructor) => instructor.name)
                             .join(", ")}
                         </Td>
 
@@ -113,9 +120,18 @@ const BatchList = (props) => {
                               size="sm"
                               icon={<HiOutlinePencil />}
                               onClick={async () => {
-                                item.batchId = item._id;
+                                const infoData = {
+                                  ...item,
+                                  batchId: item._id,
+                                  instructorIds: item.instructorIds.map(
+                                    (instructor) => instructor._id
+                                  ),
+                                  courses: item.courses.map(
+                                    (course) => course._id
+                                  ),
+                                };
                                 parentCloseCallback();
-                                setData(item);
+                                setData(infoData);
                                 setTimeout(() => {
                                   parentCallback();
                                 }, 100);

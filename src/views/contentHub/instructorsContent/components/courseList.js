@@ -58,7 +58,7 @@ const CourseList = (props) => {
       }
 
       const response = await axiosInstance.post(
-        `user/college-wise-courses`,
+        `user/college-wise-instructor-courses`,
         formData
       );
       if (response.success) {
@@ -127,8 +127,8 @@ const CourseList = (props) => {
       <div>
         {isLoading ? (
           <>
-          <div className="flex justify-start">
-          <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
                 {[...Array(18).keys()].map((item, index) => {
                   return (
                     <>

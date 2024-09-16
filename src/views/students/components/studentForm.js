@@ -27,7 +27,6 @@ function StudentForm(props) {
       .email("Invalid email address")
       .required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
-    collegeUserId: Yup.string().required("College User ID is required"),
     batchId: Yup.string().required("Batch ID is required"),
     rollNo: Yup.string().required("Roll no is required"),
     department: Yup.string().required("Department is required"),
@@ -216,7 +215,7 @@ function StudentForm(props) {
         openNotification("danger", response.error);
       }
     } catch (error) {
-      console.log("getDepartmenteOptionData error :", error.message);
+      console.log("getDepartmentOptionData error :", error.message);
       openNotification("danger", error.message);
     } finally {
       setDepartmentLoading(false);

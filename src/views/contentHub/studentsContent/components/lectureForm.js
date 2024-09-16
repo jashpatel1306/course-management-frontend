@@ -1,8 +1,20 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Dialog, Input, Switcher, Upload } from "components/ui";
-import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaFile, FaFileAlt, FaVideo } from "react-icons/fa";
-import { HiPlusCircle } from "react-icons/hi";
+import { Button, Dialog, Input, Switcher, Upload, Table } from "components/ui";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  FaCheckCircle,
+  FaEye,
+  FaFile,
+  FaFileAlt,
+  FaVideo,
+} from "react-icons/fa";
+import {
+  HiOutlineMenu,
+  HiOutlinePencil,
+  HiOutlineTrash,
+  HiPlusCircle,
+  HiTrash,
+} from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { RiArticleFill } from "react-icons/ri";
@@ -14,6 +26,10 @@ import "react-quill/dist/quill.snow.css";
 import ImageResize from "quill-image-resize-module-react";
 import { FcImageFile } from "react-icons/fc";
 import FileUpload from "views/common/fileUpload";
+import { useTable } from "react-table";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useNavigate } from "react-router-dom";
+const { Tr, Td, TBody } = Table;
 Quill.register("modules/imageResize", ImageResize);
 const modules = {
   toolbar: [
@@ -23,7 +39,7 @@ const modules = {
       { indent: "-1" },
       { indent: "+1" },
     ],
-    ["bold", "italic", "underline", "link", "image", "code"],
+    ["bold", "italic", "underline", "link", "image", "code-block"],
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
@@ -49,13 +65,105 @@ const formats = [
   "link",
   "image",
   "video",
+  "code",
+  "code-block",
 ];
+const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
+  const reorderData = async (startIndex, endIndex) => {
+    if (!isPublish) {
+      const newData = [...data];
+      const [movedRow] = newData.splice(startIndex, 1);
+      newData.splice(endIndex, 0, movedRow);
+      console.log("newData:  ", newData);
+      const formData = {
+        lectureContent: newData,
+      };
+      const response = await axiosInstance.put(
+        `user/lecture-content-drag-drop/${lectureId}`,
+        formData
+      );
+      if (response?.success && response?.data?._id) {
+        openNotification("success", response.message);
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    }else
+    {
+      openNotification("warning", "Cannot reorder content while the lecture is published.");
+    }
+  };
+
+  const table = useTable({ columns, data });
+
+  const { getTableProps, headerGroups, prepareRow, rows } = table;
+
+  const handleDragEnd = (result) => {
+    const { source, destination } = result;
+    if (!destination) return;
+    reorderData(source.index, destination.index);
+  };
+
+  return (
+    <Table {...getTableProps()} className="w-full  border-2 border-gray-200">
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="table-body">
+          {(provided, _snapshot) => (
+            <TBody ref={provided.innerRef} {...provided.droppableProps}>
+              {rows.map((row, _index) => {
+                prepareRow(row);
+                return (
+                  <Draggable
+                    draggableId={row.original._id.toString()}
+                    key={row.original._id}
+                    index={row.index}
+                  >
+                    {(provided, snapshot) => {
+                      const { style } = provided.draggableProps;
+
+                      return (
+                        <Tr
+                          {...row.getRowProps()}
+                          {...provided.draggableProps}
+                          ref={provided.innerRef}
+                          className={`${
+                            snapshot.isDragging ? "table" : ""
+                          } border-2  border-gray-20`}
+                          style={style}
+                        >
+                          {row.cells.map((cell) => (
+                            <Td
+                              {...cell.getCellProps((_, meta) => {
+                                return { ...meta?.cell.getCellProps() };
+                              })}
+                            >
+                              {cell.render("Cell", {
+                                dragHandleProps: provided.dragHandleProps,
+                              })}
+                            </Td>
+                          ))}
+                        </Tr>
+                      );
+                    }}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
+            </TBody>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </Table>
+  );
+};
 const LectureForm = (props) => {
-  const { lectureIndex, lecture, sectionId, courseId } = props;
+  const { lectureIndex, lecture, sectionId, courseId, setSectionData } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const navigate = useNavigate();
+
   const [lectureOpen, setLectureOpen] = useState(false);
   const [lectureData, setLectureData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +176,11 @@ const LectureForm = (props) => {
   const [lectureName, setLectureName] = useState(lecture?.name);
   const [lectureFormFlag, setLectureFormFlag] = useState(false);
   const [file, setFile] = useState();
+  const [deleteIsOpen, setDeleteIsOpen] = useState(false);
+  const [lectureDeleteIsOpen, setLectureDeleteIsOpen] = useState(false);
+  const [lecturePublishIsOpen, setLecturePublishIsOpen] = useState(false);
+  const [selectObject, setSelectObject] = useState();
+
   const [lectureForm, setLectureForm] = useState({
     type: "",
     content: "",
@@ -166,11 +279,16 @@ const LectureForm = (props) => {
     let valid = true;
 
     const allowedFileType = [
-      "application/pdf", // PDF
+      // PDF
+      "application/pdf",
+
+      // Microsoft Office formats
       "application/vnd.ms-powerpoint", // PPT (old)
       "application/vnd.openxmlformats-officedocument.presentationml.presentation", // PPTX (new)
       "application/msword", // DOC (old)
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX (new)
+      "application/vnd.ms-excel", // XLS (old)
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX (new)
     ];
     const maxFileSize = 5000000;
     for (let file of files) {
@@ -226,28 +344,163 @@ const LectureForm = (props) => {
         }
       }
       if (lectureForm.type === "file") {
-        if (!file) {
+        if (!lectureForm.content && !file) {
           setError("Please Upload a Content file");
         }
 
         if (!lectureForm.title) {
           setError("Please Enter a Content Title");
         }
-        const filePath = await FileUpload(file, "content/files");
-        console.log("filePath : ", filePath);
-        if (filePath.status) {
-          await UpdateLectureContent({
-            type: "file",
-            content: filePath.data,
-            title: lectureForm.title,
-          });
-          setFile(null);
+        if (file) {
+          const filePath = await FileUpload(file, "content/files");
+          console.log("filePath : ", filePath);
+          if (filePath.status) {
+            await UpdateLectureContent({
+              type: "file",
+              content: filePath.data,
+              title: lectureForm.title,
+              // id: lectureForm.id ? lectureForm.id : "",
+            });
+            setFile(null);
+          } else {
+            setError(filePath.message);
+          }
         } else {
-          setError(filePath.message);
+          if (lectureForm.title && lectureForm.content) {
+            await UpdateLectureContent({
+              type: "file",
+              content: lectureForm.content,
+              title: lectureForm.title,
+              // id: lectureForm.id ? lectureForm.id : "",
+            });
+            setFile(null);
+          }
         }
       }
     } catch (error) {
       console.log("onHandleBox error :", error);
+    }
+  };
+  const columns = useMemo(
+    () => [
+      {
+        Header: "",
+        accessor: "title",
+        Cell: (props) => {
+          console.log("props: ",props)
+          return (
+            <>
+              <>
+                <div className=" flex gap-4 items-center rounded-lg">
+                  <p className=" text-base font-bold">
+                    {props.row.original.type === "video" ? (
+                      <FaVideo size={20} />
+                    ) : props.row.original.type === "text" ? (
+                      <RiArticleFill size={20} />
+                    ) : (
+                      <FaFileAlt size={20} />
+                    )}{" "}
+                  </p>
+                  <p className="text-gray-500 text-base font-bold">
+                    {props.value}
+                  </p>
+                </div>
+              </>
+            </>
+          );
+        },
+      },
+      {
+        id: "dragger",
+        Header: "",
+        accessor: (row) => row,
+        Cell: (props) => (
+          <>
+            <div
+              className={`flex gap-4 justify-end text-gray-${primaryColorLevel}`}
+            >
+              <span
+                onClick={() => {
+                  setLectureFormFlag(true);
+                  setLectureForm({
+                    type: props?.row?.original?.type,
+                    content: props?.row?.original?.content,
+                    title: props?.row?.original?.title,
+                    id: props?.row?.original?._id,
+                  });
+                }}
+              >
+                <HiOutlinePencil size={20} />
+              </span>
+              <span
+                onClick={() => {
+                  setDeleteIsOpen(true);
+                  setSelectObject(props.row.original);
+                }}
+              >
+                <HiOutlineTrash size={20} />
+              </span>
+
+              <span {...props.dragHandleProps}>
+                <HiOutlineMenu size={20} />
+              </span>
+            </div>
+          </>
+        ),
+      },
+    ],
+    []
+  );
+  const onHandleLectureDeleteBox = async () => {
+    try {
+      const response = await axiosInstance.delete(`user/lecture/${lecture.id}`);
+      if (response.success) {
+        openNotification("success", response.message);
+        setSectionData(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log(" error:", error);
+      openNotification("danger", error.message);
+    } finally {
+      setLectureDeleteIsOpen(false);
+    }
+  };
+  const onHandleLecturePublishBox = async () => {
+    try {
+      const response = await axiosInstance.put(
+        `user/lecture/publish/${lecture.id}`
+      );
+      if (response.success) {
+        openNotification("success", response.message);
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log(" error:", error);
+      openNotification("danger", error.message);
+    } finally {
+      setLecturePublishIsOpen(false);
+    }
+  };
+  const onHandleLectureContentDeleteBox = async () => {
+    try {
+      const response = await axiosInstance.delete(
+        `user/lecture-content/${lecture.id}/${selectObject._id}`
+      );
+      if (response.success) {
+        openNotification("success", response.message);
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log(" error:", error);
+      openNotification("danger", error.message);
+    } finally {
+      setDeleteIsOpen(false);
     }
   };
   return (
@@ -268,7 +521,7 @@ const LectureForm = (props) => {
                 <div className="flex capitalize gap-4 items-center">
                   <div className="flex items-center gap-4 ">
                     <div
-                      className="flex capitalize gap-4 items-center cursor-pointer"
+                      className="flex items-center capitalize gap-4 cursor-pointer"
                       onClick={() => {
                         setIsOpen(true);
                         setLectureName(lecture?.name);
@@ -276,19 +529,21 @@ const LectureForm = (props) => {
                     >
                       {lectureData?.name || lecture?.name}
                       <div>
-                        <MdEdit />
+                        <MdEdit size={20} />
                       </div>
                     </div>
-                    <MdDelete />
+                    <MdDelete
+                      size={20}
+                      className=" cursor-pointer"
+                      onClick={() => {
+                        setLectureDeleteIsOpen(true);
+                      }}
+                    />
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-center items-center gap-4 ">
-                <div className="flex items-center gap-3">
-                  <div>{false ? "Publish" : "Unpublish"}</div>
-                  <Switcher defaultChecked={false} />
-                </div>
                 <Button
                   size="sm"
                   variant="plain"
@@ -306,6 +561,7 @@ const LectureForm = (props) => {
 
                     setLectureFormFlag(true);
                   }}
+                  disabled={lectureData.isPublish}
                 >
                   <span>Add Content</span>
                 </Button>
@@ -314,6 +570,7 @@ const LectureForm = (props) => {
                   size={25}
                   onClick={() => {
                     setLectureOpen(!lectureOpen);
+                    setLectureFormFlag(false);
                   }}
                 />
               </div>
@@ -363,7 +620,7 @@ const LectureForm = (props) => {
                                   }}
                                   modules={modules}
                                   formats={formats}
-                                  bounds={"#editer"}
+                                  // bounds={"#editer"}
                                   theme="snow"
                                   placeholder="Add your content here..."
                                   className="bg-white"
@@ -474,42 +731,90 @@ const LectureForm = (props) => {
                                     />
                                   </div>
                                 </div>
-                                <div
-                                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-                                >
-                                  File Content
-                                </div>
-                                <div className="w-full rounded-lg">
-                                  <Upload
-                                    draggable
-                                    showList={true}
-                                    label="File Upload"
-                                    beforeUpload={beforeUpload}
-                                    className="bg-white"
-                                    onChange={(file) => {
-                                      setFile(file[0]);
-                                    }}
-                                  >
-                                    <div className="w-full my-8 text-center ">
-                                      <div className="text-6xl w-full mb-4 flex justify-center">
-                                        <FcImageFile />
+
+                                {lectureForm.content ? (
+                                  <>
+                                    <div className="flex flex-wrap items-center justify-start mb-4">
+                                      <div className="group relative p-2 rounded flex h-32 ">
+                                        {/* <img
+                                          
+                                          src={lectureForm.content}
+                                          alt={lectureForm.content}
+                                        /> */}
+                                        <FaFileAlt className="h-32 w-full rounded" />
+                                        <div className="h-32 w-full rounded absolute inset-2 bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
+                                          <span
+                                            onClick={() => {
+                                              console.log(
+                                                "delete file form s3 :",
+                                                lectureForm.content
+                                              );
+                                              setLectureForm({
+                                                ...lectureForm,
+                                                content: "",
+                                              });
+                                            }}
+                                            className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
+                                          >
+                                            <HiTrash />
+                                          </span>
+                                          <span
+                                            onClick={() => {
+                                              window.open(
+                                                lectureForm.content,
+                                                "_blank"
+                                              );
+                                            }}
+                                            className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
+                                          >
+                                            <FaEye />
+                                          </span>
+                                        </div>
                                       </div>
-                                      <p className="font-semibold">
-                                        <span className="text-gray-800 dark:text-white">
-                                          Drop your File here, or{" "}
-                                        </span>
-                                        <span
-                                          className={`font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
-                                        >
-                                          browse
-                                        </span>
-                                      </p>
-                                      <p className="mt-1 opacity-60 dark:text-white">
-                                        Support: PDF, PPTX, DOC, DOCX
-                                      </p>
                                     </div>
-                                  </Upload>
-                                </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                                    >
+                                      File Content
+                                    </div>
+                                    <div className="w-full rounded-lg">
+                                      <Upload
+                                        draggable
+                                        showList={true}
+                                        label="File Upload"
+                                        beforeUpload={beforeUpload}
+                                        className="bg-white"
+                                        onChange={(file) => {
+                                          setFile(file[0]);
+                                        }}
+                                      >
+                                        <div className="w-full my-8 text-center ">
+                                          <div className="text-6xl w-full mb-4 flex justify-center">
+                                            <FcImageFile />
+                                          </div>
+                                          <p className="font-semibold">
+                                            <span className="text-gray-800 dark:text-white">
+                                              Drop your File here, or{" "}
+                                            </span>
+                                            <span
+                                              className={`font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+                                            >
+                                              browse
+                                            </span>
+                                          </p>
+                                          <p className="mt-1 opacity-60 dark:text-white">
+                                            Support: PDF, PPTX, DOC, DOCX, XLS,
+                                            XLSX
+                                          </p>
+                                        </div>
+                                      </Upload>
+                                    </div>
+                                  </>
+                                )}
+
                                 <div className="flex justify-between my-2 mr-2">
                                   <div>{DisplayError(error)}</div>
                                   <Button
@@ -592,29 +897,61 @@ const LectureForm = (props) => {
                 ) : (
                   <>
                     <div className="flex flex-col justify-center bg-gray-100 rounded-b-lg p-4 w-full">
+                      <div className="flex justify-end mb-4 items-center gap-3 ">
+                        {lectureData?.lectureContent?.length > 0 && (
+                          <div className="flex justify-center items-center gap-4 bg-gray-300 p-2 px-4  rounded-lg">
+                            {lectureData.isPublish ? (
+                              <>
+                                <div
+                                  className={`text-lg text-${themeColor}-${primaryColorLevel} font-semibold`}
+                                >
+                                  Publish
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div
+                                  className={`text-lg ${
+                                    lectureData.isPublish
+                                      ? `text-${primaryColorLevel}-${themeColor}`
+                                      : " text-gray-500"
+                                  } font-semibold`}
+                                >
+                                  Unpublish
+                                </div>
+                                <Switcher
+                                  defaultChecked={false}
+                                  color="blue-500"
+                                  checked={lectureData.isPublish}
+                                  onChange={(val) => {
+                                    if (!val) {
+                                      setLecturePublishIsOpen(true);
+                                    }
+                                  }}
+                                />
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
                       {lectureData?.lectureContent?.length > 0 ? (
                         <>
-                          {lectureData?.lectureContent?.map((info) => {
-                            return (
-                              <div className="w-full flex gap-4 items-center border-2 border-gray-300  py-2 px-4 bg-gray-200 rounded-lg mb-2">
-                                <p className=" text-lg font-bold">
-                                  {info.type === "video" ? (
-                                    <FaVideo size={20} />
-                                  ) : info.type === "text" ? (
-                                    <RiArticleFill size={20} />
-                                  ) : (
-                                    <FaFileAlt size={20} />
-                                  )}{" "}
-                                </p>
-                                <p className="text-gray-500 text-lg font-bold">
-                                  {info.title}
-                                </p>
-                              </div>
-                            );
-                          })}
+                          <ReactTable
+                            columns={columns}
+                            // onChange={(newList) => setData(newList)}
+                            data={lectureData?.lectureContent}
+                            lectureId={lectureData?._id}
+                            isPublish={lectureData?.isPublish}
+                            setApiFlag={setApiFlag}
+                          />
                         </>
                       ) : (
-                        <></>
+                        <>
+                          {" "}
+                          <p className="flex justify-center items-center font-semibold text-lg">
+                            No Content Available
+                          </p>
+                        </>
                       )}
                     </div>
                   </>
@@ -683,6 +1020,119 @@ const LectureForm = (props) => {
             loading={lectureLoading}
           >
             Submit
+          </Button>
+        </div>
+      </Dialog>
+      <Dialog
+        isOpen={deleteIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Delete of Lecture Content
+          </h5>
+          <p>Are you sure you want to delete this Lecture Content?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setDeleteIsOpen(false);
+              // setApiFlag(true);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleLectureContentDeleteBox}>
+            Okay
+          </Button>
+        </div>
+      </Dialog>
+      <Dialog
+        isOpen={lectureDeleteIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setLectureDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setLectureDeleteIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Delete of Lecture
+          </h5>
+          <p>Are you sure you want to delete this permanently Lecture?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setLectureDeleteIsOpen(false);
+              // setApiFlag(true);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleLectureDeleteBox}>
+            Okay
+          </Button>
+        </div>
+      </Dialog>
+      <Dialog
+        isOpen={lecturePublishIsOpen}
+        style={{
+          content: {
+            marginTop: 250,
+          },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setLecturePublishIsOpen(false);
+          // setApiFlag(true);
+        }}
+        onRequestClose={() => {
+          setLecturePublishIsOpen(false);
+          // setApiFlag(true);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Publish Lecture
+          </h5>
+          <p>Are you sure you want to Publish this Lecture?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setLecturePublishIsOpen(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleLecturePublishBox}>
+            Okay
           </Button>
         </div>
       </Dialog>

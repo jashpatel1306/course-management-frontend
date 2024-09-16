@@ -219,12 +219,20 @@ const CollegeDetails = (props) => {
                       <Tr key={item?._id} className="capitalize">
                         <Td>{key + 1}</Td>
                         <Td>{item?.batchName}</Td>
-                        <Td>python</Td>
                         <Td>
+                          <p className="capitalize w-full max-w-lg">
+                            {item.courses
+                              .map((course) => course.courseName)
+                              .join(", ")}
+                          </p>
+                        </Td>
+                        <Td>
+                          {" "}
                           {item.instructorIds
                             .map((instructor) => instructor.name)
                             .join(", ")}
                         </Td>
+
                         <Td>
                           <Button
                             shape="circle"

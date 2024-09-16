@@ -73,7 +73,7 @@ const CourseCard = ({ index, item }) => {
       };
 
       const response = await axiosInstance.post(
-        `user/assign-course-college`,
+        `user/assign-instructor-course-college`,
         apiData
       );
       if (response.success) {
@@ -155,12 +155,11 @@ const CourseCard = ({ index, item }) => {
                 icon={<HiOutlinePencil />}
                 onClick={() => {
                   navigate(
-                    `/app/admin/content-hub/students/course-forms/${item._id}`
+                    `/app/admin/content-hub/instructors/course-forms/${item._id}`
                   );
                 }}
               />
             )}
-
             <Button
               shape="circle"
               variant="solid"
@@ -170,7 +169,7 @@ const CourseCard = ({ index, item }) => {
               icon={<FaRegEye />}
               onClick={() => {
                 navigate(
-                  `/app/admin/content-hub/students/course-forms/${item._id}`
+                  `/app/admin/content-hub/instructors/course-forms/${item._id}`
                 );
               }}
             />
@@ -205,19 +204,18 @@ const CourseCard = ({ index, item }) => {
               {item?.courseName}
             </h5>
           </Tooltip>
-          <div className="flex justify-start gap-2 py-2 text-white">
-            <h4 className="bg-blue-200 text-xs px-2 py-1 rounded">
-              {item?.totalSections} Sections
-            </h4>
-            <h4 className="bg-purple-200 text-xs px-2 py-1 rounded">
-              {item?.totalLectures} Lectures
-            </h4>
-          </div>
-          {item.isPublish ? (
-            <p className="text-base font-bold text-green-500">Publish</p>
-          ) : (
-            <p className="text-base font-bold text-red-500">Unpublish</p>
-          )}
+          {/* <div className="flex justify-start gap-2 py-2 font-semibold">
+            {item.isPublish ? (
+              <p className="bg-green-500 text-white px-2 py-1 rounded">
+                Publish
+              </p>
+            ) : (
+              <p className="bg-red-500 text-white px-2 py-1 rounded">
+                Unpublish
+              </p>
+            )}
+          </div> */}
+
           {/* Progress Bar */}
           {/* <div className="mt-4">
           <div className="flex justify-between items-center text-sm text-gray-600">
@@ -237,6 +235,7 @@ const CourseCard = ({ index, item }) => {
         */}
         </div>
       </div>
+
       <Dialog
         isOpen={IsOpen}
         style={{
