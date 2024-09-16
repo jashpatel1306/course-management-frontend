@@ -1,5 +1,13 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Dialog, Input, Switcher, Upload, Table } from "components/ui";
+import {
+  Button,
+  Dialog,
+  Input,
+  Switcher,
+  Upload,
+  Table,
+  Progress,
+} from "components/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   FaCheckCircle,
@@ -68,6 +76,14 @@ const formats = [
   "code",
   "code-block",
 ];
+const CircleCustomInfo = ({ percent }) => {
+  return (
+    <div className="flex flex-col justify-center items-center text-center">
+      <FaVideo size={30} />
+      <h4>{percent.toFixed(0)}%</h4>
+    </div>
+  );
+};
 const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
   const reorderData = async (startIndex, endIndex) => {
     if (!isPublish) {
@@ -88,9 +104,11 @@ const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
       } else {
         openNotification("danger", response.message);
       }
-    }else
-    {
-      openNotification("warning", "Cannot reorder content while the lecture is published.");
+    } else {
+      openNotification(
+        "warning",
+        "Cannot reorder content while the lecture is published."
+      );
     }
   };
 
@@ -177,10 +195,11 @@ const LectureForm = (props) => {
   const [lectureFormFlag, setLectureFormFlag] = useState(false);
   const [file, setFile] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
   const [lectureDeleteIsOpen, setLectureDeleteIsOpen] = useState(false);
   const [lecturePublishIsOpen, setLecturePublishIsOpen] = useState(false);
   const [selectObject, setSelectObject] = useState();
-
+  const [progress, setProgress] = useState(0); // State for progress
   const [lectureForm, setLectureForm] = useState({
     type: "",
     content: "",
@@ -303,6 +322,33 @@ const LectureForm = (props) => {
     }
     return valid;
   };
+  const beforeVideoUpload = (files) => {
+    let valid = true;
+
+    const allowedFileType = [
+      "video/mp4",
+      "video/webm",
+      "video/ogg",
+      "video/quicktime",
+      "video/x-msvideo",
+      "video/x-ms-wmv",
+      "video/x-flv",
+      "video/x-matroska",
+      "video/3gpp",
+    ];
+    const maxFileSize = 1073741824;
+    for (let file of files) {
+      if (!allowedFileType.includes(file.type)) {
+        valid = false;
+      }
+      if (file.size >= maxFileSize) {
+        valid = false;
+      }
+    }
+    if (valid) {
+    }
+    return valid;
+  };
   const UpdateLectureContent = async (formData) => {
     try {
       setLectureLoading(true);
@@ -327,6 +373,88 @@ const LectureForm = (props) => {
       openNotification("danger", error.message);
     } finally {
       setLectureLoading(false);
+    }
+  };
+  const startUpload = async (file) => {
+    const data = await axiosInstance.post("user/start-upload", {
+      filename: file.name,
+      filetype: file.type,
+    });
+    console.log("data: ", data);
+    return { uploadId: data.uploadId, key: data.key };
+  };
+  const uploadPart = async (uploadId, key, partNumber, part) => {
+    const formData = {
+      uploadId: uploadId,
+      key: key,
+      partNumber: partNumber,
+      part: part,
+    };
+
+    const data = await axiosInstance.post("user/upload-part", formData);
+    return data;
+  };
+  const completeUpload = async (uploadId, key, parts) => {
+    const finalParts = parts.map((response, index) => ({
+      ETag: response.ETag,
+      PartNumber: index + 1,
+    }));
+
+    const res = await axiosInstance.post("user/complete-upload", {
+      uploadId,
+      key,
+      parts: finalParts,
+    });
+
+    return res.fileUrl;
+  };
+
+  const VideoUpload = async (file) => {
+    setVideoLoading(true);
+    const startUploadResult = await startUpload(file);
+    console.log("startUploadResult:  ", startUploadResult);
+    if (startUploadResult.uploadId && startUploadResult.key) {
+      const chunkSize = 5 * 1024 * 1024; // 5 MB
+      const parts = [];
+      const totalParts = Math.ceil(file.size / chunkSize); // Total number of parts
+      let start = 0;
+      let completedParts = 0; // Track the number of completed parts
+
+      while (start < file.size) {
+        const end = Math.min(start + chunkSize, file.size);
+        const chunk = file.slice(start, end);
+        const partNumber = parts.length + 1;
+
+        // Upload part
+        const response = await uploadPart(
+          startUploadResult.uploadId,
+          startUploadResult.key,
+          partNumber,
+          chunk
+        );
+        parts.push(response);
+        completedParts++;
+
+        // Update progress
+        setProgress((completedParts / totalParts) * 100);
+
+        start = end;
+      }
+
+      // Ensure that the last part is correctly handled even if it is smaller than the chunk size
+      if (parts.length > 0) {
+        const resResult = await completeUpload(
+          startUploadResult.uploadId,
+          startUploadResult.key,
+          parts
+        );
+        setVideoLoading(false);
+        return resResult;
+      } else {
+        throw new Error("No parts were uploaded.");
+      }
+    } else {
+      return "";
     }
   };
   const onHandleContentBox = async () => {
@@ -356,7 +484,7 @@ const LectureForm = (props) => {
           console.log("filePath : ", filePath);
           if (filePath.status) {
             await UpdateLectureContent({
-              type: "file",
+              type: "video",
               content: filePath.data,
               title: lectureForm.title,
               // id: lectureForm.id ? lectureForm.id : "",
@@ -364,6 +492,40 @@ const LectureForm = (props) => {
             setFile(null);
           } else {
             setError(filePath.message);
+          }
+        } else {
+          if (lectureForm.title && lectureForm.content) {
+            await UpdateLectureContent({
+              type: "video",
+              content: lectureForm.content,
+              title: lectureForm.title,
+              // id: lectureForm.id ? lectureForm.id : "",
+            });
+            setFile(null);
+          }
+        }
+      }
+      if (lectureForm.type === "video") {
+        if (!lectureForm.content && !file) {
+          setError("Please Upload a Video file");
+        }
+
+        if (!lectureForm.title) {
+          setError("Please Enter a Video Title");
+        }
+        if (file) {
+          const filePath = await VideoUpload(file);
+          console.log("filePath : ", filePath);
+          if (filePath) {
+            await UpdateLectureContent({
+              type: "file",
+              content: filePath,
+              title: lectureForm.title,
+              // id: lectureForm.id ? lectureForm.id : "",
+            });
+            setFile(null);
+          } else {
+            setError(filePath);
           }
         } else {
           if (lectureForm.title && lectureForm.content) {
@@ -387,7 +549,7 @@ const LectureForm = (props) => {
         Header: "",
         accessor: "title",
         Cell: (props) => {
-          console.log("props: ",props)
+          console.log("props: ", props);
           return (
             <>
               <>
@@ -650,7 +812,7 @@ const LectureForm = (props) => {
                                   <div className="col-span-2">
                                     <Input
                                       className="w-[100%] md:mb-0 mb-4 sm:mb-0"
-                                      placeholder="Article Title"
+                                      placeholder="Video Title"
                                       value={lectureForm.title}
                                       onChange={(e) => {
                                         setLectureForm({
@@ -661,49 +823,118 @@ const LectureForm = (props) => {
                                     />
                                   </div>
                                 </div>
-                                <div
-                                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-                                >
-                                  Video Content
-                                </div>
-                                <div className="w-full bg-white rounded-lg">
-                                  <Upload
-                                    draggable
-                                    showList={false}
-                                    label="Video Upload"
-                                    // beforeUpload={beforeUpload}
-                                    onChange={(file) => {
-                                      // setFormData({
-                                      //   ...formData,
-                                      //   coverImage: file[0],
-                                      // });
-                                      // setCoverImageUrl(
-                                      //   URL.createObjectURL(file[0])
-                                      // );
-                                    }}
-                                  >
-                                    <div className="my-8 text-center">
-                                      <div className="text-6xl w-full mb-4 flex justify-center">
-                                        <FcImageFile />
+                                {lectureForm.content ? (
+                                  <>
+                                    <div className="flex flex-wrap items-center justify-start mb-4">
+                                      <div className="group relative p-4 rounded flex h-32 ">
+                                        {/* <img
+                                          
+                                          src={lectureForm.content}
+                                          alt={lectureForm.content}
+                                        /> */}
+                                        <FaVideo className="h-28 w-full rounded" />
+                                        <div className="h-32 w-full rounded absolute inset-2 bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
+                                          <span
+                                            onClick={() => {
+                                              console.log(
+                                                "delete video form s3 :",
+                                                lectureForm.content
+                                              );
+                                              setLectureForm({
+                                                ...lectureForm,
+                                                content: "",
+                                              });
+                                            }}
+                                            className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
+                                          >
+                                            <HiTrash />
+                                          </span>
+                                          <span
+                                            onClick={() => {
+                                              window.open(
+                                                lectureForm.content,
+                                                "_blank"
+                                              );
+                                            }}
+                                            className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
+                                          >
+                                            <FaEye />
+                                          </span>
+                                        </div>
                                       </div>
-                                      <p className="font-semibold">
-                                        <span className="text-gray-800 dark:text-white">
-                                          Drop your Video here, or{" "}
-                                        </span>
-                                        <span
-                                          className={`font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
-                                        >
-                                          browse
-                                        </span>
-                                      </p>
-                                      <p className="mt-1 opacity-60 dark:text-white">
-                                        Support: mp4, web
-                                      </p>
                                     </div>
-                                  </Upload>
-                                </div>
-                                <div className="flex justify-end my-2 mr-2">
-                                  <Button variant="solid">Save</Button>
+                                  </>
+                                ) : (
+                                  <>
+                                    {" "}
+                                    {videoLoading ? (
+                                      <>
+                                        <div className="flex justify-center items-center">
+                                          <div>
+                                            <Progress
+                                              variant="circle"
+                                              percent={progress}
+                                              width={100}
+                                              className="flex justify-between items-center"
+                                              customInfo={
+                                                <CircleCustomInfo
+                                                  percent={progress}
+                                                />
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <div>
+                                        <div
+                                          className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                                        >
+                                          Video Content
+                                        </div>
+                                        <div className="w-full rounded-lg">
+                                          <Upload
+                                            draggable
+                                            showList={true}
+                                            label="Video Upload"
+                                            beforeUpload={beforeVideoUpload}
+                                            className="bg-white"
+                                            onChange={(file) => {
+                                              setFile(file[0]);
+                                            }}
+                                          >
+                                            <div className="my-8 text-center">
+                                              <div className="text-6xl w-full mb-4 flex justify-center">
+                                                <FcImageFile />
+                                              </div>
+                                              <p className="font-semibold">
+                                                <span className="text-gray-800 dark:text-white">
+                                                  Drop your Video here, or{" "}
+                                                </span>
+                                                <span
+                                                  className={`font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+                                                >
+                                                  browse
+                                                </span>
+                                              </p>
+                                              <p className="mt-1 opacity-60 dark:text-white">
+                                                Support: mp4, web
+                                              </p>
+                                            </div>
+                                          </Upload>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                                <div className="flex justify-between my-2 mr-2">
+                                  <div>{DisplayError(error)}</div>
+                                  <Button
+                                    variant="solid"
+                                    onClick={onHandleContentBox}
+                                  >
+                                    Save
+                                  </Button>
                                 </div>
                               </div>
                             </>
@@ -720,7 +951,7 @@ const LectureForm = (props) => {
                                   <div className="col-span-2">
                                     <Input
                                       className="w-[100%] md:mb-0 mb-4 sm:mb-0"
-                                      placeholder="Article Title"
+                                      placeholder="File Title"
                                       value={lectureForm.title}
                                       onChange={(e) => {
                                         setLectureForm({
@@ -840,6 +1071,9 @@ const LectureForm = (props) => {
                               <div
                                 className="border-2 border-gray-500 rounded-md flex flex-col items-center w-18 h-18 bg-white hover:bg-gray-100 cursor-pointer"
                                 onClick={() => {
+                                  setProgress(0);
+                                  setVideoLoading(false);
+                                  setFile(null);
                                   setLectureForm({
                                     ...lectureForm,
                                     type: "video",
