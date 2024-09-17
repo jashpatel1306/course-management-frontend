@@ -15,42 +15,15 @@ import { DataNoFound } from "assets/svg";
 const CourseList = (props) => {
   const { flag } = props;
 
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
-  const { userData } = useSelector((state) => state.auth.user);
-
-  const { authority, collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
-  const [currentTab, setCurrentTab] = useState();
-  const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [courseData, setCourseData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectObject, setSelectObject] = useState();
-  const [deleteIsOpen, setDeleteIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [debouncedText] = useDebounce(searchText, 1000);
-  const [batchList, setBatchList] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
-  const onPaginationChange = (val) => {
-    setPage(val);
-    setApiFlag(true);
-  };
 
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`student/student-wise-courses`);
       if (response.success) {
         setCourseData(response.data);
-        setTotalPage(
-          response.pagination.total
-            ? Math.ceil(response.pagination.total / appConfig.pagePerData)
-            : 0
-        );
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -82,29 +55,9 @@ const CourseList = (props) => {
   }, [flag]);
 
   useEffect(() => {
-    setPage(1);
+   
     setApiFlag(true);
-  }, [debouncedText]);
-
-  const onHandleDeleteBox = async () => {
-    try {
-      const response = await axiosInstance.put(
-        `user/course/status/${selectObject._id}`
-      );
-      if (response.success) {
-        openNotification("success", response.message);
-        setApiFlag(true);
-        setDeleteIsOpen(false);
-      } else {
-        openNotification("danger", response.message);
-        setDeleteIsOpen(false);
-      }
-    } catch (error) {
-      console.log(" error:", error);
-      openNotification("danger", error.message);
-      setDeleteIsOpen(false);
-    }
-  };
+  }, []);
   return (
     <>
       <div>
@@ -155,15 +108,6 @@ const CourseList = (props) => {
                     return <CourseCard item={item} index={index} />;
                   })}
                 </div>
-              </div>
-              <div className="flex items-center justify-center mt-4">
-                {totalPage > 1 && (
-                  <Pagination
-                    total={totalPage}
-                    currentPage={page}
-                    onChange={onPaginationChange}
-                  />
-                )}
               </div>
             </div>
           </>
