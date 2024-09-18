@@ -188,7 +188,7 @@ const AdminList = (props) => {
         setDeleteIsOpen(false);
       }
     } catch (error) {
-      console.log(" error:", error);
+      console.log("onHandleDeleteBox error:", error);
       openNotification("danger", error.message);
       setDeleteIsOpen(false);
     }

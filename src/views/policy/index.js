@@ -191,7 +191,6 @@ const PrivacyPolicy = () => {
                   <CKEditor
                     initData={formData.privacy_policy}
                     onChange={(e) => {
-                      console.log("e : ", e.editor.getData());
                       setFormData({
                         ...formData,
                         privacy_policy: e.editor.getData(),

@@ -18,7 +18,6 @@ function DepartmentForm(props) {
   const { authority, collegeId } = useSelector(
     (state) => state.auth.user.userData
   );
-  console.log("collegeId : ", collegeId, authority.toString() !== SUPERADMIN);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     college: authority.toString() !== SUPERADMIN ? collegeId : "",
@@ -69,7 +68,6 @@ function DepartmentForm(props) {
   }, []);
   useEffect(() => {
     if (departmentData?._id) {
-      console.log("departmentData: ", authority);
       setFormData({
         college: departmentData?.collegeId ? departmentData?.collegeId : "",
         department: departmentData?.department
@@ -116,7 +114,6 @@ function DepartmentForm(props) {
       if (authority.toString() === SUPERADMIN && !formData?.college?.value) {
         setError("Please Select College Name.");
       }
-      console.log("formData :", formData);
       if (authority.toString() === SUPERADMIN) {
         if (formData?.college?.value && formData?.department) {
           setError("");
@@ -129,12 +126,7 @@ function DepartmentForm(props) {
       console.log("onHandleBox error :", error);
     }
   };
-  console.log(
-    "formData:  ",
-    collegeId,
-    authority.toString() !== SUPERADMIN,
-    formData
-  );
+
   return (
     <>
       <Dialog
@@ -218,7 +210,6 @@ function DepartmentForm(props) {
                 <Switcher
                   checked={formData?.active}
                   onChange={(val) => {
-                    console.log("value", val);
                     setFormData({
                       ...formData,
                       active: !val,

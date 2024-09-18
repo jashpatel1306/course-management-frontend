@@ -198,7 +198,6 @@ function BatchForm(props) {
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
-    console.log("errorObject Data: ", errorObject);
     if (!errorObject.status) {
       resetErrorData();
       if (batchData?.batchId) {

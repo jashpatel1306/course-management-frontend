@@ -145,7 +145,7 @@ const InstructorList = (props) => {
         setDeleteIsOpen(false);
       }
     } catch (error) {
-      console.log(" error:", error);
+      console.log("onHandleDeleteBox error:", error);
       openNotification("danger", error.message);
       setDeleteIsOpen(false);
     }
@@ -154,7 +154,6 @@ const InstructorList = (props) => {
   return (
     <>
       <div className="flex justify-end">
-        
         <div className="w-96">
           {userData.authority.toString() === SUPERADMIN && (
             <Select

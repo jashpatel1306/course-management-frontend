@@ -124,8 +124,6 @@ function InstructorForm(props) {
   }, [isOpen]);
   useEffect(() => {
     if (instructorData?._id) {
-      console.log("setFormData instructorData: ", coursesList);
-
       setFormData({
         name: instructorData?.name ? instructorData?.name : "",
         email: instructorData?.email ? instructorData?.email : "",
@@ -283,7 +281,6 @@ function InstructorForm(props) {
       setErrorData(errorObject);
     }
   };
-  console.log("formData:  ", formData);
   return (
     <>
       <Drawer
@@ -552,7 +549,6 @@ function InstructorForm(props) {
               <Switcher
                 checked={formData?.active}
                 onChange={(val) => {
-                  console.log("value", val);
                   setFormData({
                     ...formData,
                     active: !val,

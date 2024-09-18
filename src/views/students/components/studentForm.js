@@ -669,7 +669,6 @@ function StudentForm(props) {
               <Switcher
                 checked={formData?.active}
                 onChange={(val) => {
-                  console.log("value", val);
                   setFormData({
                     ...formData,
                     active: !val,
