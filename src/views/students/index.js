@@ -2,8 +2,7 @@ import { Button, Card, Dialog, Select, Upload } from "components/ui";
 import React, { useState } from "react";
 import { HiOutlineCloudUpload, HiPlusCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import BatchScroller from "./components/batchList";
-import BatchForm from "./components/batchForm";
+
 import StudentForm from "./components/studentForm";
 import StudentList from "./components/studentList";
 import { BiImport } from "react-icons/bi";
@@ -21,9 +20,7 @@ const Students = () => {
   );
   const { userData } = useSelector((state) => state.auth.user);
 
-  const [addBatchFlag, setAddBatchFlag] = useState(false);
   const [addFlag, setAddFlag] = useState(false);
-  const [batchData, setBatchData] = useState();
   const [studentData, setStudentData] = useState();
   const [importLoading, setImportLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
@@ -36,12 +33,7 @@ const Students = () => {
     college: null,
   });
   const [error, setError] = useState("");
-  const handleAddNewBatchClick = () => {
-    setAddBatchFlag(true);
-  };
-  const handleAddNewBatchCloseClick = () => {
-    setAddBatchFlag(false);
-  };
+
   const handleAddNewStudentClick = () => {
     setAddFlag(true);
   };
@@ -151,46 +143,7 @@ const Students = () => {
   };
   return (
     <>
-      <Card className="hidden">
-        <div className="flex items-center justify-between ">
-          <div
-            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
-          >
-            Batches Details
-          </div>
-          <div>
-            <Button
-              size="sm"
-              variant="solid"
-              icon={<HiPlusCircle color={"#fff"} />}
-              onClick={async () => {
-                handleAddNewBatchCloseClick();
-                //setSelectObject(item)
-                setBatchData();
-                setTimeout(() => {
-                  handleAddNewBatchClick();
-                }, 50);
-              }}
-            >
-              Add New Batches
-            </Button>
-          </div>
-        </div>
-        <div>
-          <BatchScroller
-            flag={addBatchFlag}
-            parentCloseCallback={handleAddNewBatchCloseClick}
-            parentCallback={handleAddNewBatchClick}
-            batchData={batchData}
-          />
-        </div>
-        <BatchForm
-          isOpen={addBatchFlag}
-          handleCloseClick={handleAddNewBatchCloseClick}
-          batchData={batchData}
-        />
-      </Card>
-
+   
       <Card className="mt-4">
         <div className="flex items-center justify-between ">
           <div

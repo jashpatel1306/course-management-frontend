@@ -22,8 +22,9 @@ const Assessment = () => {
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
-    title: "Assessments-1",
-    collegeId:userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
+    title: "",
+    collegeId:
+      userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
   });
   const [error, setError] = useState("");
   const CreateAssessment = async () => {
@@ -42,7 +43,6 @@ const Assessment = () => {
       }
       setFormData({
         title: "",
-        expiresAt: "",
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -53,19 +53,16 @@ const Assessment = () => {
   };
   const onHandleBox = async () => {
     try {
-      if (formData.expiresAt
-        
-      ) {
-        setError("Please select a Expire Date.");
+      if (!formData.collegeId) {
+        setError("Please Select a College Name.");
       }
       if (!formData?.title) {
         setError("Please Enter Assessment Title.");
       }
 
-      if (formData?.title && formData.expiresAt) {
+      if (formData?.title && formData.collegeId) {
         setError("");
         CreateAssessment(formData);
-        // ;
       }
     } catch (error) {
       console.log("onHandleBox error :", error);
@@ -133,7 +130,7 @@ const Assessment = () => {
           setError("");
           setFormData({
             title: "",
-            expiresAt: "",
+            collegeId: "",
           });
         }}
         onRequestClose={() => {
@@ -141,7 +138,7 @@ const Assessment = () => {
           setError("");
           setFormData({
             title: "",
-            expiresAt: "",
+            collegeId: "",
           });
         }}
       >
@@ -197,15 +194,19 @@ const Assessment = () => {
           {DisplayError(error)}
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
-          {/* <Button
+          <Button
             className="ltr:mr-2 rtl:ml-2"
             onClick={() => {
               setIsOpen(false);
+              setFormData({
+                title: "",
+                collegeId: null,
+              });
               setError("");
             }}
           >
             Cancel
-          </Button> */}
+          </Button>
           <Button variant="solid" onClick={onHandleBox} loading={isLoading}>
             Next
           </Button>

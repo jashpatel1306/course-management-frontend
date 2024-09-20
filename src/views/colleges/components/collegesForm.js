@@ -46,12 +46,12 @@ function CollegeForm(props) {
   const [pwInputType, setPwInputType] = useState("password");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    collegeName: "University of Edinburgh",
-    shortName: "Edinburgh",
-    collegeNo: "22335599",
-    contactPersonName: "Dr. Lucas Thompson",
-    contactPersonNo: "+44 131 650 1000",
-    email: "lucas.thompson@ed.ac.uk",
+    collegeName: "",
+    shortName: "",
+    collegeNo: "",
+    contactPersonName: "",
+    contactPersonNo: "",
+    email: "",
     password: "College@123",
     active: true,
   });

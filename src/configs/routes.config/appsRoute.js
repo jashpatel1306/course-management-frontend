@@ -26,7 +26,9 @@ const appsRoute = [
   {
     key: "apps.viewCourse",
     path: `${STUDENT_PREFIX_PATH}/viewCourse`,
-    component: React.lazy(() => import("views/studentPanel/myCourses/viewCourses")),
+    component: React.lazy(() =>
+      import("views/studentPanel/myCourses/viewCourses")
+    ),
     authority: [],
     meta: {
       layout: "blank",
@@ -115,6 +117,13 @@ const appsRoute = [
     component: React.lazy(() => import("views/assessment")),
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
+  {
+    key: "apps.assignassessmentcourses",
+    path: `${ADMIN_PREFIX_PATH}/assign-assessment-courses`,
+    component: React.lazy(() => import("views/assignAssessmentCourse")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+
   {
     key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment/form/:assessmentId`,
