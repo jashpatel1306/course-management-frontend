@@ -84,6 +84,17 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
+    key: "apps.previewCourse",
+    path: `${ADMIN_PREFIX_PATH}/course/preview/:courseId`,
+    component: React.lazy(() => import("views/previewCourses")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students/course/:course_id`,
     component: React.lazy(() =>
