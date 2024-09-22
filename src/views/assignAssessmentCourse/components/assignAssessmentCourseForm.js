@@ -337,7 +337,7 @@ function AssignCourseForm(props) {
   };
   const formValidation = () => {
     try {
-      if (assignCourseData.type === "batch") {
+      if (assignCourseData?.type === "batch") {
         assignAssessmentBatchValidationSchema.validateSync(formData, {
           abortEarly: false,
         });
@@ -360,6 +360,7 @@ function AssignCourseForm(props) {
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
+      console.log("errorObject:  ", errorObject);
       if (Object.keys(errorObject)?.length === 0) {
         return {
           courseId: "",

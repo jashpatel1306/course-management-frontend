@@ -54,10 +54,6 @@ const CourseList = (props) => {
     }
   }, [flag]);
 
-  useEffect(() => {
-   
-    setApiFlag(true);
-  }, []);
   return (
     <>
       <div>

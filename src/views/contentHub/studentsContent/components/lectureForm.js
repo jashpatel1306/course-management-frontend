@@ -480,7 +480,7 @@ const LectureForm = (props) => {
           const filePath = await FileUpload(file, "content/files");
           if (filePath.status) {
             await UpdateLectureContent({
-              type: "video",
+              type: "file",
               content: filePath.data,
               title: lectureForm.title,
               // id: lectureForm.id ? lectureForm.id : "",
@@ -513,7 +513,7 @@ const LectureForm = (props) => {
           const filePath = await VideoUpload(file);
           if (filePath) {
             await UpdateLectureContent({
-              type: "file",
+              type: "video",
               content: filePath,
               title: lectureForm.title,
               // id: lectureForm.id ? lectureForm.id : "",
@@ -946,6 +946,7 @@ const LectureForm = (props) => {
                                       onChange={(e) => {
                                         setLectureForm({
                                           ...lectureForm,
+                                          type:"file",
                                           title: e.target.value,
                                         });
                                       }}
