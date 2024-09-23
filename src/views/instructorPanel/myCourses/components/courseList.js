@@ -148,7 +148,7 @@ const CourseList = (props) => {
           <>
             <div>
               <div className="flex justify-start">
-                <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
                   {courseData.map((item, index) => {
                     return <CourseCard item={item} index={index} />;
                   })}

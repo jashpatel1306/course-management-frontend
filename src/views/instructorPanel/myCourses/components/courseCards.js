@@ -144,22 +144,6 @@ const CourseCard = ({ index, item }) => {
             </div>
           )}
           <div className="w-60 h-40  rounded absolute  bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
-            {((!item.collegeId &&
-              userData?.authority.toString() === SUPERADMIN) ||
-              userData.collegeId === item.collegeId) && (
-              <Button
-                shape="circle"
-                variant="solid"
-                className="mr-2"
-                size="sm"
-                icon={<HiOutlinePencil />}
-                onClick={() => {
-                  navigate(
-                    `/app/admin/content-hub/instructors/course-forms/${item._id}`
-                  );
-                }}
-              />
-            )}
             <Button
               shape="circle"
               variant="solid"
@@ -168,32 +152,9 @@ const CourseCard = ({ index, item }) => {
               size="sm"
               icon={<FaRegEye />}
               onClick={() => {
-                navigate(
-                  `/app/admin/content-hub/instructors/course-forms/${item._id}`
-                );
+                navigate(`/app/instructor/course/${item._id}`);
               }}
             />
-            {userData?.authority.toString() === SUPERADMIN &&
-              item.isPublish && (
-                <Button
-                  shape="circle"
-                  color="green-700"
-                  variant="solid"
-                  size="sm"
-                  icon={<CgAssign size={20} />}
-                  onClick={() => {
-                    if (item.isPublish) {
-                      setSelectAssignData({
-                        collegeId: null,
-                        courseId: item._id,
-                      });
-                      setIsOpen(true);
-                    } else {
-                      openNotification("warning", "Course is not published.");
-                    }
-                  }}
-                />
-              )}
           </div>
         </div>
 
@@ -204,35 +165,7 @@ const CourseCard = ({ index, item }) => {
               {item?.courseName}
             </h5>
           </Tooltip>
-          {/* <div className="flex justify-start gap-2 py-2 font-semibold">
-            {item.isPublish ? (
-              <p className="bg-green-500 text-white px-2 py-1 rounded">
-                Publish
-              </p>
-            ) : (
-              <p className="bg-red-500 text-white px-2 py-1 rounded">
-                Unpublish
-              </p>
-            )}
-          </div> */}
-
-          {/* Progress Bar */}
-          {/* <div className="mt-4">
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            <span>Complete</span>
-            <span>90%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full mt-1">
-            <div
-              className="bg-green-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-              style={{ width: "90%" }}
-            >
-              90%
-            </div>
-          </div>
-        </div>
-
-        */}
+          <p className="text-base line-clamp-2">{item?.courseDescription}</p>
         </div>
       </div>
 
