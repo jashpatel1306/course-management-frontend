@@ -23,19 +23,7 @@ const appsRoute = [
       footer: false,
     },
   },
-  {
-    key: "apps.viewCourse",
-    path: `${STUDENT_PREFIX_PATH}/viewCourse`,
-    component: React.lazy(() =>
-      import("views/studentPanel/myCourses/viewCourses")
-    ),
-    authority: [],
-    meta: {
-      layout: "blank",
-      pageContainerType: "gutterless",
-      footer: false,
-    },
-  },
+
   {
     key: "apps.admin",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
@@ -88,6 +76,19 @@ const appsRoute = [
     path: `${ADMIN_PREFIX_PATH}/course/preview/:courseId`,
     component: React.lazy(() => import("views/previewCourses")),
     authority: [ADMIN, SUPERADMIN, STAFF],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
+    key: "apps.viewCourse",
+    path: `${STUDENT_PREFIX_PATH}/course/:courseId`,
+    component: React.lazy(() =>
+      import("views/studentPanel/myCourses/viewCourses")
+    ),
+    authority: [STUDENT],
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",

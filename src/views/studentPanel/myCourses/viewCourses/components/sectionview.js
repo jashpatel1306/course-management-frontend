@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import LectureView from "./lectureView";
 const SectionView = (props) => {
-  const { data, setActiveContent, activeContent } = props;
-  const [sectionOpenFlag, setSectionOpenFlag] = useState(true);
+  const { data, setActiveContent, activeContent, contentData } = props;
+  const [sectionOpenFlag, setSectionOpenFlag] = useState(false);
   return (
     <>
       <div
@@ -27,7 +27,7 @@ const SectionView = (props) => {
           />
         </p>
       </div>
-      {sectionOpenFlag && (
+      {!sectionOpenFlag ? (
         <>
           {data.lectures?.map((info, index) => {
             if (info.type === "lecture") {
@@ -36,11 +36,14 @@ const SectionView = (props) => {
                   data={info}
                   setActiveContent={setActiveContent}
                   activeContent={activeContent}
+                  contentData={contentData}
                 />
               );
             }
           })}
         </>
+      ) : (
+        <></>
       )}
     </>
   );

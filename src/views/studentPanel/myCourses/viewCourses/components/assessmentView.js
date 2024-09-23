@@ -1,11 +1,8 @@
-import axiosInstance from "apiServices/axiosInstance";
 import { Button, Spinner } from "components/ui";
 import React, { useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import openNotification from "views/common/notification";
 const generateSecureUrl = (pptUrl) => {
   const token = generateRandomToken(16); // Generate a 16-byte token
   const expiryTime = Date.now() + 3600000; // Token valid for 1 hour
@@ -84,18 +81,10 @@ const ContentContainer = ({ contentData }) => {
             </div>
           </>
         )}
-        {contentData?.contentType === "assessment" && (
-          <>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              {contentData.title}
-            </h2>
-            <div className="text-lg text-gray-800 mb-2">assessment Content</div>
-          </>
-        )}
         {!contentData?.contentType && (
           <>
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              same Course Content
+              Course Content
             </h2>
           </>
         )}
@@ -111,71 +100,24 @@ const ContentView = (props) => {
     contentData,
     setActiveContent,
     activeContent,
-    setApiFlag,
   } = props;
-  const { courseId } = useParams();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-
   const [currentContentIndex, setCurrentContentIndex] = useState(null);
   useEffect(() => {
-    if (activeContent?.contentId) {
+    if (activeContent?.lectureId && activeContent?.contentId) {
       setCurrentContentIndex(
         contentData.findIndex(
           (content) =>
-            // content.lectureId === activeContent?.lectureId &&
+            content.lectureId === activeContent?.lectureId &&
             content.id === activeContent?.contentId
         )
       );
     }
   }, [activeContent?.lectureId, activeContent?.contentId]);
-  const updateTrackingRecode = async () => {
-    try {
-      setIsLoading(true);
-      const apiData = {
-        totalcontent: contentData.length,
-        trackingContent: {
-          contentId: activeContent?.contentId,
-          lectureId: activeContent?.lectureId
-            ? activeContent?.lectureId
-            : activeContent?.contentId,
-        },
-      };
-      const response = await axiosInstance.put(
-        `student/course/tracking/${courseId}`,
-        apiData
-      );
 
-      if (response.success) {
-        console.log("response : ", response.data);
-        if (
-          response.data.totalcontent === response.data.trackingContent.length
-        ) {
-          navigate("app/student/courses");
-        } else {
-          const nextContent = contentData[currentContentIndex + 1];
-          setActiveContent({
-            lectureId: nextContent.lectureId,
-            contentId: nextContent.id,
-          });
-        }
-
-        setApiFlag(true);
-        setIsLoading(false);
-      } else {
-        openNotification("danger", response.message);
-        setIsLoading(false);
-      }
-    } catch (error) {
-      console.log("get-all-course error:", error);
-      openNotification("danger", error.message);
-      setIsLoading(false);
-    }
-  };
   return (
     <>
       <div className="flex-1 relative bg-white">
@@ -206,10 +148,16 @@ const ContentView = (props) => {
 
         <div className="w-full max-h-[90vh] overflow-y-scroll hidden-scroll ">
           <div className="p-6">
-            {currentContentIndex >= 0 && (
+            {currentContentIndex >= 0 ? (
               <ContentContainer
                 contentData={contentData[currentContentIndex]}
               />
+            ) : (
+              <>
+                <div>
+                  <p>Course Content</p>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -229,23 +177,12 @@ const ContentView = (props) => {
           </Button>
           <Button
             variant="solid"
-            loading={isLoading}
             onClick={() => {
-              const currentContent = contentData[currentContentIndex];
-              console.log("currentContent:  ", currentContent);
-              if (!currentContent.status) {
-                updateTrackingRecode();
-              } else {
-                const nextContent = contentData[currentContentIndex + 1];
-                if (nextContent?.id) {
-                  setActiveContent({
-                    lectureId: nextContent?.lectureId,
-                    contentId: nextContent?.id,
-                  });
-                } else {
-                  navigate("app/student/courses");
-                }
-              }
+              const nextContent = contentData[currentContentIndex + 1];
+              setActiveContent({
+                lectureId: nextContent.lectureId,
+                contentId: nextContent.id,
+              });
             }}
           >
             Next

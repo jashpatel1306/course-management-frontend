@@ -1,5 +1,5 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Dialog, Select, Tooltip } from "components/ui";
+import { Button, Dialog, Progress, Select, Tooltip } from "components/ui";
 import { SUPERADMIN } from "constants/roles.constant";
 import React, { useEffect, useState } from "react";
 import { CgAssign } from "react-icons/cg";
@@ -30,13 +30,34 @@ const getRandomBgColorClass = () => {
   // Return a random background color class
   return bgColors[randomIndex];
 };
-const CourseCard = ({ index, item }) => {
+const CourseCard = ({ index, item, trackingRecode }) => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.auth.user);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const enrollCourse = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `student/course/enroll/${item._id}`
+      );
+      if (response.success) {
+        const url = `/app/student/course/${item._id}`;
+        window.open(url, "_blank");
+        setIsLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log("get-all-course error:", error);
+      openNotification("danger", error.message);
+      setIsLoading(false);
+    }
+  };
   return (
     <>
       <div
@@ -72,7 +93,13 @@ const CourseCard = ({ index, item }) => {
         {/* Course Details */}
         <div className={`p-4 `}>
           <Tooltip title={item?.courseName} placement="bottom">
-            <h5 className="text-lg font-bold line-clamp-1	">
+            <h5
+              className="text-lg font-bold line-clamp-1 cursor-pointer"
+              onClick={() => {
+                const url = `/app/student/course/${item._id}`;
+                window.open(url, "_blank");
+              }}
+            >
               {item?.courseName}
             </h5>
           </Tooltip>
@@ -86,20 +113,40 @@ const CourseCard = ({ index, item }) => {
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-4">
-            <div className="flex justify-between items-center text-sm text-gray-600">
-              <span>Complete</span>
-              <span>50%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full mt-1">
-              <div
-                className="bg-green-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-                style={{ width: "50%" }}
-              >
-                50%
+          {trackingRecode ? (
+            <>
+              <div className="mt-2">
+                <div className="flex justify-between items-center text-sm text-gray-600">
+                  <span>Complete</span>
+                </div>
+                <Progress
+                  percent={
+                    trackingRecode.trackingContent.length &&
+                    trackingRecode.totalcontent
+                      ? Math.round(
+                          (trackingRecode.trackingContent.length /
+                            trackingRecode.totalcontent) *
+                            100
+                        ) // Rounds to the nearest integer
+                      : 0
+                  }
+                />
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <div className="mt-2">
+                <Button
+                  variant="twoTone"
+                  block
+                  onClick={enrollCourse}
+                  loading={isLoading}
+                >
+                  Enroll now
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

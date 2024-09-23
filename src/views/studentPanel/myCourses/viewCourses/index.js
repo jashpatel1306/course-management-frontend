@@ -4,6 +4,7 @@ import ContentView from "./components/contentView";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import { useParams } from "react-router-dom";
+import { Spinner } from "components/ui";
 
 const ViewCourses = () => {
   const { courseId } = useParams();
@@ -25,17 +26,13 @@ const ViewCourses = () => {
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(
-        `user/courses-preview/${courseId}`
+        `student/course-view-data/${courseId}`
       );
       if (response.success) {
         setCourseData(response.data);
         setSidebarData(response.data?.sidebarData);
         setContentData(response.data?.contentData);
-        const firstContent = response.data?.contentData[0];
-        setActiveContent({
-          lectureId: firstContent?.lectureId,
-          contentId: firstContent?.id,
-        });
+        setActiveContent(response.data?.activeContent);
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -63,12 +60,16 @@ const ViewCourses = () => {
     <>
       <div className="flex h-screen">
         {isLoading ? (
-          <div>isLoading</div>
+          <div>
+            {" "}
+            <Spinner className="mr-4" size="40px" />
+          </div>
         ) : (
           <>
             <SideBar
               isSidebarOpen={isSidebarOpen}
               sidebarData={sidebarData}
+              contentData={contentData}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
             />
@@ -80,6 +81,7 @@ const ViewCourses = () => {
               courseName={courseData.courseName}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
+              setApiFlag={setApiFlag}
             />
           </>
         )}

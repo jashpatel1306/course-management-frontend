@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HiCheckCircle,
   HiMinus,
+  HiOutlineLockClosed,
   HiPlus,
 } from "react-icons/hi";
 import { Button } from "components/ui";
@@ -10,14 +11,40 @@ import { FiPlayCircle } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { RiArticleFill } from "react-icons/ri";
 import { FaFileAlt } from "react-icons/fa";
-const LectureView = (props) => {
-  const { data, setActiveContent, activeContent } = props;
+import { GrTest } from "react-icons/gr";
 
-  const [lectureOpenFlag, setLectureOpenFlag] = useState(true);
+const LectureView = (props) => {
+  const { data, setActiveContent, activeContent, contentData } = props;
+
+  const [lectureOpenFlag, setLectureOpenFlag] = useState(
+    activeContent.lectureId === data.id
+      ? true
+      : activeContent.lectureId === activeContent.contentId
+      ? true
+      : false
+  );
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const [currentContentIndex, setCurrentContentIndex] = useState(null);
+  useEffect(() => {
+    if (activeContent?.contentId) {
+      setLectureOpenFlag(
+        activeContent.lectureId === data.id
+          ? true
+          : activeContent.lectureId === activeContent.contentId
+          ? true
+          : false
+      );
+      const contentIndex = contentData.findIndex(
+        (content) =>
+          // content.lectureId === activeContent?.lectureId &&
+          content.id === activeContent?.contentId
+      );
+      setCurrentContentIndex(contentIndex);
+    }
+  }, [activeContent?.lectureId, activeContent?.contentId]);
   return (
     <>
       <div className="bg-gray-50">
@@ -29,7 +56,7 @@ const LectureView = (props) => {
                 : ""
             }`}
           >
-            <p className="text-sm font-medium w-64 line-clamp-1  capitalize">
+            <p className="text-base font-medium w-64 line-clamp-1  capitalize">
               Lecture {data.lectureIndex + 1} : {data.title}
             </p>
             {/* <p className="text-xs">1 / 9</p> */}
@@ -71,19 +98,32 @@ const LectureView = (props) => {
         {lectureOpenFlag && (
           <>
             {data.content?.map((content, index) => {
+              const contentIndex = contentData.findIndex(
+                (info) =>
+                  // content.lectureId === activeContent?.lectureId &&
+                  info.id === content?.id
+              );
+              const previousContent =
+                contentData[contentIndex > 0 ? contentIndex - 1 : contentIndex];
+              console.log("previousContent: ", contentIndex, previousContent);
+              console.log("readStatus");
+              const readStatus = previousContent?.status ? true : false;
+              // setReadStatus(previousContent?.status ? true : false);
               if (content.type === "content") {
                 return (
                   <div
-                    className={`flex justify-between items-center border-b-2  p-2 px-4 cursor-pointer ${
+                    className={`flex justify-between items-center border-b-2  p-2 px-6 cursor-pointer ${
                       activeContent.contentId === content.id
                         ? `text-${themeColor}-${primaryColorLevel}`
                         : ""
                     }`}
                     onClick={() => {
-                      setActiveContent({
-                        lectureId: data.id,
-                        contentId: content.id,
-                      });
+                      if (readStatus) {
+                        setActiveContent({
+                          lectureId: data.id,
+                          contentId: content.id,
+                        });
+                      }
                     }}
                   >
                     <div className="flex items-center">
@@ -100,12 +140,71 @@ const LectureView = (props) => {
                     </div>
                     <p className="text-lg font-semibold">
                       {content.status ? (
+                        <>
+                          {" "}
+                          <HiCheckCircle
+                            className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          {/* <FaRegCircleCheck /> */}
+
+                          {!readStatus ? (
+                            <HiOutlineLockClosed />
+                          ) : (
+                            <>
+                              <FaRegCircleCheck />
+                            </>
+                          )}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                );
+              }
+              if (content.type === "assessment") {
+                return (
+                  <div
+                    className={`flex justify-between items-center border-b-2  p-2 px-6 cursor-pointer ${
+                      activeContent.contentId === content.id
+                        ? `text-${themeColor}-${primaryColorLevel}`
+                        : ""
+                    }`}
+                    onClick={() => {
+                      if (readStatus) {
+                        setActiveContent({
+                          lectureId: content.id,
+                          contentId: content.id,
+                        });
+                      }
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <GrTest size={18} />
+
+                      <p className="text-base ml-2 w-56 line-clamp-1">
+                        {content.title}
+                      </p>
+                    </div>
+                    <p className="text-lg font-semibold">
+                      {content.status ? (
+                        <>
                         <HiCheckCircle
                           className={`text-xl mr-2 text-${themeColor}-${primaryColorLevel}`}
                         />
+                        </>
                       ) : (
                         <>
-                          <FaRegCircleCheck  />
+                          {/* <FaRegCircleCheck /> */}
+
+                          {!readStatus ? (
+                            <HiOutlineLockClosed />
+                          ) : (
+                            <>
+                              <FaRegCircleCheck />
+                            </>
+                          )}
                         </>
                       )}
                     </p>
