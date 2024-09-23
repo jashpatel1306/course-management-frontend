@@ -31,10 +31,7 @@ const getRandomBgColorClass = () => {
   return bgColors[randomIndex];
 };
 const CourseCard = ({ index, item, trackingRecode }) => {
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
+ 
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.auth.user);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,9 +42,9 @@ const CourseCard = ({ index, item, trackingRecode }) => {
         `student/course/enroll/${item._id}`
       );
       if (response.success) {
+        setIsLoading(false);
         const url = `/app/student/course/${item._id}`;
         window.open(url, "_blank");
-        setIsLoading(false);
       } else {
         openNotification("danger", response.message);
         setIsLoading(false);
@@ -96,8 +93,10 @@ const CourseCard = ({ index, item, trackingRecode }) => {
             <h5
               className="text-lg font-bold line-clamp-1 cursor-pointer"
               onClick={() => {
-                const url = `/app/student/course/${item._id}`;
-                window.open(url, "_blank");
+                if (trackingRecode) {
+                  const url = `/app/student/course/${item._id}`;
+                  window.open(url, "_blank");
+                }
               }}
             >
               {item?.courseName}

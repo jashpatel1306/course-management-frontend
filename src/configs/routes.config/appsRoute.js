@@ -14,18 +14,6 @@ import {
 
 const appsRoute = [
   {
-    key: "apps.quiz",
-    path: `${STUDENT_PREFIX_PATH}/quiz`,
-    component: React.lazy(() => import("views/studentPanel/quiz")),
-    authority: [],
-    meta: {
-      layout: "blank",
-      pageContainerType: "gutterless",
-      footer: false,
-    },
-  },
-
-  {
     key: "apps.admin",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
     component: React.lazy(() => import("views/project/ProjectDashboard")),
@@ -100,6 +88,17 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/studentPanel/myCourses/viewCourses")
     ),
+    authority: [STUDENT],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
+    key: "apps.viewquiz",
+    path: `${STUDENT_PREFIX_PATH}/quiz/:quizId`,
+    component: React.lazy(() => import("views/studentPanel/quiz")),
     authority: [STUDENT],
     meta: {
       layout: "blank",
