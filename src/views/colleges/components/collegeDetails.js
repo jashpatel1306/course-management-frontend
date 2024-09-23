@@ -96,7 +96,6 @@ const CollegeDetails = (props) => {
       setApiFlag(true);
     }
   }, [flag]);
-  console.log("collegeData: ", collegeData);
   return (
     <>
       <div className="flex items-center mb-4">

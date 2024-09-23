@@ -1,26 +1,30 @@
-import { Button, Card, DatePicker, Dialog, Input } from "components/ui";
-import React, { useState } from "react";
+import { Button, Card, Dialog, Input, Select } from "components/ui";
+import React, { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
-import AssessmentCard from "./components/assessmentCard";
 import { HiPlusCircle } from "react-icons/hi";
 import openNotification from "views/common/notification";
 import axiosInstance from "apiServices/axiosInstance";
 import DisplayError from "views/common/displayError";
-import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import AssessmentList from "./components/assessmentList";
+import { SUPERADMIN } from "constants/roles.constant";
 const Assessment = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const { userData } = useSelector((state) => state.auth.user);
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [IsOpen, setIsOpen] = useState(false);
+  const [collegeLoading, setCollegeLoading] = useState(false);
+  const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
-    title: "Assessments-1",
-    expiresAt: new Date(),
+    title: "",
+    collegeId:
+      userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
   });
   const [error, setError] = useState("");
   const CreateAssessment = async () => {
@@ -39,7 +43,6 @@ const Assessment = () => {
       }
       setFormData({
         title: "",
-        expiresAt: "",
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -50,27 +53,43 @@ const Assessment = () => {
   };
   const onHandleBox = async () => {
     try {
-      if (
-        !formData.expiresAt &&
-        validator.isEmpty(formData.expiresAt?.toString(), {
-          ignore_whitespace: true,
-        })
-      ) {
-        setError("Please select a Expire Date.");
+      if (!formData.collegeId) {
+        setError("Please Select a College Name.");
       }
       if (!formData?.title) {
         setError("Please Enter Assessment Title.");
       }
 
-      if (formData?.title && formData.expiresAt) {
+      if (formData?.title && formData.collegeId) {
         setError("");
         CreateAssessment(formData);
-        // ;
       }
     } catch (error) {
-      console.log("onHandleBox error :",error);
+      console.log("onHandleBox error :", error);
     }
   };
+  const getCollegeOptionData = async () => {
+    try {
+      setCollegeLoading(true);
+      const response = await axiosInstance.get(`admin/college-option`);
+
+      if (response.success) {
+        setCollegeList(response.data);
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getCollegeOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setCollegeLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (userData.authority.toString() === SUPERADMIN) {
+      getCollegeOptionData();
+    }
+  }, []);
   return (
     <>
       <Card>
@@ -111,7 +130,7 @@ const Assessment = () => {
           setError("");
           setFormData({
             title: "",
-            expiresAt: "",
+            collegeId: "",
           });
         }}
         onRequestClose={() => {
@@ -119,7 +138,7 @@ const Assessment = () => {
           setError("");
           setFormData({
             title: "",
-            expiresAt: "",
+            collegeId: "",
           });
         }}
       >
@@ -148,45 +167,46 @@ const Assessment = () => {
               />
             </div>
           </div>
-          {/*  Expire Date */}
+          {/*  College Name */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Expire Date
+              Select College
             </div>
             <div className="col-span-2">
-              <DatePicker
-                placeholder="Please Enter Expire Date"
-                onChange={(date) => {
-                  if (date) {
-                    setFormData({
-                      ...formData,
-                      expiresAt: new Date(date),
-                    });
-                  } else {
-                    setFormData((prevFormData) => ({
-                      ...prevFormData,
-                      expiresAt: "",
-                    }));
-                  }
+              <Select
+                placeholder="Please Select College"
+                loading={collegeLoading}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    collegeId: e.value,
+                  });
                 }}
-                value={formData.expiresAt ? new Date(formData.expiresAt) : ""}
+                value={collegeList.find(
+                  (info) => info.value === formData?.collegeId
+                )}
+                options={collegeList}
               />
             </div>
           </div>
           {DisplayError(error)}
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
-          {/* <Button
+          <Button
             className="ltr:mr-2 rtl:ml-2"
             onClick={() => {
               setIsOpen(false);
+              setFormData({
+                title: "",
+                collegeId: null,
+              });
               setError("");
             }}
           >
             Cancel
-          </Button> */}
+          </Button>
           <Button variant="solid" onClick={onHandleBox} loading={isLoading}>
             Next
           </Button>

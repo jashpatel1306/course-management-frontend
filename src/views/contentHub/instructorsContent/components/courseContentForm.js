@@ -214,7 +214,6 @@ const CourseContentForm = () => {
         }
         if (file) {
           const filePath = await FileUpload(file, "content/files");
-          console.log("filePath : ", filePath);
           if (filePath.status) {
             await UpdateLectureContent({
               type: "file",
@@ -248,7 +247,6 @@ const CourseContentForm = () => {
         Header: "",
         accessor: "title",
         Cell: (props) => {
-          console.log("props: ", props);
           return (
             <>
               <>
@@ -420,10 +418,7 @@ const CourseContentForm = () => {
                             <div className="h-32 w-full rounded absolute inset-2 bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
                               <span
                                 onClick={() => {
-                                  console.log(
-                                    "delete file form s3 :",
-                                    lectureForm.content
-                                  );
+
                                   setLectureForm({
                                     ...lectureForm,
                                     content: "",

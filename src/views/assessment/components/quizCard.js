@@ -16,7 +16,7 @@ const QuizCard = (props) => {
     (state) => state?.theme?.primaryColorLevel
   );
   const [formData, setFormData] = useState({
-    title: "Assessments-1",
+    title: "",
     description: "",
     assessmentId: assessmentId,
     quizId: null,

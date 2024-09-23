@@ -51,6 +51,10 @@ module.exports = {
       '2xl': '1636px',
     },
     extend: {
+      boxShadow: {
+        customfooter: '0px 0px 20px 0px #b5b5b5',
+        customheader: '0px 0px 10px #b5b5b5',
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {

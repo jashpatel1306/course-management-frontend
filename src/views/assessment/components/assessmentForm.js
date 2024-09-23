@@ -22,7 +22,7 @@ const AssessmentForm = () => {
   const [IsOpen, setIsOpen] = useState(false);
   const [sectionData, setSectionData] = useState();
   const [formData, setFormData] = useState({
-    title: "Assessments-1",
+    title: "",
     description: "",
     assessmentId: assessmentId,
   });

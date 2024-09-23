@@ -168,9 +168,8 @@ const CourseCard = ({ index, item }) => {
               size="sm"
               icon={<FaRegEye />}
               onClick={() => {
-                navigate(
-                  `/app/admin/content-hub/instructors/course-forms/${item._id}`
-                );
+                const url = `/app/admin/course/instructor/preview/${item._id}`;
+                window.open(url, "_blank");
               }}
             />
             {userData?.authority.toString() === SUPERADMIN &&

@@ -103,7 +103,6 @@ function CourseForm(props) {
     return valid;
   };
   useEffect(() => {
-    console.log("courseData : ", courseData);
     if (courseData) {
       setFormData({
         courseName: courseData ? courseData?.courseName : "",
@@ -214,7 +213,6 @@ function CourseForm(props) {
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
-      console.log("errorObject : ", errorObject);
       if (Object.keys(errorObject)?.length === 0) {
         return {
           courseName: "",

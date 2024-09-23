@@ -90,7 +90,6 @@ const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
       const newData = [...data];
       const [movedRow] = newData.splice(startIndex, 1);
       newData.splice(endIndex, 0, movedRow);
-      console.log("newData:  ", newData);
       const formData = {
         lectureContent: newData,
       };
@@ -380,7 +379,6 @@ const LectureForm = (props) => {
       filename: file.name,
       filetype: file.type,
     });
-    console.log("data: ", data);
     return { uploadId: data.uploadId, key: data.key };
   };
   const uploadPart = async (uploadId, key, partNumber, part) => {
@@ -412,7 +410,6 @@ const LectureForm = (props) => {
   const VideoUpload = async (file) => {
     setVideoLoading(true);
     const startUploadResult = await startUpload(file);
-    console.log("startUploadResult:  ", startUploadResult);
     if (startUploadResult.uploadId && startUploadResult.key) {
       const chunkSize = 5 * 1024 * 1024; // 5 MB
       const parts = [];
@@ -481,10 +478,9 @@ const LectureForm = (props) => {
         }
         if (file) {
           const filePath = await FileUpload(file, "content/files");
-          console.log("filePath : ", filePath);
           if (filePath.status) {
             await UpdateLectureContent({
-              type: "video",
+              type: "file",
               content: filePath.data,
               title: lectureForm.title,
               // id: lectureForm.id ? lectureForm.id : "",
@@ -515,10 +511,9 @@ const LectureForm = (props) => {
         }
         if (file) {
           const filePath = await VideoUpload(file);
-          console.log("filePath : ", filePath);
           if (filePath) {
             await UpdateLectureContent({
-              type: "file",
+              type: "video",
               content: filePath,
               title: lectureForm.title,
               // id: lectureForm.id ? lectureForm.id : "",
@@ -549,7 +544,6 @@ const LectureForm = (props) => {
         Header: "",
         accessor: "title",
         Cell: (props) => {
-          console.log("props: ", props);
           return (
             <>
               <>
@@ -623,7 +617,7 @@ const LectureForm = (props) => {
         openNotification("danger", response.message);
       }
     } catch (error) {
-      console.log(" error:", error);
+      console.log("onHandleLectureDeleteBox error:", error);
       openNotification("danger", error.message);
     } finally {
       setLectureDeleteIsOpen(false);
@@ -641,7 +635,7 @@ const LectureForm = (props) => {
         openNotification("danger", response.message);
       }
     } catch (error) {
-      console.log(" error:", error);
+      console.log("onHandleLecturePublishBox error:", error);
       openNotification("danger", error.message);
     } finally {
       setLecturePublishIsOpen(false);
@@ -659,7 +653,7 @@ const LectureForm = (props) => {
         openNotification("danger", response.message);
       }
     } catch (error) {
-      console.log(" error:", error);
+      console.log("onHandleLectureContentDeleteBox error:", error);
       openNotification("danger", error.message);
     } finally {
       setDeleteIsOpen(false);
@@ -836,10 +830,6 @@ const LectureForm = (props) => {
                                         <div className="h-32 w-full rounded absolute inset-2 bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
                                           <span
                                             onClick={() => {
-                                              console.log(
-                                                "delete video form s3 :",
-                                                lectureForm.content
-                                              );
                                               setLectureForm({
                                                 ...lectureForm,
                                                 content: "",
@@ -956,6 +946,7 @@ const LectureForm = (props) => {
                                       onChange={(e) => {
                                         setLectureForm({
                                           ...lectureForm,
+                                          type:"file",
                                           title: e.target.value,
                                         });
                                       }}
@@ -967,19 +958,10 @@ const LectureForm = (props) => {
                                   <>
                                     <div className="flex flex-wrap items-center justify-start mb-4">
                                       <div className="group relative p-2 rounded flex h-32 ">
-                                        {/* <img
-                                          
-                                          src={lectureForm.content}
-                                          alt={lectureForm.content}
-                                        /> */}
                                         <FaFileAlt className="h-32 w-full rounded" />
                                         <div className="h-32 w-full rounded absolute inset-2 bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
                                           <span
                                             onClick={() => {
-                                              console.log(
-                                                "delete file form s3 :",
-                                                lectureForm.content
-                                              );
                                               setLectureForm({
                                                 ...lectureForm,
                                                 content: "",

@@ -28,13 +28,14 @@ import { SUPERADMIN } from "constants/roles.constant";
 const { Tr, Th, Td, THead, TBody } = Table;
 
 const columns = [
+  "College Name",
   "Batch Number",
   "Batch Name",
   "Total Student",
   "Courses",
   "Instructor Name",
 ];
-
+const adminColumns =columns.slice(1);
 const InstructorList = (props) => {
   const { flag, setAllCollegeList } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -145,7 +146,7 @@ const InstructorList = (props) => {
         setDeleteIsOpen(false);
       }
     } catch (error) {
-      console.log(" error:", error);
+      console.log("onHandleDeleteBox error:", error);
       openNotification("danger", error.message);
       setDeleteIsOpen(false);
     }
@@ -154,7 +155,6 @@ const InstructorList = (props) => {
   return (
     <>
       <div className="flex justify-end">
-        
         <div className="w-96">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
@@ -182,9 +182,20 @@ const InstructorList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {columns?.map((item) => {
-                    return <Th key={item}>{item}</Th>;
-                  })}
+                  {userData.authority.toString() === SUPERADMIN ? (
+                    <>
+                      {" "}
+                      {columns?.map((item) => {
+                        return <Th key={item}>{item}</Th>;
+                      })}
+                    </>
+                  ) : (
+                    <>
+                      {adminColumns?.map((item) => {
+                        return <Th key={item}>{item}</Th>;
+                      })}
+                    </>
+                  )}
                 </Tr>
               </THead>
               <TableRowSkeleton columns={9} rows={10} />
@@ -195,15 +206,31 @@ const InstructorList = (props) => {
             <Table>
               <THead>
                 <Tr>
-                  {columns?.map((item) => {
-                    return <Th key={item}>{item}</Th>;
-                  })}
+                  {userData.authority.toString() === SUPERADMIN ? (
+                    <>
+                      {" "}
+                      {columns?.map((item) => {
+                        return <Th key={item}>{item}</Th>;
+                      })}
+                    </>
+                  ) : (
+                    <>
+                      {adminColumns?.map((item) => {
+                        return <Th key={item}>{item}</Th>;
+                      })}
+                    </>
+                  )}
                 </Tr>
               </THead>
               <TBody>
                 {instructorData?.map((item, key) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
+                      {userData.authority.toString() === SUPERADMIN ? (
+                        <Td>{item.collegeId.collegeName}</Td>
+                      ) : (
+                        <></>
+                      )}
                       <Td>{key + 1}</Td>
                       <Td>{item?.batchName}</Td>
                       <Td>120</Td>

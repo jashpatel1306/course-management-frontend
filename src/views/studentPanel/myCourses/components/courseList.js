@@ -1,21 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import axiosInstance from "apiServices/axiosInstance";
-import { useSelector } from "react-redux";
-import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
-import { useDebounce } from "use-debounce";
-import removeSpecials from "views/common/serachText";
-import { SUPERADMIN } from "constants/roles.constant";
-
 import CourseCard from "./courseCards";
-import { Pagination } from "components/ui";
 import { DataNoFound } from "assets/svg";
 
 const CourseList = (props) => {
   const { flag } = props;
 
   const [courseData, setCourseData] = useState([]);
+  const [trackingData, setTrackingData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [apiFlag, setApiFlag] = useState(false);
 
@@ -35,12 +29,28 @@ const CourseList = (props) => {
       setIsLoading(false);
     }
   };
+  const fetchTrackingData = async () => {
+    try {
+      const response = await axiosInstance.get(`student/course/tracking`);
+      if (response.success) {
+        setTrackingData(response.data);
+        setIsLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log("get-all-course error:", error);
+      openNotification("danger", error.message);
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-
+      fetchTrackingData();
       fetchData();
     }
   }, [apiFlag]);
@@ -54,10 +64,6 @@ const CourseList = (props) => {
     }
   }, [flag]);
 
-  useEffect(() => {
-   
-    setApiFlag(true);
-  }, []);
   return (
     <>
       <div>
@@ -102,10 +108,19 @@ const CourseList = (props) => {
         ) : courseData && courseData?.length ? (
           <>
             <div>
-              <div className="flex justify-center">
+              <div className="flex justify-start">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
                   {courseData.map((item, index) => {
-                    return <CourseCard item={item} index={index} />;
+                    const trackingRecode = trackingData.find(
+                      (info, index) => info.courseId === item._id
+                    );
+                    return (
+                      <CourseCard
+                        item={item}
+                        index={index}
+                        trackingRecode={trackingRecode}
+                      />
+                    );
                   })}
                 </div>
               </div>

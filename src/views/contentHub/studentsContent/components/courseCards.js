@@ -125,7 +125,7 @@ const CourseCard = ({ index, item }) => {
         >
           {item?.coverImage ? (
             <img
-              className=" w-60 h-40 "
+              className="w-60 h-40"
               src={
                 item?.coverImage ||
                 "https://rainbowit.net/html/histudy/assets/images/course/course-online-01.jpg"
@@ -169,9 +169,8 @@ const CourseCard = ({ index, item }) => {
               size="sm"
               icon={<FaRegEye />}
               onClick={() => {
-                navigate(
-                  `/app/admin/content-hub/students/course-forms/${item._id}`
-                );
+                const url = `/app/admin/course/preview/${item._id}`;
+                window.open(url, "_blank");
               }}
             />
             {userData?.authority.toString() === SUPERADMIN &&

@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ADMIN_PREFIX_PATH,
+  INSTRUCTOR_PREFIX_PATH,
   STUDENT_PREFIX_PATH,
 } from "constants/route.constant";
 import {
@@ -23,17 +24,7 @@ const appsRoute = [
       footer: false,
     },
   },
-  {
-    key: "apps.viewCourse",
-    path: `${STUDENT_PREFIX_PATH}/viewCourse`,
-    component: React.lazy(() => import("views/studentPanel/myCourses/viewCourses")),
-    authority: [],
-    meta: {
-      layout: "blank",
-      pageContainerType: "gutterless",
-      footer: false,
-    },
-  },
+
   {
     key: "apps.admin",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
@@ -82,6 +73,41 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
+    key: "apps.previewCourse",
+    path: `${ADMIN_PREFIX_PATH}/course/preview/:courseId`,
+    component: React.lazy(() => import("views/previewCourses/students")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
+    key: "apps.previewInstructorCourse",
+    path: `${ADMIN_PREFIX_PATH}/course/instructor/preview/:courseId`,
+    component: React.lazy(() => import("views/previewCourses/instructor")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
+    key: "apps.viewCourse",
+    path: `${STUDENT_PREFIX_PATH}/course/:courseId`,
+    component: React.lazy(() =>
+      import("views/studentPanel/myCourses/viewCourses")
+    ),
+    authority: [STUDENT],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students/course/:course_id`,
     component: React.lazy(() =>
@@ -104,6 +130,19 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
   {
+    key: "apps.viewInstructorsCourse",
+    path: `${INSTRUCTOR_PREFIX_PATH}/course/:courseId`,
+    component: React.lazy(() =>
+      import("views/instructorPanel/myCourses/viewCourses")
+    ),
+    authority: [INSTRUCTOR],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false,
+    },
+  },
+  {
     key: "apps.assigncourses",
     path: `${ADMIN_PREFIX_PATH}/assign-courses`,
     component: React.lazy(() => import("views/contentHub/assignCourse")),
@@ -115,6 +154,13 @@ const appsRoute = [
     component: React.lazy(() => import("views/assessment")),
     authority: [ADMIN, SUPERADMIN, STAFF],
   },
+  {
+    key: "apps.assignassessmentcourses",
+    path: `${ADMIN_PREFIX_PATH}/assign-assessment-courses`,
+    component: React.lazy(() => import("views/assignAssessmentCourse")),
+    authority: [ADMIN, SUPERADMIN, STAFF],
+  },
+
   {
     key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment/form/:assessmentId`,

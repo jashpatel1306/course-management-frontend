@@ -9,23 +9,27 @@ import axiosInstance from "apiServices/axiosInstance";
 import appConfig from "configs/app.config";
 import { AiOutlineClose } from "react-icons/ai";
 import openNotification from "views/common/notification";
+import { SUPERADMIN } from "constants/roles.constant";
+
 const AssessmentList = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const { authority } = useSelector((state) => state.auth.user.userData);
+  const { userData } = useSelector((state) => state.auth.user);
+  const { collegeId } = useSelector((state) => state.auth.user.userData);
+
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
   const [assesssmentData, setAssesssmentData] = useState([]);
   const [currentTab, setCurrentTab] = useState();
   const [page, setPage] = useState(1);
-  const [resultTitle, setResultTitle] = useState(
-    `Result 0 - ${appConfig.pagePerData} of ${appConfig.pagePerData}`
-  );
+  const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
+
+  const [collegeLoading, setCollegeLoading] = useState(false);
+  const [collegeList, setCollegeList] = useState([]);
   const [batchLoading, setBatchLoading] = useState(false);
-  const [batchList, setBatchList] = useState([]);
   const [batchesList, setBatchesList] = useState([]);
   const [apiFlag, setApiFlag] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
@@ -43,6 +47,12 @@ const AssessmentList = () => {
         pageNo: page,
         perPage: appConfig.pagePerData,
       };
+      if (userData?.authority.toString() === SUPERADMIN) {
+        formData = {
+          ...formData,
+          collegeId: currentCollegeTab ? currentCollegeTab : "all",
+        };
+      }
 
       const response = await axiosInstance.post(
         `user/get-all-assessments`,
@@ -57,9 +67,7 @@ const AssessmentList = () => {
         );
         const start = appConfig.pagePerData * (page - 1);
         const end = start + response.data?.length;
-        setResultTitle(
-          `Result ${start + 1} - ${end} of ${response.pagination.total}`
-        );
+
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -71,28 +79,41 @@ const AssessmentList = () => {
       setIsLoading(false);
     }
   };
-  const getBatchData = async () => {
+  const getCollegeOptionData = async () => {
     try {
-      setBatchLoading(true);
-      const response = await axiosInstance.get(`user/batches-option`);
+      setCollegeLoading(true);
+      const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setBatchList(response.data);
-        setBatchLoading(false);
-        if (!currentTab) {
-          setCurrentTab(response.data[0].value);
-          const importBatchList = [...response.data];
-          importBatchList.shift();
-          setBatchesList(importBatchList);
-          fetchData();
-        }
+        setCollegeList(response.data);
+        setBatchesList([]);
       } else {
         openNotification("danger", response.error);
-        setBatchLoading(false);
       }
     } catch (error) {
-      console.log("getBatchsData error :", error.message);
+      console.log("getCollegeOptionData error :", error.message);
       openNotification("danger", error.message);
+    } finally {
+      setCollegeLoading(false);
+    }
+  };
+  const getBatchOptionData = async (collegeId = "") => {
+    try {
+      setBatchLoading(true);
+      const response =
+        userData.authority.toString() === SUPERADMIN && collegeId
+          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
+          : await axiosInstance.get(`user/batches-option`);
+
+      if (response.success) {
+        setBatchesList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getBatchOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
       setBatchLoading(false);
     }
   };
@@ -100,12 +121,19 @@ const AssessmentList = () => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
+
       fetchData();
     }
   }, [apiFlag]);
+
   useEffect(() => {
     setApiFlag(true);
-    getBatchData();
+    if (userData.authority.toString() !== SUPERADMIN) {
+      getBatchOptionData();
+    } else {
+      getCollegeOptionData();
+      getBatchOptionData(collegeId);
+    }
   }, []);
 
   useEffect(() => {
@@ -117,13 +145,36 @@ const AssessmentList = () => {
       <Card className="mt-4">
         <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
           <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+            {userData.authority.toString() === SUPERADMIN && (
+              <Select
+                isSearchable={true}
+                className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+                placeholder="College"
+                options={collegeList}
+                loading={collegeLoading}
+                value={collegeList.find(
+                  (item) => item.value === currentCollegeTab
+                )}
+                onChange={(item) => {
+                  setCurrentCollegeTab(item.value);
+                  setCurrentTab(null);
+                  getBatchOptionData(item.value);
+                  setApiFlag(true);
+                  setPage(1);
+                }}
+              />
+            )}
             <Select
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="Batches"
-              options={batchList}
+              options={batchesList}
               loading={batchLoading}
-              value={batchList.find((item) => item.value === currentTab)}
+              value={
+                currentTab
+                  ? batchesList.find((item) => item.value === currentTab)
+                  : null
+              }
               onChange={(item) => {
                 setCurrentTab(item.value);
                 setApiFlag(true);
@@ -133,7 +184,7 @@ const AssessmentList = () => {
           </div>
           <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
             <Input
-              placeholder="Search By Name, Email"
+              placeholder="Search By Name"
               className=" input-wrapper md:mb-0 mb-4"
               value={searchText}
               prefix={

@@ -229,14 +229,12 @@ function AssignCourseForm(props) {
         const newFormData = { ...formData };
         // await editAssignCourseMethod(newFormData, assignCourseData?._id);
       } else {
-        console.log("formData:  ", formData);
         await addNewAssignCourseMethod(formData);
       }
     } else {
       setErrorData(errorObject);
     }
   };
-  console.log("formData:  ", formData);
   return (
     <>
       <Drawer
