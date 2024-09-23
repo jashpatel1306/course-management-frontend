@@ -48,6 +48,103 @@ const CommonViewer = ({ url }) => {
     </>
   );
 };
+const AssessmentView = ({ contentData }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [apiFlag, setApiFlag] = useState(false);
+  const [assessmentData, setAssessmentData] = useState();
+  console.log("contentData : ", contentData);
+  const fetchAssessmentData = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `student/assessment/${contentData.id}`
+      );
+      if (response.success) {
+        setAssessmentData(response.data);
+
+        setIsLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log("get-all-course error:", error);
+      openNotification("danger", error.message);
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (apiFlag) {
+      setApiFlag(false);
+      setIsLoading(true);
+
+      fetchAssessmentData();
+    }
+  }, [apiFlag]);
+
+  useEffect(() => {
+    setApiFlag(true);
+  }, []);
+  return (
+    <>
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">
+        {contentData.title}
+      </h2>
+      {isLoading ? (
+        <>
+          <Spinner className="mr-4" size="40px" />
+        </>
+      ) : (
+        <>
+          <div className="flex justify-between items-center p-2 mt-4 text-lg font-bold">
+            <p className="bg-blue-700 text-white p-2 px-4 rounded-md">
+              TotalQuestions : {assessmentData.totalQuestions}
+            </p>
+            <p className="bg-blue-700 text-white p-2 px-4 rounded-md">
+              TotalMarks : {assessmentData.totalMarks}
+            </p>
+          </div>
+
+          <div>
+            {assessmentData.content.map((info) => {
+              const content = info.data;
+              if (info.type === "quiz") {
+                return (
+                  <div
+                    key={content?._id}
+                    className="text-base font-medium rounded-lg mt-2 bg-blue-200 flex p-4 px-6 items-center justify-between"
+                  >
+                    <div>
+                      <h3>{content.title}</h3>
+                      <div className="flex gap-4 mt-2 text-lg">
+                        <p>TotalMarks : {content.totalMarks}</p>
+                        <p>TotalQuestions : {content.questions.length}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <Button
+                        variant="solid"
+                        onClick={() => {
+                          const url = `${
+                            window.location.href.split("app")[0]
+                          }app/student/quiz/${content?._id}`;
+                          console.log(url);
+                          window.open(url, "_blank");
+                        }}
+                      >
+                        Quiz Start
+                      </Button>
+                    </div>
+                  </div>
+                );
+              }
+            })}
+          </div>
+        </>
+      )}
+      <div className="text-lg text-gray-800 mb-2"></div>
+    </>
+  );
+};
 const ContentContainer = ({ contentData }) => {
   return (
     <>
@@ -86,10 +183,7 @@ const ContentContainer = ({ contentData }) => {
         )}
         {contentData?.contentType === "assessment" && (
           <>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              {contentData.title}
-            </h2>
-            <div className="text-lg text-gray-800 mb-2">assessment Content</div>
+            <AssessmentView contentData={contentData} />
           </>
         )}
         {!contentData?.contentType && (
