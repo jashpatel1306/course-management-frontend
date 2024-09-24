@@ -105,8 +105,7 @@ const LectureView = (props) => {
               );
               const previousContent =
                 contentData[contentIndex > 0 ? contentIndex - 1 : contentIndex];
-              console.log("previousContent: ", contentIndex, previousContent);
-              console.log("readStatus");
+         
               const readStatus = previousContent?.status ? true : false;
               // setReadStatus(previousContent?.status ? true : false);
               if (content.type === "content") {

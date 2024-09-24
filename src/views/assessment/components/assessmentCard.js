@@ -107,7 +107,6 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
   };
   const formValidation = () => {
     try {
-      console.log("formData : ", formData);
       assignAssessmentValidationSchema.validateSync(formData, {
         abortEarly: false,
       });

@@ -394,7 +394,6 @@ function AssignCourseForm(props) {
       resetErrorData();
       if (assignCourseData?._id) {
         const newFormData = { ...formData };
-        console.log("newFormDataL ", newFormData);
         await editAssignAssessmentCourseMethod(
           newFormData,
           assignCourseData?._id

@@ -1,5 +1,5 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Card, Dialog, Input } from "components/ui";
+import { Button, Card, Dialog, Input, Switcher } from "components/ui";
 import React, { useState } from "react";
 import { FaCheckCircle, FaFile, FaPlus } from "react-icons/fa";
 import { HiOutlinePencil } from "react-icons/hi";
@@ -8,18 +8,21 @@ import openNotification from "views/common/notification";
 import DisplayError from "views/common/displayError";
 import QuestionsList from "./questionList";
 import QuestionForm from "./questionForm";
+import { MdDelete } from "react-icons/md";
+import { FormNumericInput } from "components/shared";
 
 const QuizCard = (props) => {
-  const { assessmentId, quizData, quizIndex,setApiFlag} = props;
+  const { assessmentId, quizData, quizIndex, setApiFlag } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
+    description: [],
     assessmentId: assessmentId,
-    quizId: null,
+    time: null,
+    isPublish: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [IsOpen, setIsOpen] = useState(false);
@@ -43,7 +46,9 @@ const QuizCard = (props) => {
       setFormData({
         ...formData,
         title: "",
-        description: "",
+        description: [],
+        time: null,
+        isPublish: false,
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -54,11 +59,16 @@ const QuizCard = (props) => {
   };
   const onHandleQuizBox = async () => {
     try {
+      if (!formData?.description.length) {
+        setError("Please Enter At Least One Instruction");
+      }
+      if (!formData?.time) {
+        setError("Please Enter At Quiz Time In Minutes");
+      }
       if (!formData?.title) {
         setError("Please Enter Quiz Title.");
       }
-
-      if (formData?.title) {
+      if (formData?.title && formData?.time && formData?.description.length) {
         UpdateQuiz();
         setApiFlag(true);
         setError("");
@@ -66,13 +76,36 @@ const QuizCard = (props) => {
         setFormData({
           ...formData,
           title: "",
-          description: "",
+          description: [],
+          time: null,
+          isPublish: false,
           quizId: null,
         });
       }
     } catch (error) {
-      console.log("onHandleQuizBox error :",error);
+      console.log("onHandleQuizBox error :", error);
     }
+  };
+  const handleDescriptionChange = (index, value) => {
+    const newDescriptions = [...formData.description];
+    newDescriptions[index] = value;
+    setFormData({
+      ...formData,
+      description: newDescriptions,
+    });
+  };
+  const addDescription = () => {
+    setFormData({
+      ...formData,
+      description: [...formData.description, ""], // Add new empty description
+    });
+  };
+  const removeDescription = (index) => {
+    const newDescriptions = formData.description.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      description: newDescriptions,
+    });
   };
   return (
     <>
@@ -93,6 +126,8 @@ const QuizCard = (props) => {
                 setFormData({
                   title: quizData.title,
                   description: quizData.description,
+                  time: quizData.time,
+                  isPublish: quizData.isPublish,
                   assessmentId: assessmentId,
                   quizId: quizData._id,
                 });
@@ -155,7 +190,7 @@ const QuizCard = (props) => {
           setFormData({
             ...formData,
             title: "",
-            description: "",
+            description: [],
             quizId: null,
           });
         }}
@@ -165,7 +200,7 @@ const QuizCard = (props) => {
           setFormData({
             ...formData,
             title: "",
-            description: "",
+            description: [],
             quizId: null,
           });
         }}
@@ -174,7 +209,7 @@ const QuizCard = (props) => {
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
             Quiz Details
           </h5>
-          {/* Assessment Name  */}
+          {/* Quiz Name  */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
@@ -195,24 +230,79 @@ const QuizCard = (props) => {
               />
             </div>
           </div>
+          {/* Quiz Time  */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Description
+              Quiz Time (Minutes)
             </div>
             <div className="col-span-2">
-              <Input
-                textArea
-                type="text"
-                placeholder="Enter a Quiz Description"
-                value={formData?.description}
+              <FormNumericInput
+                onKeyDown={(evt) =>
+                  ["e", "E", "+", "-"]?.includes(evt.key) &&
+                  evt.preventDefault()
+                }
+                placeholder="Please Enter Quiz Time"
+                className="capitalize"
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    description: e.target.value,
+                    time: e.target.value,
                   });
                 }}
+                value={formData?.time}
+              />
+            </div>
+          </div>
+          {/* Quiz Instructions */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Instructions
+            </div>
+            <div className="col-span-2">
+              {formData.description.map((description, index) => (
+                <div className="flex gap-4 col-span-2 mt-2" key={index}>
+                  <Input
+                    type="text"
+                    placeholder={`Enter Quiz Instruction ${index + 1}`}
+                    value={description}
+                    onChange={(e) =>
+                      handleDescriptionChange(index, e.target.value)
+                    }
+                  />
+                  {formData.description.length > 1 && (
+                    <Button
+                      shape="circle"
+                      icon={<MdDelete />}
+                      onClick={() => removeDescription(index)}
+                    />
+                  )}
+                </div>
+              ))}
+              <Button type="button" onClick={addDescription} className="mt-2">
+                Add New Instruction
+              </Button>
+            </div>
+          </div>
+          {/* Quiz Publish Status */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Quiz Publish Status
+            </div>
+            <div className="col-span-2">
+              <Switcher
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    isPublish: !e,
+                  });
+                }}
+                checked={formData?.isPublish}
               />
             </div>
           </div>
@@ -227,7 +317,7 @@ const QuizCard = (props) => {
               setFormData({
                 ...formData,
                 title: "",
-                description: "",
+                description: [],
                 quizId: null,
               });
             }}
