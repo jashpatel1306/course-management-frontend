@@ -20,7 +20,7 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
-  <Script strategy="afterInteractive" id="100vh-fix">
+  <!-- <Script strategy="afterInteractive" id="100vh-fix">
     {`
         var customViewportCorrectionVariable = 'vh';
 
@@ -41,4 +41,10 @@
         window.addEventListener('resize', setViewportProperty(document.documentElement));
     `}
   </Script>
+  <script>
+    document.addEventListener("keyup",(e)=>{
+      navigator.clipboard.writeText("");
+      alert("Screenshot Disabled")
+    })
+  </script> -->
 </html>

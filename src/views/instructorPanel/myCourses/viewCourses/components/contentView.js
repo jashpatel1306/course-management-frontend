@@ -103,7 +103,6 @@ const ContentView = (props) => {
       );
     }
   }, [activeContent]);
-  console.log("currentContentIndex: ", contentData[currentContentIndex]);
   return (
     <>
       <div className="flex-1 relative bg-white">
@@ -157,11 +156,7 @@ const ContentView = (props) => {
             loading={isLoading}
             onClick={() => {
               const currentContent = contentData[currentContentIndex];
-              console.log("currentContent:  ", currentContent);
-
               const nextContent = contentData[currentContentIndex + 1];
-              console.log("nextContent:  ", nextContent);
-
               if (nextContent?._id) {
                 setActiveContent(nextContent._id);
               }

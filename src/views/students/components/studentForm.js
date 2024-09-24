@@ -127,7 +127,7 @@ function StudentForm(props) {
         getCollegeOptionData();
       }
     }
-  }, [isOpen]);
+  }, [isOpen,userData.authority,userData.collegeId]);
 
   useEffect(() => {
     if (studentData?._id) {

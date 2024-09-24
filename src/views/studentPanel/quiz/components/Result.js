@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { DonutChart } from "./DonutChart";
 import { Button } from "components/ui";
 
-export const Result = ({ results, totalQuestions }) => {
+export const Result = ({ results, totalQuestions, quizData }) => {
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
 
   const handleRetry = () => {
@@ -34,7 +34,7 @@ export const Result = ({ results, totalQuestions }) => {
       transition={{ duration: 0.5 }}
     >
       <div className="flex flex-col text-black font-bold  text-center w-full">
-        <h1 className="font-bold text-2xl text-white">QuizApp</h1>
+        <h1 className="font-bold text-2xl text-white">{quizData.title}</h1>
 
         {/* Result Box */}
         <div className="mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2">
@@ -103,7 +103,7 @@ export const Result = ({ results, totalQuestions }) => {
         <div className="mt-auto">
           <Button
             intent={"secondary"}
-             variant="solid"
+            variant="solid"
             block
             className="mt-6"
             onClick={handleRetry}

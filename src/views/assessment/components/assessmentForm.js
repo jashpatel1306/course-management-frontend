@@ -1,4 +1,4 @@
-import { Button, Card, Dialog, Input } from "components/ui";
+import { Button, Card, Dialog, Input, Switcher } from "components/ui";
 import React, { useEffect, useRef, useState } from "react";
 import { HiArrowNarrowLeft, HiPlusCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -8,6 +8,8 @@ import axiosInstance from "apiServices/axiosInstance";
 import DisplayError from "views/common/displayError";
 import QuizCard from "./quizCard";
 import ExerciseCard from "./exerciseCard";
+import { MdDelete } from "react-icons/md";
+import { FormNumericInput } from "components/shared";
 
 const AssessmentForm = () => {
   const { assessmentId } = useParams();
@@ -23,8 +25,10 @@ const AssessmentForm = () => {
   const [sectionData, setSectionData] = useState();
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
+    description: [],
     assessmentId: assessmentId,
+    time: null,
+    isPublish: false,
   });
   const [error, setError] = useState("");
   const CreateQuiz = async () => {
@@ -43,7 +47,9 @@ const AssessmentForm = () => {
       setFormData({
         ...formData,
         title: "",
-        description: "",
+        description: [],
+        time: null,
+        isPublish: false,
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -54,23 +60,30 @@ const AssessmentForm = () => {
   };
   const onHandleQuizBox = async () => {
     try {
+      if (!formData?.description.length) {
+        setError("Please Enter At Least One Instruction");
+      }
+      if (!formData?.time) {
+        setError("Please Enter At Quiz Time In Minutes");
+      }
       if (!formData?.title) {
         setError("Please Enter Quiz Title.");
       }
-
-      if (formData?.title) {
+      if (formData?.title && formData?.time && formData?.description.length) {
         CreateQuiz();
         setError("");
         // setIsOpen(false);
         setFormData({
           ...formData,
           title: "",
-          description: "",
+          description: [],
           quizId: null,
+          time: null,
+          isPublish: false,
         });
       }
     } catch (error) {
-      console.log("onHandleQuizBox error :",error);
+      console.log("onHandleQuizBox error :", error);
     }
   };
 
@@ -102,6 +115,27 @@ const AssessmentForm = () => {
   useEffect(() => {
     setApiFlag(true);
   }, []);
+  const handleDescriptionChange = (index, value) => {
+    const newDescriptions = [...formData.description];
+    newDescriptions[index] = value;
+    setFormData({
+      ...formData,
+      description: newDescriptions,
+    });
+  };
+  const addDescription = () => {
+    setFormData({
+      ...formData,
+      description: [...formData.description, ""], // Add new empty description
+    });
+  };
+  const removeDescription = (index) => {
+    const newDescriptions = formData.description.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      description: newDescriptions,
+    });
+  };
   return (
     <>
       <div className="flex items-center mb-4">
@@ -145,35 +179,29 @@ const AssessmentForm = () => {
             </div>
             <Card className="bg-gray-100 border-2 mt-4">
               <div>
-              {sectionData?.content?.map((info, index) => {
-                      return (
-                        <>
-                          <div>
-                            {info?.type === "quiz" ? (
-                              <>
-                                <QuizCard
-                                  assessmentId={sectionData._id}
-                                  quizData={info?.data}
-                                  quizIndex={index + 1}
-                                  setApiFlag={setApiFlag}
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <ExerciseCard />
-                              </>
-                            )}
-                          </div>
-                        </>
-                      );
-                    })}
-                {sectionData?.content?.length ? (
-                  <>
-                    
-                  </>
-                ) : (
-                  <></>
-                )}
+                {sectionData?.content?.map((info, index) => {
+                  return (
+                    <>
+                      <div>
+                        {info?.type === "quiz" ? (
+                          <>
+                            <QuizCard
+                              assessmentId={sectionData._id}
+                              quizData={info?.data}
+                              quizIndex={index + 1}
+                              setApiFlag={setApiFlag}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <ExerciseCard />
+                          </>
+                        )}
+                      </div>
+                    </>
+                  );
+                })}
+                {sectionData?.content?.length ? <></> : <></>}
               </div>
               <div
                 className={`mt-4 p-2 flex text-${themeColor}-${primaryColorLevel} border-2 border-dashed border-gray-400 rounded-lg  bg-gray-50`}
@@ -238,7 +266,7 @@ const AssessmentForm = () => {
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
             Quiz Details
           </h5>
-          {/* Assessment Name  */}
+          {/* Quiz Name  */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
@@ -259,24 +287,79 @@ const AssessmentForm = () => {
               />
             </div>
           </div>
+          {/* Quiz Time  */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Description
+              Quiz Time (Minutes)
             </div>
             <div className="col-span-2">
-              <Input
-                textArea
-                type="text"
-                placeholder="Enter a Quiz Description"
-                value={formData?.description}
+              <FormNumericInput
+                onKeyDown={(evt) =>
+                  ["e", "E", "+", "-"]?.includes(evt.key) &&
+                  evt.preventDefault()
+                }
+                placeholder="Please Enter Quiz Time"
+                className="capitalize"
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    description: e.target.value,
+                    time: e.target.value,
                   });
                 }}
+                value={formData?.time}
+              />
+            </div>
+          </div>
+          {/* Quiz Instructions */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Instructions
+            </div>
+            <div className="col-span-2">
+              {formData.description.map((description, index) => (
+                <div className="flex gap-4 col-span-2 mt-2" key={index}>
+                  <Input
+                    type="text"
+                    placeholder={`Enter Quiz Instruction ${index + 1}`}
+                    value={description}
+                    onChange={(e) =>
+                      handleDescriptionChange(index, e.target.value)
+                    }
+                  />
+                  {formData.description.length > 1 && (
+                    <Button
+                      shape="circle"
+                      icon={<MdDelete />}
+                      onClick={() => removeDescription(index)}
+                    />
+                  )}
+                </div>
+              ))}
+              <Button type="button" onClick={addDescription} className="mt-2">
+                Add New Instruction
+              </Button>
+            </div>
+          </div>
+          {/* Quiz Publish Status */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Quiz Publish Status
+            </div>
+            <div className="col-span-2">
+              <Switcher
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    isPublish: !e,
+                  });
+                }}
+                checked={formData?.isPublish}
               />
             </div>
           </div>

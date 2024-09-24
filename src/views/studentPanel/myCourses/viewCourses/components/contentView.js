@@ -52,7 +52,6 @@ const AssessmentView = ({ contentData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [apiFlag, setApiFlag] = useState(false);
   const [assessmentData, setAssessmentData] = useState();
-  console.log("contentData : ", contentData);
   const fetchAssessmentData = async () => {
     try {
       const response = await axiosInstance.get(
@@ -97,10 +96,10 @@ const AssessmentView = ({ contentData }) => {
         <>
           <div className="flex justify-between items-center p-2 mt-4 text-lg font-bold">
             <p className="bg-blue-700 text-white p-2 px-4 rounded-md">
-              TotalQuestions : {assessmentData.totalQuestions}
+              Total Questions : {assessmentData.totalQuestions}
             </p>
             <p className="bg-blue-700 text-white p-2 px-4 rounded-md">
-              TotalMarks : {assessmentData.totalMarks}
+              Total Marks : {assessmentData.totalMarks}
             </p>
           </div>
 
@@ -127,7 +126,6 @@ const AssessmentView = ({ contentData }) => {
                           const url = `${
                             window.location.href.split("app")[0]
                           }app/student/quiz/${content?._id}`;
-                          console.log(url);
                           window.open(url, "_blank");
                         }}
                       >
@@ -245,7 +243,6 @@ const ContentView = (props) => {
       );
 
       if (response.success) {
-        console.log("response : ", response.data);
         if (
           response.data.totalcontent === response.data.trackingContent.length
         ) {

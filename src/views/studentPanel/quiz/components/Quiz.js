@@ -9,50 +9,31 @@ import {
   playWrongAnswer,
 } from "utils/playSound";
 import { Button, Progress } from "components/ui";
+import parse from "html-react-parser";
+import axiosInstance from "apiServices/axiosInstance";
+import openNotification from "views/common/notification";
+import { useParams } from "react-router-dom";
 
-const TIME_LIMIT = 60; // 1 minute per question
-const quizQuestions = [
-  {
-    question:
-      "What is the process of converting analog signals into digital data called?",
-    options: ["Encoding", "Decoding", "Encryption", "Modulation"],
-    correctAnswer: "Encoding",
-  },
-  {
-    question: "What is the smallest unit of digital information?",
-    options: ["Byte", "Bit", "Megabyte", "Gigabyte"],
-    correctAnswer: "Bit",
-  },
-  {
-    question: "Which programming language is used for web development?",
-    options: ["PHP", "Ruby", "Swift", "HTML"],
-    correctAnswer: "HTML",
-  },
-  {
-    question: "What is the standard file format for images on the web?",
-    options: ["PNG", "PDF", "TXT", "DOC"],
-    correctAnswer: "PNG",
-  },
-  {
-    question:
-      "Which technology is used to track the location of a mobile device?",
-    options: ["GPS", "NFC", "Wi-Fi", "Bluetooth"],
-    correctAnswer: "GPS",
-  },
-];
-export const Quiz = () => {
+export const Quiz = (props) => {
+  const TIME_LIMIT = 180; // 1 minute per question
+  const { quizId } = useParams();
+
+  const { questions, quizData } = props;
   const timerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [timePassed, setTimePassed] = useState(0);
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(-1);
-  const [quizFinished, setQuizFinished] = useState(false);
+  const [quizFinished, setQuizFinished] = useState(true);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const [results, setResults] = useState({
     correctAnswers: 0,
     wrongAnswers: 0,
     secondsUsed: 0,
   });
+  const { question, answers, _id } = questions[activeQuestion];
+  const numberOfQuestions = questions.length;
   const setupTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -84,80 +65,71 @@ export const Quiz = () => {
       // The time limit has been reached for this question
       // So the answerr will be considered wrong
 
-      // Update results
-      if (selectedAnswerIndex === -1) {
-        setResults((prev) => ({
-          ...prev,
-          secondsUsed: prev.secondsUsed + TIME_LIMIT,
-          wrongAnswers: prev.wrongAnswers + 1,
-        }));
-      }
+      setResults((prev) => ({
+        ...prev,
+        secondsUsed: prev.secondsUsed + TIME_LIMIT,
+        wrongAnswers: prev.wrongAnswers + 1,
+      }));
 
-      handleNextQuestion();
+      // handleNextQuestion();
       // Restart timer
-      setTimePassed(0);
+      // setTimePassed(0);
+      setQuizFinished(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timePassed]);
 
-  const handleNextQuestion = () => {
-    // Reset selected answer
-    setSelectedAnswerIndex(-1);
-
-    // Check if quiz finished
-    if (activeQuestion + 1 >= quizQuestions.length) {
-      console.log("Quiz finished!");
-      playQuizEnd();
-      setQuizFinished(true);
-      return;
+  const UpdateQuizQuestionData = async (questionId, answerId) => {
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.put(
+        `student/quiz/update/${quizId}`,
+        { questionId, answerId }
+      );
+      if (response.success) {
+        setSelectedAnswerIndex(-1);
+        if (activeQuestion + 1 >= questions.length) {
+          console.log("Quiz finished!");
+          playQuizEnd();
+          setQuizFinished(true);
+          return;
+        }
+        // Set next question
+        setActiveQuestion((prev) => prev + 1);
+        setIsLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log("Update Quiz Question Data error:", error);
+      openNotification("danger", error.message);
+      setIsLoading(false);
     }
-
-    // Set next question
-    setActiveQuestion((prev) => prev + 1);
-
-    // Reset timer
-    setupTimer();
-    setTimePassed(0);
+  };
+  const handleNextQuestion = async () => {
+    console.log("Question : ", _id);
+    console.log("Answer : ", selectedAnswerIndex);
+    if (_id && selectedAnswerIndex) {
+      await UpdateQuizQuestionData(_id, selectedAnswerIndex);
+    }
   };
 
   const handleSelectAnswer = (answerIndex) => {
     //  Stop timer
     clearInterval(timerRef.current);
     setSelectedAnswerIndex(answerIndex);
-
-    // Check if answer is correct
-    const correctAnswer = quizQuestions[activeQuestion].correctAnswer;
-    const selectedAnswer = quizQuestions[activeQuestion].options[answerIndex];
-
-    if (correctAnswer === selectedAnswer) {
-      console.log("Correct answer!");
-      playCorrectAnswer();
-      // Update results
-      setResults((prev) => ({
-        ...prev,
-        secondsUsed: prev.secondsUsed + timePassed,
-        correctAnswers: prev.correctAnswers + 1,
-      }));
-
-      setIsCorrectAnswer(true);
-    } else {
-      console.log("Wrong answer!");
-      playWrongAnswer();
-      // Update results
-      setResults((prev) => ({
-        ...prev,
-        secondsUsed: prev.secondsUsed + timePassed,
-        wrongAnswers: prev.wrongAnswers + 1,
-      }));
-      setIsCorrectAnswer(false);
-    }
   };
 
-  const { question, options } = quizQuestions[activeQuestion];
-  const numberOfQuestions = quizQuestions.length;
-
   if (quizFinished) {
-    return <Result results={results} totalQuestions={quizQuestions.length} />;
+    return (
+      <Result
+        results={results}
+        totalQuestions={questions.length}
+        questions={questions}
+        quizData={quizData}
+      />
+    );
   }
 
   return (
@@ -183,7 +155,7 @@ export const Quiz = () => {
         <div className="flex justify-between items-center px-6">
           <div>
             <h1 className="font-bold text-2xl text-brand-cerulean-blue">
-              QuizApp
+              {quizData?.title}
             </h1>
           </div>
           <div>
@@ -195,7 +167,7 @@ export const Quiz = () => {
             <Progress
               percent={(timePassed / TIME_LIMIT) * 100}
               variant="circle"
-              width={80}
+              width={60}
               customInfo={
                 <div className="text-center">
                   <span>{formatTime(timePassed)}</span>
@@ -204,30 +176,37 @@ export const Quiz = () => {
             />
           </div>
         </div>
-        <div className="mt-6 rounded-2xl border border-brand-light-gray px-7 py-4 w-full mb-8">
-         
-          <h4 className="text-black font-medium text-lg">
-            {question}
-          </h4>
+        <div className="max-h-[80vh] overflow-y-scroll hidden-scroll pt-2 pb-8">
+          <div className="mt-2 rounded-2xl border border-brand-light-gray px-7 py-4 w-full mb-8 ">
+            <h4 className="text-black font-medium text-lg">
+              {parse(
+                question
+                  .replaceAll("<pre", `<code><pre`)
+                  .replaceAll("</pre>", `</pre></code>`)
+              )}
+            </h4>
+          </div>
+          <OptionList
+            activeQuestion={questions[activeQuestion]}
+            answers={answers}
+            selectedAnswerIndex={selectedAnswerIndex}
+            onAnswerSelected={handleSelectAnswer}
+            isCorrectAnswer={isCorrectAnswer}
+          />
         </div>
 
-        <OptionList
-          activeQuestion={quizQuestions[activeQuestion]}
-          options={options}
-          selectedAnswerIndex={selectedAnswerIndex}
-          onAnswerSelected={handleSelectAnswer}
-          isCorrectAnswer={isCorrectAnswer}
-        />
-
-        <div className="mt-auto">
-          <Button
-            disabled={selectedAnswerIndex === -1}
-            block
-            onClick={handleNextQuestion}
-            variant="solid"
-          >
-            Next
-          </Button>
+        <div className="absolute bottom-0 w-full flex justify-between bg-gray-100 p-2 px-6">
+          <div className="w-full flex justify-end items-center">
+            <Button
+              disabled={selectedAnswerIndex === -1}
+              className="w-48"
+              onClick={handleNextQuestion}
+              variant="solid"
+              loading={isLoading}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>

@@ -1,13 +1,8 @@
 import React from "react";
-import { CheckCircle, Doodles } from "assets/svg";
 import { Button } from "components/ui";
 import { FaCheckCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
-const importantToKnow = [
-  "In each quiz, you are required to answer 5 questions.",
-  "You will have 1 minute for each question. If you fail to complete a question in given time, your answer will be considered incorrect.",
-];
-const Intro = ({ onGetStartedClick, quizName }) => {
+const Intro = ({ onGetStartedClick, quizData }) => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -25,19 +20,21 @@ const Intro = ({ onGetStartedClick, quizName }) => {
       />
 
       <div className="w-full flex flex-col flex-1 items-center z-10">
-        <h1 className="text-brand-cerulean-blue font-bold text-[32px] sm:text-4xl capitalize">
-          {quizName}
+        <h1 className={`text-brand-cerulean-blue font-bold text-[32px] sm:text-4xl capitalize text-${themeColor}-${primaryColorLevel}`}>
+          {quizData.title}
         </h1>
 
         <h3 className="text-black font-bold text-2xl mt-[51.55px] sm:text-3xl">
           Things to know before you start:
         </h3>
 
-        <div className="flex flex-col items-start mt-5 sm:mt-10">
-          {importantToKnow.map((item, index) => (
+        <div
+          className={`flex flex-col items-start mt-5 sm:mt-10 max-h-[60vh] overflow-y-scroll hidden-scroll border-2 py-4 px-6 rounded-xl  border-${themeColor}-${primaryColorLevel}`}
+        >
+          {quizData?.description?.map((item, index) => (
             <div
               key={index}
-              className="flex justify-start gap-4  items-center "
+              className="flex justify-start gap-4  items-center mb-3"
             >
               <div className={`text-${themeColor}-${primaryColorLevel}`}>
                 <FaCheckCircle size={25} />
@@ -47,6 +44,7 @@ const Intro = ({ onGetStartedClick, quizName }) => {
               </div>
             </div>
           ))}
+          
         </div>
       </div>
 
@@ -55,7 +53,7 @@ const Intro = ({ onGetStartedClick, quizName }) => {
         variant="solid"
         onClick={onGetStartedClick}
       >
-        {`Let's Get Started`}
+        Let's Get Started
       </Button>
     </div>
   );
