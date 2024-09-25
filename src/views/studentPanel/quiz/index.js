@@ -8,10 +8,11 @@ import { Quiz } from "./components/Quiz";
 import openNotification from "views/common/notification";
 import axiosInstance from "apiServices/axiosInstance";
 import { Spinner } from "components/ui";
+import { Result } from "./components/Result";
 const QuizMainContent = () => {
   const { quizId } = useParams();
-  const [displayView, setDisplayView] = useState("quiz");
-  // const [displayView, setDisplayView] = useState("intro");
+  // const [displayView, setDisplayView] = useState("quiz");
+  const [displayView, setDisplayView] = useState("intro");
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -20,7 +21,11 @@ const QuizMainContent = () => {
   const [quizData, setQuizData] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [apiFlag, setApiFlag] = useState(false);
-
+  const [results, setResults] = useState({
+    correctAnswers: 3,
+    wrongAnswers: 4,
+    secondsUsed: 10,
+  });
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`student/quiz/${quizId}`);
@@ -86,6 +91,7 @@ const QuizMainContent = () => {
   useEffect(() => {
     setApiFlag(true);
   }, []);
+  console.log("displayView: ",displayView)
   return (
     <>
       <main
@@ -114,12 +120,27 @@ const QuizMainContent = () => {
                     <Countdown
                       quizData={quizData}
                       onGoClick={() => {
-                        // ErollQuizData();
-                        setDisplayView("quiz");
+                        ErollQuizData();
+                        // setDisplayView("quiz");
                       }}
                     />
                   ),
-                  quiz: <Quiz quizData={quizData} questions={questions} />,
+                  quiz: (
+                    <Quiz
+                      quizData={quizData}
+                      questions={questions}
+                      setResults={setResults}
+                      results={results}
+                      setDisplayView={setDisplayView}
+                    />
+                  ),
+                  result: (
+                    <Result
+                      quizData={quizData}
+                      totalQuestions={questions?.length}
+                      results={results}
+                    />
+                  ),
                 }[displayView]
               }
             </AnimatePresence>

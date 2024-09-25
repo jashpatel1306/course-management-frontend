@@ -1,13 +1,12 @@
-"use client";
 
-import Lottie from "lottie-react";
 import { motion } from "framer-motion";
-// import confettiAnimation from "@/ui/assets/animations/confetti.json";
-import { DonutChart } from "./DonutChart";
+import DonutChart from "./DonutChart";
 import { Button } from "components/ui";
 
-export const Result = ({ results, totalQuestions, quizData }) => {
+export const Result = (props) => {
+  const { results, totalQuestions, quizData } = props;
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
+  const TIME_LIMIT = quizData.time * 60; // 1 minute per question
 
   const handleRetry = () => {
     // Restart quiz
@@ -37,13 +36,8 @@ export const Result = ({ results, totalQuestions, quizData }) => {
         <h1 className="font-bold text-2xl text-white">{quizData.title}</h1>
 
         {/* Result Box */}
-        <div className="mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2">
-          <Lottie
-            // animationData={confettiAnimation}
-            loop={false}
-            autoplay={true}
-            style={{ width: "170px", height: "170px" }}
-          />
+        <div className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2`}>
+         
           <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4">
             Congratulations!
           </h3>
@@ -61,7 +55,7 @@ export const Result = ({ results, totalQuestions, quizData }) => {
           <div className="flex items-center mt-4 space-x-4">
             <DonutChart
               className="w-36 h-36"
-              total={60 * totalQuestions}
+              total={TIME_LIMIT}
               used={secondsUsed}
               type={"time"}
               data={[
@@ -72,7 +66,7 @@ export const Result = ({ results, totalQuestions, quizData }) => {
                 },
                 {
                   label: "Time Left",
-                  value: 60 * totalQuestions - secondsUsed,
+                  value: TIME_LIMIT - secondsUsed,
                   color: "#F0F0F0",
                 },
               ]}
@@ -100,7 +94,7 @@ export const Result = ({ results, totalQuestions, quizData }) => {
         </div>
 
         {/* Retry Button */}
-        <div className="mt-auto">
+        <div className="mt-auto hidden">
           <Button
             intent={"secondary"}
             variant="solid"

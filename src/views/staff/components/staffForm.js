@@ -5,152 +5,106 @@ import * as Yup from "yup";
 import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
-import { FormNumericInput } from "components/shared";
 import { SUPERADMIN } from "constants/roles.constant";
 import CreatableSelect from "react-select/creatable";
 
-function InstructorForm(props) {
-  const { handleCloseClick, instructorData, isOpen, collegeId } = props;
+function StaffForm(props) {
+  const { handleCloseClick, staffData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
   const { userData } = useSelector((state) => state.auth.user);
-  const instructorValidationSchema = Yup.object().shape({
+  const staffValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
-    collegeId: Yup.string().required("College Id is required"),
-    skills: Yup.array().required("Skills is required"),
-    location: Yup.string().required("Location is required"),
-    experienceInYears: Yup.number()
-      .required("Experience In Years is required")
-      .positive("Must be a positive number"),
+    collegeUserId: Yup.string().when([], {
+      is: (userData) =>
+        userData?.authority.toString() === SUPERADMIN.toString(),
+      then: Yup.string().required("College Name is required"),
+      otherwise: Yup.string().notRequired(),
+    }),
+    permissions: Yup.array().required("permissions is required"),
     active: Yup.boolean(),
-    courses: Yup.array()
-      .of(Yup.object())
-      .nullable()
-      .default([])
-      .required("At least one course ID is required"),
   });
   const [loading, setLoading] = useState(false);
-  const [batchLoading, setBatchLoading] = useState(false);
-  const [batchList, setBatchList] = useState([]);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
-  const [departmentList, setDepartmentList] = useState([]);
-  const [departmentLoading, setDepartmentLoading] = useState(false);
-  const [coursesLoading, setCoursesLoading] = useState(false);
-  const [coursesList, setCoursesList] = useState([]);
-
   const [formData, setFormData] = useState({
+    staffId: "",
     name: "",
     email: "",
     phone: "",
-    collegeId:
+    collegeUserId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
-    skills: [],
-    courses: [],
-    location: "",
-    experienceInYears: "",
+    permissions: [],
     active: true,
   });
   const [errorData, setErrorData] = useState({
     name: "",
     email: "",
     phone: "",
-    skills: "",
-    location: "",
-    collegeId: "",
-    experienceInYears: "",
+    collegeUserId: "",
+    permissions: "",
+    active: true,
   });
+
   const resetErrorData = () => {
     setErrorData({
       name: "",
       email: "",
       phone: "",
-      skills: "",
-      location: "",
-      collegeId: "",
-      experienceInYears: "",
+      collegeUserId: "",
+      permissions: "",
     });
   };
-  const getCoursesOptionData = async (collegeId = "") => {
-    try {
-      setCoursesLoading(true);
-      const response = await axiosInstance.get(
-        `user/college-wise-instructor-courses-options/${collegeId}`
-      );
-      if (response.success) {
-        setCoursesList(response.data.filter((e) => e.value !== "all"));
-      } else {
-        openNotification("danger", response.error);
-      }
-    } catch (error) {
-      console.log("getCoursesOptionData error :", error.message);
-      openNotification("danger", error.message);
-    } finally {
-      setCoursesLoading(false);
-    }
-  };
+
   const resetFormData = () => {
     setFormData({
+      staffId: "",
       name: "",
       email: "",
       phone: "",
-      collegeId:
+      collegeUserId:
         userData?.authority.toString() === SUPERADMIN
           ? null
           : userData.collegeId,
-      skills: [],
-      courses: [],
-      location: "",
-      experienceInYears: "",
+      permissions: [],
       active: true,
     });
   };
+
   useEffect(() => {
     if (isOpen) {
-      if (userData?.authority.toString() === SUPERADMIN) {
+      if (userData.authority.toString() === SUPERADMIN) {
         getCollegeOptionData();
-      } else {
-        if (userData.collegeId) {
-          getCoursesOptionData(userData.collegeId);
-        }
       }
     }
-  }, [isOpen]);
+  }, [isOpen, userData.authority, userData.collegeId]);
+
   useEffect(() => {
-    if (instructorData?._id) {
+    if (staffData?._id) {
       setFormData({
-        name: instructorData?.name ? instructorData?.name : "",
-        email: instructorData?.email ? instructorData?.email : "",
-        phone: instructorData?.phone ? instructorData?.phone : "",
-        skills: instructorData?.skills ? instructorData?.skills : null,
-        collegeId:
+        staffId: staffData?._id ? staffData?._id : "",
+        name: staffData?.name ? staffData?.name : "",
+        email: staffData?.email ? staffData?.email : "",
+        phone: staffData?.phone ? staffData?.phone : "",
+        collegeUserId:
           userData?.authority.toString() === SUPERADMIN
-            ? instructorData?.collegeId
-              ? instructorData?.collegeId
+            ? staffData?.collegeUserId._id
+              ? staffData?.collegeUserId._id
               : ""
             : userData.collegeId,
 
-        location: instructorData?.location ? instructorData?.location : "",
-        experienceInYears: instructorData?.experienceInYears
-          ? instructorData?.experienceInYears
-          : "",
-        courses:
-          instructorData && instructorData?.courses?.length
-            ? coursesList.filter((courses) =>
-                instructorData?.courses.includes(courses.value)
-              )
-            : [],
-        active:
-          instructorData?.active !== undefined ? instructorData?.active : true,
+        permissions: staffData?.permissions ? staffData?.permissions : [],
+        active: staffData?.active !== undefined ? staffData?.active : true,
       });
     }
-  }, [instructorData]);
+  }, [staffData]);
+
   const getCollegeOptionData = async () => {
     try {
       setCollegeLoading(true);
@@ -168,11 +122,10 @@ function InstructorForm(props) {
       setCollegeLoading(false);
     }
   };
-
-  const addNewInstructorMethod = async (value) => {
+  const addNewStaffMethod = async (value) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post(`user/instructor`, value);
+      const response = await axiosInstance.post(`user/staff`, value);
       if (response.success) {
         setLoading(false);
         resetErrorData();
@@ -187,13 +140,11 @@ function InstructorForm(props) {
       setLoading(false);
     }
   };
-  const editInstructorMethod = async (value, instructorId) => {
+  const editStaffMethod = async (value, staffId) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put(
-        `user/instructor/${instructorId}`,
-        value
-      );
+      const response = await axiosInstance.put(`user/staff/${staffId}`, 
+        value);
       if (response.success) {
         setLoading(false);
         resetErrorData();
@@ -219,15 +170,13 @@ function InstructorForm(props) {
   };
   const formValidation = () => {
     try {
-      instructorValidationSchema.validateSync(formData, { abortEarly: false });
+      staffValidationSchema.validateSync(formData, { abortEarly: false });
       return {
         name: "",
         email: "",
         phone: "",
-        skills: "",
-        location: "",
-        experienceInYears: "",
-        courses: "",
+        collegeUserId: "",
+        permissions: "",
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -236,11 +185,8 @@ function InstructorForm(props) {
           name: "",
           email: "",
           phone: "",
-          skills: "",
-          location: "",
-          collegeId: "",
-          experienceInYears: "",
-          courses: "",
+          collegeUserId: "",
+          permissions: "",
         };
       } else {
         return {
@@ -248,15 +194,11 @@ function InstructorForm(props) {
           status: true,
           name: errorObject.name ? errorObject.name : "",
           email: errorObject.email ? errorObject.email : "",
-          skills: errorObject.skills ? errorObject.skills : "",
           phone: errorObject.phone ? errorObject.phone : "",
-          location: errorObject.location ? errorObject.location : "",
-          experienceInYears: errorObject.experienceInYears
-            ? errorObject.experienceInYears
+          collegeUserId: errorObject.collegeUserId
+            ? errorObject.collegeUserId
             : "",
-          courses: errorObject.courses ? errorObject.courses : "",
-
-          collegeId: errorObject.collegeId ? errorObject.collegeId : "",
+          permissions: errorObject.permissions ? errorObject.permissions : "",
         };
       }
     }
@@ -265,22 +207,17 @@ function InstructorForm(props) {
     const errorObject = formValidation();
     if (!errorObject.status) {
       resetErrorData();
-      if (instructorData?._id) {
-        const newFormData = {
-          ...formData,
-          courses: formData?.courses?.map((info) => info.value),
-        };
-        await editInstructorMethod(newFormData, instructorData?._id);
+      if (staffData?._id) {
+        const newFormData = { ...formData };
+        await editStaffMethod(newFormData, staffData?._id);
       } else {
-        await addNewInstructorMethod({
-          ...formData,
-          courses: formData?.courses?.map((info) => info.value),
-        });
+        await addNewStaffMethod(formData);
       }
     } else {
       setErrorData(errorObject);
     }
   };
+
   return (
     <>
       <Drawer
@@ -288,7 +225,7 @@ function InstructorForm(props) {
           <div
             className={`text-xl font-semibold text-${themeColor}-${primaryColorLevel}`}
           >
-            {instructorData ? "Update Instructor" : "Add New Instructor"}
+            {staffData ? "Update Staff" : "Add New Staff"}
           </div>
         }
         isOpen={isOpen}
@@ -306,7 +243,7 @@ function InstructorForm(props) {
         footer={
           <div className="flex w-full justify-between items-center">
             <div>
-              {!instructorData?._id && (
+              {!staffData?._id && (
                 <Button
                   type="reset"
                   onClick={() => {
@@ -326,7 +263,7 @@ function InstructorForm(props) {
               onClick={SubmitHandle}
               loading={loading}
             >
-              {instructorData ? "Update" : "Submit"}
+              {staffData ? "Update" : "Submit"}
             </Button>
           </div>
         }
@@ -344,7 +281,7 @@ function InstructorForm(props) {
             <div className="col-span-2">
               <Input
                 type="text"
-                placeholder="Please Enter Instructor Name"
+                placeholder="Please Enter Staff Name"
                 className={errorData.name && "select-error"}
                 onChange={(e) => {
                   setFormData({
@@ -367,7 +304,7 @@ function InstructorForm(props) {
             <div className="col-span-2">
               <Input
                 type="email"
-                placeholder="Please Enter Instructor Email"
+                placeholder="Please Enter Staff Email"
                 className={errorData.email && "select-error"}
                 onChange={(e) => {
                   setFormData({
@@ -380,6 +317,7 @@ function InstructorForm(props) {
             </div>
             {DisplayError(errorData.email)}
           </div>
+
           {/* Phone */}
           <div className="col-span-1 gap-4 mb-4">
             <div
@@ -419,40 +357,38 @@ function InstructorForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeId: e.value,
+                        collegeUserId: e.value,
                       });
-                      getCoursesOptionData(e.value);
                     }}
                     value={collegeList.find(
-                      (info) => info.value === formData?.collegeId
+                      (info) => info.value === formData?.collegeUserId
                     )}
                     options={collegeList}
-                    className={errorData.collegeId && "select-error"}
+                    className={errorData.collegeUserId && "select-error"}
                   />
                 </div>
-                {DisplayError(errorData.collegeId)}
+                {DisplayError(errorData.collegeUserId)}
               </div>
             </>
           ) : (
             <></>
           )}
-
-          {/* Skills */}
+          {/* Permissions */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              skills
+              Permissions
             </div>
             <div className="col-span-2">
               <Select
                 isClearable
                 isMulti
-                placeholder="Select Department"
+                placeholder="Select Permissions"
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    skills: e.map((e) => {
+                    permissions: e.map((e) => {
                       return {
                         label: e.label,
                         value: e.value,
@@ -460,84 +396,14 @@ function InstructorForm(props) {
                     }),
                   });
                 }}
-                value={formData.skills}
+                value={formData.permissions}
                 componentAs={CreatableSelect}
-                className={errorData.skills && "select-error"}
+                className={errorData.permissions && "select-error"}
               />
             </div>
-            {DisplayError(errorData.skills)}
+            {DisplayError(errorData.permissions)}
           </div>
 
-          {/* Location */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Location
-            </div>
-            <div className="col-span-2">
-              <Input
-                type="text"
-                placeholder="Please Enter Instructor Location"
-                className={errorData.location && "select-error"}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    location: e.target.value,
-                  });
-                }}
-                value={formData?.location}
-              />
-            </div>
-            {DisplayError(errorData.location)}
-          </div>
-          {/* Experience In Years */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Experience In Years
-            </div>
-            <div className="col-span-2">
-              <FormNumericInput
-                placeholder="Enter Passout Year"
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    experienceInYears: e.target.value,
-                  });
-                }}
-                value={formData?.experienceInYears}
-                className={errorData.experienceInYears && "select-error"}
-              />
-            </div>
-            {DisplayError(errorData.experienceInYears)}
-          </div>
-          {/* Select Courses */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Select Courses
-            </div>
-            <div className="col-span-2">
-              <Select
-                isMulti
-                placeholder="Please Select Courses"
-                className={errorData?.courses && "select-error"}
-                loading={coursesLoading}
-                onChange={(value) => {
-                  setFormData({
-                    ...formData,
-                    courses: value,
-                  });
-                }}
-                value={formData?.courses}
-                options={coursesList}
-              />
-            </div>
-            {DisplayError(errorData.courses)}
-          </div>
           {/* Active */}
           <div className="col-span-1 gap-4 mb-4">
             <div
@@ -563,4 +429,4 @@ function InstructorForm(props) {
   );
 }
 
-export default InstructorForm;
+export default StaffForm;

@@ -8,7 +8,7 @@ const convertToDegrees = (value) => {
   return Math.round((value / 100) * 360);
 };
 
-export const DonutChart = ({ data, total, used, type, className }) => {
+ const DonutChart = ({ data, total, used, type, className }) => {
   let cssString = data
     .sort((a, b) => a.value - b.value)
     .reduce((prev, current, currentIndex, array) => {
@@ -94,3 +94,5 @@ export const DonutChart = ({ data, total, used, type, className }) => {
     </div>
   );
 };
+
+export default DonutChart;
