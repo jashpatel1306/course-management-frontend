@@ -78,6 +78,7 @@ const CollapsedItem = ({nav, onLinkClick, userAuthority}) => {
 		<AuthorityCheck 
 			userAuthority={userAuthority} 
 			authority={nav.authority}
+			key={nav.key}
 		>
 			<Dropdown trigger="hover" renderTitle={menuItem} placement="middle-start-top">
 				{

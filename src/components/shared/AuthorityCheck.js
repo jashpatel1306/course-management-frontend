@@ -1,19 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import useAuthority from 'utils/hooks/useAuthority'
+import React from "react";
+import PropTypes from "prop-types";
+import useAuthority from "utils/hooks/useAuthority";
 
-const AuthorityCheck = props => {
+const AuthorityCheck = (props) => {
+  const { userAuthority = [], authority = [], children, key } = props;
 
-	const { userAuthority = [], authority = [], children } = props
+  const roleMatched = useAuthority(userAuthority, authority, false, children.key);
 
-	const roleMatched = useAuthority(userAuthority, authority)
-
-	return roleMatched ? children : <></>
-}
+  return roleMatched ? children : <></>;
+};
 
 AuthorityCheck.propTypes = {
-	userAuthority: PropTypes.array,
-	authority: PropTypes.array,
-}
+  userAuthority: PropTypes.array,
+  authority: PropTypes.array,
+  key: PropTypes.string,
+};
 
-export default AuthorityCheck
+export default AuthorityCheck;

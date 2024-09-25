@@ -14,7 +14,7 @@ import {
 
 const appsRoute = [
   {
-    key: "apps.admin",
+    key: "apps.dashboard",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
     component: React.lazy(() => import("views/project/ProjectDashboard")),
     authority: [ADMIN, SUPERADMIN, STAFF, STUDENT, INSTRUCTOR],

@@ -13,7 +13,7 @@ import {
 
 const adminNavigationConfig = [
   {
-    key: "apps.admin",
+    key: "apps.dashboard",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
     title: "Dashboard",
     icon: "dashboard",
@@ -46,7 +46,7 @@ const adminNavigationConfig = [
     title: "Content Hub",
     icon: "contentHub",
     type: NAV_ITEM_TYPE_COLLAPSE,
-    authority: [ADMIN, SUPERADMIN],
+    authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: [
       {
         key: "contentHub.students",
@@ -148,7 +148,7 @@ const adminNavigationConfig = [
     title: "General Configuration",
     icon: "settings",
     type: NAV_ITEM_TYPE_COLLAPSE,
-    authority: [ADMIN, SUPERADMIN],
+    authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: [
       {
         key: "configuration.departments",
@@ -156,7 +156,7 @@ const adminNavigationConfig = [
         title: "Departments",
         icon: "",
         type: NAV_ITEM_TYPE_ITEM,
-        authority: [ADMIN, SUPERADMIN],
+        authority: [ADMIN, SUPERADMIN, STAFF],
         subMenu: [],
       },
       // {
