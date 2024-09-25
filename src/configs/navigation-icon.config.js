@@ -37,7 +37,7 @@ import {
 import { CgGym } from "react-icons/cg";
 import { AiTwotoneSetting } from "react-icons/ai";
 import { PiStudentFill, PiFilesFill } from "react-icons/pi";
-import { FaSchool } from "react-icons/fa";
+import { FaRegQuestionCircle, FaSchool } from "react-icons/fa";
 import { RiGraduationCapFill } from "react-icons/ri";
 import Assessment from "assets/svg/assessment";
 import { Clients, ContentHub, Dashboard, DataNoFound, Instructors, Policy, Settings, Staff, Student } from "assets/svg";
@@ -67,6 +67,8 @@ const navigationIcon = {
   staff: <Staff />,
   student: <RiGraduationCapFill  />,
   batches: <BiSolidCategoryAlt   />,
+  attempts: <FaRegQuestionCircle />
+  ,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,

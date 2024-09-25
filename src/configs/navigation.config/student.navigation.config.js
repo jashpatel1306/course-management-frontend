@@ -31,6 +31,15 @@ const studentNavigationConfig = [
     subMenu: [],
   },
   {
+    key: "apps.student.myquizattempts",
+    path: `${STUDENT_PREFIX_PATH}/myquizattempts`,
+    title: "My Quiz Attempts",
+    icon: "attempts",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [STUDENT],
+    subMenu: [],
+  },
+  {
     key: "apps.certificate",
     path: `${STUDENT_PREFIX_PATH}/certificate`,
     title: "Certificate",
