@@ -106,6 +106,9 @@ const AssessmentView = ({ contentData }) => {
           <div>
             {assessmentData.content.map((info) => {
               const content = info.data;
+              const trackingData = assessmentData.trackingData?.filter(
+                (data) => data.quizId === content._id
+              );
               if (info.type === "quiz") {
                 return (
                   <div
@@ -120,17 +123,31 @@ const AssessmentView = ({ contentData }) => {
                       </div>
                     </div>
                     <div>
-                      <Button
-                        variant="solid"
-                        onClick={() => {
-                          const url = `${
-                            window.location.href.split("app")[0]
-                          }app/student/quiz/${content?._id}`;
-                          window.open(url, "_blank");
-                        }}
-                      >
-                        Quiz Start
-                      </Button>
+                      {trackingData ? (
+                        <Button
+                          variant="solid"
+                          onClick={() => {
+                            // const url = `${
+                            //   window.location.href.split("app")[0]
+                            // }app/student/quiz/${content?._id}`;
+                            // window.open(url, "_blank");
+                          }}
+                        >
+                          View Result
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="solid"
+                          onClick={() => {
+                            const url = `${
+                              window.location.href.split("app")[0]
+                            }app/student/quiz/${content?._id}`;
+                            window.open(url, "_blank");
+                          }}
+                        >
+                          Quiz Start
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );

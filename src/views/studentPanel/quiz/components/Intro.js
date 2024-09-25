@@ -20,14 +20,18 @@ const Intro = ({ onGetStartedClick, quizData }) => {
       />
 
       <div className="w-full flex flex-col flex-1 items-center z-10">
-        <h1 className={`text-brand-cerulean-blue font-bold text-[32px] sm:text-4xl capitalize text-${themeColor}-${primaryColorLevel}`}>
+        <h1
+          className={`text-brand-cerulean-blue font-bold text-[32px] sm:text-4xl capitalize text-${themeColor}-${primaryColorLevel}`}
+        >
           {quizData.title}
         </h1>
 
+        <h3 className={`text-white font-bold text-xl mt-[51.55px] bg-${themeColor}-${primaryColorLevel} p-1 px-4 rounded-lg`}>
+          Quiz Time : {quizData.time} Minute
+        </h3>
         <h3 className="text-black font-bold text-2xl mt-[51.55px] sm:text-3xl">
           Things to know before you start:
         </h3>
-
         <div
           className={`flex flex-col items-start mt-5 sm:mt-10 max-h-[60vh] overflow-y-scroll hidden-scroll border-2 py-4 px-6 rounded-xl  border-${themeColor}-${primaryColorLevel}`}
         >
@@ -44,7 +48,6 @@ const Intro = ({ onGetStartedClick, quizData }) => {
               </div>
             </div>
           ))}
-          
         </div>
       </div>
 

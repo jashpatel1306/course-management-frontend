@@ -15,24 +15,20 @@ import openNotification from "views/common/notification";
 import { useParams } from "react-router-dom";
 
 export const Quiz = (props) => {
-  const TIME_LIMIT = 180; // 1 minute per question
+  const { questions, quizData, results, setResults, setDisplayView } = props;
   const { quizId } = useParams();
+  const TIME_LIMIT = quizData.time * 60; // 1 minute per question
 
-  const { questions, quizData } = props;
   const timerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [timePassed, setTimePassed] = useState(0);
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(-1);
-  const [quizFinished, setQuizFinished] = useState(true);
+  const [quizFinished, setQuizFinished] = useState(false);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
-  const [results, setResults] = useState({
-    correctAnswers: 0,
-    wrongAnswers: 0,
-    secondsUsed: 0,
-  });
-  const { question, answers, _id } = questions[activeQuestion];
+
+  const { question, answers, _id, marks } = questions[activeQuestion];
   const numberOfQuestions = questions.length;
   const setupTimer = () => {
     if (timerRef.current) {
@@ -82,14 +78,20 @@ export const Quiz = (props) => {
   const UpdateQuizQuestionData = async (questionId, answerId) => {
     try {
       setIsLoading(true);
+      console.log("timePassed : ", timePassed);
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
-        { questionId, answerId }
+        { questionId, answerId, time: timePassed }
       );
       if (response.success) {
         setSelectedAnswerIndex(-1);
         if (activeQuestion + 1 >= questions.length) {
           console.log("Quiz finished!");
+          setResults({
+            correctAnswers: response?.data?.correctAnswers,
+            wrongAnswers: response?.data?.wrongAnswers,
+            secondsUsed: response?.data?.totalTime,
+          });
           playQuizEnd();
           setQuizFinished(true);
           return;
@@ -117,19 +119,12 @@ export const Quiz = (props) => {
 
   const handleSelectAnswer = (answerIndex) => {
     //  Stop timer
-    clearInterval(timerRef.current);
+    // clearInterval(timerRef.current);
     setSelectedAnswerIndex(answerIndex);
   };
 
   if (quizFinished) {
-    return (
-      <Result
-        results={results}
-        totalQuestions={questions.length}
-        questions={questions}
-        quizData={quizData}
-      />
-    );
+    setDisplayView("result");
   }
 
   return (
@@ -145,7 +140,7 @@ export const Quiz = (props) => {
           clipPath: "circle(100% at 50% 50%)",
         },
       }}
-      className="w-full h-full flex justify-center p-5"
+      className="w-full h-full flex justify-center p-5 relative"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -176,6 +171,12 @@ export const Quiz = (props) => {
             />
           </div>
         </div>
+        <div className="flex justify-end items-center px-6">
+          <p className="px-4 p-1 capitalize rounded-lg border-2 text-base font-semibold">
+            {" "}
+            {marks} Marks
+          </p>
+        </div>
         <div className="max-h-[80vh] overflow-y-scroll hidden-scroll pt-2 pb-8">
           <div className="mt-2 rounded-2xl border border-brand-light-gray px-7 py-4 w-full mb-8 ">
             <h4 className="text-black font-medium text-lg">
@@ -194,19 +195,18 @@ export const Quiz = (props) => {
             isCorrectAnswer={isCorrectAnswer}
           />
         </div>
-
-        <div className="absolute bottom-0 w-full flex justify-between bg-gray-100 p-2 px-6">
-          <div className="w-full flex justify-end items-center">
-            <Button
-              disabled={selectedAnswerIndex === -1}
-              className="w-48"
-              onClick={handleNextQuestion}
-              variant="solid"
-              loading={isLoading}
-            >
-              Next
-            </Button>
-          </div>
+      </div>
+      <div className="absolute bottom-0 w-full flex justify-between bg-gray-100 p-2 px-6">
+        <div className="w-full flex justify-end items-center">
+          <Button
+            disabled={selectedAnswerIndex === -1}
+            className="w-48"
+            onClick={handleNextQuestion}
+            variant="solid"
+            loading={isLoading}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </motion.div>
