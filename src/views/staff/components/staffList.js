@@ -195,32 +195,34 @@ const StaffList = (props) => {
           )}
         </div>
         <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
-          <Input
-            placeholder="Search By Name, Email"
-            className=" input-wrapper md:mb-0 mb-4"
-            value={searchText}
-            prefix={
-              <HiOutlineSearch
-                className={`text-xl text-${themeColor}-${primaryColorLevel}`}
-              />
-            }
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              setPage(1);
-              setApiFlag(true);
-            }}
-            suffix={
-              searchText && (
-                <AiOutlineClose
+          {userData.authority.toString() === SUPERADMIN && (
+            <Input
+              placeholder="Search By Name, Email"
+              className=" input-wrapper md:mb-0 mb-4"
+              value={searchText}
+              prefix={
+                <HiOutlineSearch
                   className={`text-xl text-${themeColor}-${primaryColorLevel}`}
-                  onClick={() => {
-                    setSearchText("");
-                    setApiFlag(true);
-                  }}
                 />
-              )
-            }
-          />
+              }
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setPage(1);
+                setApiFlag(true);
+              }}
+              suffix={
+                searchText && (
+                  <AiOutlineClose
+                    className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                    onClick={() => {
+                      setSearchText("");
+                      setApiFlag(true);
+                    }}
+                  />
+                )
+              }
+            />
+          )}
         </div>
       </div>
 

@@ -10,6 +10,7 @@ import appConfig from "configs/app.config";
 import { AiOutlineClose } from "react-icons/ai";
 import openNotification from "views/common/notification";
 import { SUPERADMIN } from "constants/roles.constant";
+import { DataNoFound } from "assets/svg";
 
 const AssessmentList = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -212,18 +213,24 @@ const AssessmentList = () => {
           </div>
         </div>
         <div className="flex flex-wrap gap-4  p-4">
-          {assesssmentData?.map((data, index) => {
-            return (
-              <>
-                <AssessmentCard
-                  variant="full"
-                  assessmentData={data}
-                  setApiFlag={setApiFlag}
-                  batchList={batchesList}
-                />
-              </>
-            );
-          })}
+          {assesssmentData.length > 0 ? (
+            assesssmentData?.map((data, index) => {
+              return (
+                <>
+                  <AssessmentCard
+                    variant="full"
+                    assessmentData={data}
+                    setApiFlag={setApiFlag}
+                    batchList={batchesList}
+                  />{" "}
+                </>
+              );
+            })
+          ) : (
+            <>
+              <DataNoFound />
+            </>
+          )}
         </div>
         <div className="flex items-center justify-center mt-4">
           {totalPage > 1 && (

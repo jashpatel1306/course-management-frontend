@@ -8,6 +8,17 @@ import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 import CreatableSelect from "react-select/creatable";
 
+const staffPermissionOptions = [
+  "Dashboard",
+  "Students",
+  "Batches",
+  "ContentHub",
+  "Assessment",
+  "Instructors",
+  "Configuration",
+].map((staff) => {
+  return { value: staff, label: staff };
+});
 function StaffForm(props) {
   const { handleCloseClick, staffData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -99,7 +110,11 @@ function StaffForm(props) {
               : ""
             : userData.collegeId,
 
-        permissions: staffData?.permissions ? staffData?.permissions : [],
+        permissions: staffData?.permissions
+          ? staffData?.permissions.map((staff) => {
+              return { value: staff, label: staff };
+            })
+          : [],
         active: staffData?.active !== undefined ? staffData?.active : true,
       });
     }
@@ -143,8 +158,7 @@ function StaffForm(props) {
   const editStaffMethod = async (value, staffId) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put(`user/staff/${staffId}`, 
-        value);
+      const response = await axiosInstance.put(`user/staff/${staffId}`, value);
       if (response.success) {
         setLoading(false);
         resetErrorData();
@@ -382,7 +396,7 @@ function StaffForm(props) {
             </div>
             <div className="col-span-2">
               <Select
-                isClearable
+                // isClearable
                 isMulti
                 placeholder="Select Permissions"
                 onChange={(e) => {
@@ -396,8 +410,9 @@ function StaffForm(props) {
                     }),
                   });
                 }}
+                options={staffPermissionOptions}
                 value={formData.permissions}
-                componentAs={CreatableSelect}
+                // componentAs={CreatableSelect}
                 className={errorData.permissions && "select-error"}
               />
             </div>

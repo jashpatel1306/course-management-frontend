@@ -44,7 +44,6 @@ const QuizMainContent = () => {
 
         setIsLoading(false);
       } else {
-        console.log("response.message: ", response.message);
         openNotification("danger", response.message?.message);
         setIsLoading(false);
       }
@@ -59,14 +58,11 @@ const QuizMainContent = () => {
       const response = await axiosInstance.post(
         `student/quiz/enroll/${quizId}`
       );
-      console.log("response:  ", response);
 
       if (response.success) {
         setDisplayView("quiz");
         setIsLoading(false);
       } else {
-        console.log("response.message: ", response.message);
-
         openNotification(
           "danger",
           response.message?.message || response.message

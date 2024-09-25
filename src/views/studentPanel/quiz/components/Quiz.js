@@ -78,7 +78,6 @@ export const Quiz = (props) => {
   const UpdateQuizQuestionData = async (questionId, answerId) => {
     try {
       setIsLoading(true);
-      console.log("timePassed : ", timePassed);
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
         { questionId, answerId, time: timePassed }
@@ -86,7 +85,7 @@ export const Quiz = (props) => {
       if (response.success) {
         setSelectedAnswerIndex(-1);
         if (activeQuestion + 1 >= questions.length) {
-          console.log("Quiz finished!");
+          //Quiz finished!
           setResults({
             correctAnswers: response?.data?.correctAnswers,
             wrongAnswers: response?.data?.wrongAnswers,
@@ -110,8 +109,6 @@ export const Quiz = (props) => {
     }
   };
   const handleNextQuestion = async () => {
-    console.log("Question : ", _id);
-    console.log("Answer : ", selectedAnswerIndex);
     if (_id && selectedAnswerIndex) {
       await UpdateQuizQuestionData(_id, selectedAnswerIndex);
     }

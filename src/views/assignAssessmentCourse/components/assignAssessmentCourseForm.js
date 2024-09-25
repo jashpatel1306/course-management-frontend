@@ -360,7 +360,6 @@ function AssignCourseForm(props) {
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
-      console.log("errorObject:  ", errorObject);
       if (Object.keys(errorObject)?.length === 0) {
         return {
           courseId: "",
