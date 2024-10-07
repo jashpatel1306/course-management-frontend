@@ -72,6 +72,7 @@ const StaffList = (props) => {
         setCollegeList(response.data);
         setAllCollegeList(response.data);
         setAllBatchList([]);
+        setCurrentTab(response.data[0].value);
       } else {
         openNotification("danger", response.error);
       }

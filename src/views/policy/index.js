@@ -49,33 +49,33 @@ const PrivacyPolicy = () => {
       openNotification("danger", error.message);
     }
   };
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get(
-        `admin/configuration/one/privacy_policy`,
-        {}
-      );
-      if (response.status) {
-        setFormData({
-          ...formData,
-          privacy_policy: response.data.privacy_policy,
-        });
-        setLoading(false);
-      } else {
-        openNotification("danger", response.error);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.log("fetchData configuration error :", error);
-      openNotification("danger", error.message);
-      setLoading(false);
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await axiosInstance.get(
+  //       `admin/configuration/one/privacy_policy`,
+  //       {}
+  //     );
+  //     if (response.status) {
+  //       setFormData({
+  //         ...formData,
+  //         privacy_policy: response.data.privacy_policy,
+  //       });
+  //       setLoading(false);
+  //     } else {
+  //       openNotification("danger", response.error);
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     console.log("fetchData configuration error :", error);
+  //     openNotification("danger", error.message);
+  //     setLoading(false);
+  //   }
+  // };
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
-      fetchData();
+      // fetchData();
     }
   }, [apiFlag]);
   useEffect(() => {

@@ -8,7 +8,17 @@ import {
 } from "react-icons/fa";
 import { Button, Card } from "components/ui";
 import { useNavigate } from "react-router-dom";
+const formatDateRange = (startDate, endDate) => {
+  // Create options for formatting
+  const options = { day: "numeric", month: "short" };
 
+  // Format the start and end dates
+  const start = new Date(startDate).toLocaleDateString("en-GB", options);
+  const end = new Date(endDate).toLocaleDateString("en-GB", options);
+
+  // Combine the formatted dates
+  return `${start} - ${end}`;
+};
 const AssessmentCard = ({ variant = "full", assessmentData }) => {
   const navigate = useNavigate();
 
@@ -31,7 +41,7 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
         >
           <div className={`${variant === "full" ? "" : "mb-4"}`}>
             <div className="text-lg font-extrabold mb-2">
-              {assessmentData?.title}
+              {assessmentData?.assessmentId?.title}
             </div>
             <div
               className={`flex flex-col md:flex-row gap-3 justify-between items-center`}
@@ -52,7 +62,7 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
                     />
                   </div>
                   <span className="text-base font-semibold">
-                    {assessmentData?.totalQuestions} Questions
+                    {assessmentData?.assessmentId?.totalQuestions} Questions
                   </span>
                 </div>
                 <div className="flex gap-4 items-center">
@@ -64,7 +74,7 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
                     />
                   </div>
                   <span className="text-base font-semibold">
-                    {assessmentData?.totalMarks} Marks
+                    {assessmentData?.assessmentId?.totalMarks} Marks
                   </span>
                 </div>
                 <div className="flex gap-4 items-center">
@@ -76,14 +86,13 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
                     />
                   </div>
                   <span className="text-base font-semibold">
-                    {assessmentData?.expiresAt &&
-                      new Date(assessmentData?.expiresAt).toLocaleDateString(
-                        "en-US",
-                        { year: "numeric", month: "short", day: "numeric" }
-                      )}
+                    {formatDateRange(
+                      assessmentData?.startDate,
+                      assessmentData?.endDate
+                    )}
                   </span>
                 </div>
-                <div className="flex gap-4 items-center">
+                {/* <div className="flex gap-4 items-center">
                   <div
                     className={`bg-white p-2 rounded-full shadow-md border-2 border-${themeColor}-${primaryColorLevel}`}
                   >
@@ -94,7 +103,7 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
                   <span className="text-base font-semibold">
                     {assessmentData?.batches?.length} Batches
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -104,9 +113,9 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
               variant="solid"
               className=" px-2 "
               onClick={() => {
-                navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
-                  state: assessmentData,
-                });
+                // navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
+                //   state: assessmentData,
+                // });
               }}
             >
               View

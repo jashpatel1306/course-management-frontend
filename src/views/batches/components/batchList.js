@@ -26,6 +26,7 @@ const BatchList = (props) => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const { userData } = useSelector((state) => state.auth.user);
 
   const [batchData, setBatchData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,9 @@ const BatchList = (props) => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get(`user/batches/all`);
+      const response = await axiosInstance.get(
+        `user/batches/${userData.collegeId ? userData.collegeId : "all"}`
+      );
       if (response.success) {
         setBatchData(response.data);
         setIsLoading(false);

@@ -117,7 +117,8 @@ function AssignCourseForm(props) {
   };
   useEffect(() => {
     if (isOpen) {
-      if (userData.authority.toString() === SUPERADMIN) {
+      console.log("userData.authority[0].toString() : ",userData.authority[0].toString())
+      if (userData.authority[0].toString() === SUPERADMIN) {
         getCollegeOptionData();
       }
     }
@@ -405,9 +406,10 @@ function AssignCourseForm(props) {
     }
   };
   useEffect(() => {
-    if (userData.authority.toString() !== SUPERADMIN && userData.collegeId) {
+    console.log("userData: ",userData)
+    if (userData.authority.toString() !== SUPERADMIN && userData.batchId) {
       getBatchOptionData();
-      getCoursesOptionData(userData.collegeId);
+      // getCoursesOptionData(userData.batchId);
     } else {
       getCollegeOptionData();
     }

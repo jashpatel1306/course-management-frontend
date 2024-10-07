@@ -54,6 +54,7 @@ const DepartmentList = (props) => {
 
       if (response.success) {
         setCollegeList(response.data);
+        setCurrentTab(response.data[0].value);
       } else {
         openNotification("danger", response.error);
       }
@@ -85,15 +86,18 @@ const DepartmentList = (props) => {
   };
 
   useEffect(() => {
-    if (apiFlag) {
-      setApiFlag(false);
-      setIsLoading(true);
-      if (authority.toString() === SUPERADMIN) {
-        getCollegeOptionData();
-      }
+    // setApiFlag(false);
+    setIsLoading(true);
+    if (authority.toString() === SUPERADMIN) {
+      getCollegeOptionData();
+      // fetchData();
+    }
+  }, []);
+  useEffect(() => {
+    if (currentTab) {
       fetchData();
     }
-  }, [apiFlag]);
+  }, [currentTab]);
   useEffect(() => {
     setApiFlag(true);
   }, []);
