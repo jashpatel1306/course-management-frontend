@@ -55,7 +55,7 @@ const InstructorList = (props) => {
   const { authority, collegeId } = useSelector(
     (state) => state.auth.user.userData
   );
-  const [currentTab, setCurrentTab] = useState();
+  console.log("collegeId: ", collegeId);
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [instructorData, setInstructorData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,9 +63,6 @@ const InstructorList = (props) => {
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
-  const [batchLoading, setBatchLoading] = useState(false);
-
-  const [batchList, setBatchList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
@@ -103,17 +100,21 @@ const InstructorList = (props) => {
         pageNo: page,
         perPage: appConfig.pagePerData,
       };
-      if (userData?.authority.toString() === SUPERADMIN) {
-        formData = {
-          ...formData,
-          collegeId: currentCollegeTab ? currentCollegeTab : "all",
-        };
-      } else {
-        formData = {
-          ...formData,
-          collegeId: "all",
-        };
-      }
+      formData = {
+        ...formData,
+        collegeId: currentCollegeTab ? currentCollegeTab : "all",
+      };
+      // if (userData?.authority.toString() === SUPERADMIN) {
+      //   formData = {
+      //     ...formData,
+      //     collegeId: currentCollegeTab ? currentCollegeTab : "all",
+      //   };
+      // } else {
+      //   formData = {
+      //     ...formData,
+      //     collegeId: "all",
+      //   };
+      // }
 
       const response = await axiosInstance.post(
         `user/get-instructors/college`,

@@ -123,31 +123,17 @@ const AssessmentView = ({ contentData }) => {
                       </div>
                     </div>
                     <div>
-                      {trackingData ? (
-                        <Button
-                          variant="solid"
-                          onClick={() => {
-                            // const url = `${
-                            //   window.location.href.split("app")[0]
-                            // }app/student/quiz/${content?._id}`;
-                            // window.open(url, "_blank");
-                          }}
-                        >
-                          View Result
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="solid"
-                          onClick={() => {
-                            const url = `${
-                              window.location.href.split("app")[0]
-                            }app/student/quiz/${content?._id}`;
-                            window.open(url, "_blank");
-                          }}
-                        >
-                          Quiz Start
-                        </Button>
-                      )}
+                      <Button
+                        variant="solid"
+                        onClick={() => {
+                          const url = `${
+                            window.location.href.split("app")[0]
+                          }app/student/quiz/${content?._id}`;
+                          window.open(url, "_blank");
+                        }}
+                      >
+                        Quiz Start
+                      </Button>
                     </div>
                   </div>
                 );
