@@ -237,11 +237,11 @@ const AssessmentForm = () => {
       )}
       <Dialog
         isOpen={IsOpen}
-        style={{
-          content: {
-            marginTop: 250,
-          },
-        }}
+        // style={{
+        //   content: {
+        //     marginTop: 250,
+        //   },
+        // }}
         contentClassName="pb-0 px-0"
         onClose={() => {
           setIsOpen(false);
@@ -249,7 +249,7 @@ const AssessmentForm = () => {
           setFormData({
             ...formData,
             title: "",
-            description: "",
+            description: [],
           });
         }}
         onRequestClose={() => {
@@ -258,7 +258,7 @@ const AssessmentForm = () => {
           setFormData({
             ...formData,
             title: "",
-            description: "",
+            description:[],
           });
         }}
       >
@@ -266,104 +266,106 @@ const AssessmentForm = () => {
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
             Quiz Details
           </h5>
-          {/* Quiz Name  */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Quiz Title
+          <div className="max-h-96 overflow-y-auto hidden-scroll">
+            {/* Quiz Name  */}
+            <div className="col-span-1 gap-4 mb-4">
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                Quiz Title
+              </div>
+              <div className="col-span-2">
+                <Input
+                  type="text"
+                  placeholder="Please Enter Assessment Name"
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      title: e.target.value,
+                    });
+                  }}
+                  value={formData?.title}
+                />
+              </div>
             </div>
-            <div className="col-span-2">
-              <Input
-                type="text"
-                placeholder="Please Enter Assessment Name"
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    title: e.target.value,
-                  });
-                }}
-                value={formData?.title}
-              />
+            {/* Quiz Time  */}
+            <div className="col-span-1 gap-4 mb-4">
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                Quiz Time (Minutes)
+              </div>
+              <div className="col-span-2">
+                <FormNumericInput
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"]?.includes(evt.key) &&
+                    evt.preventDefault()
+                  }
+                  placeholder="Please Enter Quiz Time"
+                  className="capitalize"
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      time: e.target.value,
+                    });
+                  }}
+                  value={formData?.time}
+                />
+              </div>
             </div>
-          </div>
-          {/* Quiz Time  */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Quiz Time (Minutes)
-            </div>
-            <div className="col-span-2">
-              <FormNumericInput
-                onKeyDown={(evt) =>
-                  ["e", "E", "+", "-"]?.includes(evt.key) &&
-                  evt.preventDefault()
-                }
-                placeholder="Please Enter Quiz Time"
-                className="capitalize"
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    time: e.target.value,
-                  });
-                }}
-                value={formData?.time}
-              />
-            </div>
-          </div>
-          {/* Quiz Instructions */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Instructions
-            </div>
-            <div className="col-span-2">
-              {formData.description.map((description, index) => (
-                <div className="flex gap-4 col-span-2 mt-2" key={index}>
-                  <Input
-                    type="text"
-                    placeholder={`Enter Quiz Instruction ${index + 1}`}
-                    value={description}
-                    onChange={(e) =>
-                      handleDescriptionChange(index, e.target.value)
-                    }
-                  />
-                  {formData.description.length > 1 && (
-                    <Button
-                      shape="circle"
-                      icon={<MdDelete />}
-                      onClick={() => removeDescription(index)}
+            {/* Quiz Instructions */}
+            <div className="col-span-1 gap-4 mb-4">
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                Instructions
+              </div>
+              <div className="col-span-2">
+                {formData?.description?.map((description, index) => (
+                  <div className="flex gap-4 col-span-2 mt-2" key={index}>
+                    <Input
+                      type="text"
+                      placeholder={`Enter Quiz Instruction ${index + 1}`}
+                      value={description}
+                      onChange={(e) =>
+                        handleDescriptionChange(index, e.target.value)
+                      }
                     />
-                  )}
-                </div>
-              ))}
-              <Button type="button" onClick={addDescription} className="mt-2">
-                Add New Instruction
-              </Button>
+                    {formData?.description?.length > 1 && (
+                      <Button
+                        shape="circle"
+                        icon={<MdDelete />}
+                        onClick={() => removeDescription(index)}
+                      />
+                    )}
+                  </div>
+                ))}
+                <Button type="button" onClick={addDescription} className="mt-2">
+                  Add New Instruction
+                </Button>
+              </div>
             </div>
+            {/* Quiz Publish Status */}
+            <div className="col-span-1 gap-4 mb-4">
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                Quiz Publish Status
+              </div>
+              <div className="col-span-2">
+                <Switcher
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      isPublish: !e,
+                    });
+                  }}
+                  checked={formData?.isPublish}
+                />
+              </div>
+            </div>
+            {DisplayError(error)}
           </div>
-          {/* Quiz Publish Status */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Quiz Publish Status
-            </div>
-            <div className="col-span-2">
-              <Switcher
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    isPublish: !e,
-                  });
-                }}
-                checked={formData?.isPublish}
-              />
-            </div>
-          </div>
-          {DisplayError(error)}
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button

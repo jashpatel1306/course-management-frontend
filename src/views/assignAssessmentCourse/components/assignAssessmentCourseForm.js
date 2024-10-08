@@ -117,7 +117,10 @@ function AssignCourseForm(props) {
   };
   useEffect(() => {
     if (isOpen) {
-      console.log("userData.authority[0].toString() : ",userData.authority[0].toString())
+      console.log(
+        "userData.authority[0].toString() : ",
+        userData.authority[0].toString()
+      );
       if (userData.authority[0].toString() === SUPERADMIN) {
         getCollegeOptionData();
       }
@@ -406,8 +409,8 @@ function AssignCourseForm(props) {
     }
   };
   useEffect(() => {
-    console.log("userData: ",userData)
-    if (userData.authority.toString() !== SUPERADMIN && userData.batchId) {
+    console.log("userData: ", userData);
+    if (userData.authority.toString() !== SUPERADMIN) {
       getBatchOptionData();
       // getCoursesOptionData(userData.batchId);
     } else {
@@ -491,9 +494,12 @@ function AssignCourseForm(props) {
 
                       getAssessmentOptionData(e.value);
                     }}
-                    value={collegeList.find(
-                      (info) => info.value === formData?.collegeId
-                    )}
+                    value={
+                      formData?.collegeId &&
+                      collegeList.find(
+                        (info) => info.value === formData?.collegeId
+                      )
+                    }
                     options={collegeList}
                     className={errorData.collegeId && "select-error"}
                   />
