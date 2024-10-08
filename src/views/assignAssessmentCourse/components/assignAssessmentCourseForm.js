@@ -412,7 +412,7 @@ function AssignCourseForm(props) {
     console.log("userData: ", userData);
     if (userData.authority.toString() !== SUPERADMIN) {
       getBatchOptionData();
-      // getCoursesOptionData(userData.batchId);
+      getAssessmentOptionData(userData.collegeId);
     } else {
       getCollegeOptionData();
     }
@@ -426,7 +426,7 @@ function AssignCourseForm(props) {
           >
             {assignCourseData
               ? "Update Assign Assessment"
-              : "Add Assign Assessment"}
+              : "Add Assign Assessment"}{}
           </div>
         }
         isOpen={isOpen}
