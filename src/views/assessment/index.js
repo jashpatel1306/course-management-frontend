@@ -167,30 +167,35 @@ const Assessment = () => {
               />
             </div>
           </div>
-          {/*  College Name */}
-          <div className="col-span-1 gap-4 mb-4">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Select College
-            </div>
-            <div className="col-span-2">
-              <Select
-                placeholder="Please Select College"
-                loading={collegeLoading}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    collegeId: e.value,
-                  });
-                }}
-                value={collegeList.find(
-                  (info) => info.value === formData?.collegeId
-                )}
-                options={collegeList}
-              />
-            </div>
-          </div>
+          {userData?.authority.toString() === SUPERADMIN && (
+            <>
+              {/*  College Name */}
+              <div className="col-span-1 gap-4 mb-4">
+                <div
+                  className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                >
+                  Select College
+                </div>
+                <div className="col-span-2">
+                  <Select
+                    placeholder="Please Select College"
+                    loading={collegeLoading}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        collegeId: e.value,
+                      });
+                    }}
+                    value={collegeList.find(
+                      (info) => info.value === formData?.collegeId
+                    )}
+                    options={collegeList}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
           {DisplayError(error)}
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
