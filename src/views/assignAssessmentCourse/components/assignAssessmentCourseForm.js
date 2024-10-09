@@ -76,6 +76,7 @@ function AssignCourseForm(props) {
     startDate: null,
     endDate: null,
   });
+  console.log("formData: ", formData);
   const [errorData, setErrorData] = useState({
     collegeId: "",
     batchId: "",
@@ -124,6 +125,11 @@ function AssignCourseForm(props) {
       if (userData.authority[0].toString() === SUPERADMIN) {
         getCollegeOptionData();
       }
+    }
+    if (
+      userData?.authority.toString() === SUPERADMIN ? "" : userData.collegeId
+    ) {
+      setFormData({ ...formData, collegeId: userData.collegeId });
     }
   }, [isOpen]);
   useEffect(() => {
@@ -393,6 +399,12 @@ function AssignCourseForm(props) {
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
+    console.log(
+      "errorObject : ",
+      userData?.authority.toString() === SUPERADMIN ? "" : userData.collegeId,
+      formData,
+      errorObject
+    );
     if (!errorObject.status) {
       resetErrorData();
       if (assignCourseData?._id) {
@@ -426,7 +438,7 @@ function AssignCourseForm(props) {
           >
             {assignCourseData
               ? "Update Assign Assessment"
-              : "Add Assign Assessment"}{}
+              : "Add Assign Assessment"}
           </div>
         }
         isOpen={isOpen}
