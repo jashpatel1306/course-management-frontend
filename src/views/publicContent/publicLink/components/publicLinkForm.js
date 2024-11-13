@@ -1,0 +1,494 @@
+import React, { useEffect, useState } from "react";
+import {
+  Input,
+  Button,
+  Switcher,
+  Drawer,
+  Select,
+  DatePicker
+} from "components/ui";
+import axiosInstance from "apiServices/axiosInstance";
+import * as Yup from "yup";
+import openNotification from "views/common/notification";
+import { useSelector } from "react-redux";
+import DisplayError from "views/common/displayError";
+import { FormNumericInput, PasswordInput } from "components/shared";
+import { MdDelete } from "react-icons/md";
+const typeOptions = [
+  { value: "text", label: "Text" },
+  { value: "number", label: "Number" },
+  { value: "email", label: "Email" }
+];
+function PublicLinkForm(props) {
+  const { handleCloseClick, publicLinkData, isOpen } = props;
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
+  const publicLinkValidationSchema = Yup.object().shape({
+    quizId: Yup.string().required("quiz Id is required"),
+    password: Yup.string().required("password is required"),
+    noofHits: Yup.string().required("noofHits is required"),
+    startDate: Yup.date().required("start Date is required"),
+    endDate: Yup.date()
+      .required("End Date is required")
+      .min(Yup.ref("startDate")),
+    specificField: Yup.array().required("specific Field is required"),
+    active: Yup.boolean()
+  });
+  const [loading, setLoading] = useState(false);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizzeList, setQuizzeList] = useState([]);
+  const [formData, setFormData] = useState({
+    publicLinkId: "",
+    quizId: "",
+    password: "",
+    noofHits: "",
+    endDate: null,
+    startDate: null,
+    specificField: [{ label: "", type: "" }],
+    active: true
+  });
+  const [errorData, setErrorData] = useState({
+    quizId: "",
+    password: "",
+    noofHits: "",
+    endDate: "",
+    startDate: "",
+    specificField: ""
+  });
+
+  const resetErrorData = () => {
+    setErrorData({
+      quizId: "",
+      password: "",
+      noofHits: "",
+      endDate: "",
+      startDate: "",
+      specificField: ""
+    });
+  };
+
+  const resetFormData = () => {
+    setFormData({
+      publicLinkId: "",
+      quizId: "",
+      password: "",
+      noofHits: "",
+      endDate: null,
+      startDate: null,
+      specificField: [{ label: "", type: "" }],
+      active: true
+    });
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      getQuizzeOptionData();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (publicLinkData?._id) {
+      setFormData({
+        publicLinkId: publicLinkData?._id ? publicLinkData?._id : "",
+        quizId: publicLinkData?.quizId._id ? publicLinkData?.quizId._id : "",
+        password: publicLinkData?.password ? publicLinkData?.password : "",
+        noofHits: publicLinkData?.noofHits ? publicLinkData?.noofHits : "",
+        endDate: publicLinkData?.endDate
+          ? new Date(publicLinkData?.endDate)
+          : null,
+        startDate: publicLinkData?.startDate
+          ? new Date(publicLinkData?.startDate)
+          : null,
+        specificField: publicLinkData?.specificField
+          ? publicLinkData?.specificField
+          : "",
+        active:
+          publicLinkData?.active !== undefined ? publicLinkData?.active : true
+      });
+    }
+  }, [publicLinkData]);
+
+  const getQuizzeOptionData = async () => {
+    try {
+      setQuizLoading(true);
+      const response = await axiosInstance.get(
+        `user/get-public-quizzes-option`
+      );
+
+      if (response.success) {
+        setQuizzeList(response.data);
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getQuizzeOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setQuizLoading(false);
+    }
+  };
+  const addNewPublicLinkMethod = async (value) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post(`admin/public-link`, value);
+      if (response.success) {
+        setLoading(false);
+        resetErrorData();
+        resetFormData();
+        handleCloseClick();
+      } else {
+        setLoading(false);
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      openNotification("danger", error.message);
+      setLoading(false);
+    }
+  };
+  const editPublicLinkMethod = async (value, publicLinkId) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.put(
+        `admin/public-link/${publicLinkId}`,
+        value
+      );
+      if (response.success) {
+        setLoading(false);
+        resetErrorData();
+        resetFormData();
+        handleCloseClick();
+      } else {
+        setLoading(false);
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      openNotification("danger", error.message);
+      setLoading(false);
+    }
+  };
+  const getErrorMessages = ({ path, message, inner }) => {
+    if (inner && inner?.length) {
+      return inner.reduce((acc, { path, message }) => {
+        acc[path] = message;
+        return acc;
+      }, {});
+    }
+    return { [path]: message };
+  };
+  const formValidation = () => {
+    try {
+      publicLinkValidationSchema.validateSync(formData, { abortEarly: false });
+      return {
+        quizId: "",
+        password: "",
+        noofHits: "",
+        endDate: "",
+        startDate: "",
+        specificField: ""
+      };
+    } catch (error) {
+      const errorObject = getErrorMessages(error);
+      if (Object.keys(errorObject)?.length === 0) {
+        return {
+          quizId: "",
+          password: "",
+          noofHits: "",
+          endDate: "",
+          startDate: "",
+          specificField: ""
+        };
+      } else {
+        return {
+          ...errorData,
+          status: true,
+          quizId: errorObject.quizId ? errorObject.quizId : "",
+          password: errorObject.password ? errorObject.password : "",
+          noofHits: errorObject.noofHits ? errorObject.noofHits : "",
+          endDate: errorObject.endDate ? errorObject.endDate : "",
+          startDate: errorObject.startDate ? errorObject.startDate : "",
+          specificField: errorObject.specificField
+            ? errorObject.specificField
+            : ""
+        };
+      }
+    }
+  };
+  const SubmitHandle = async () => {
+    const errorObject = formValidation();
+    if (!errorObject.status) {
+      resetErrorData();
+      if (publicLinkData?._id) {
+        const newFormData = { ...formData };
+        await editPublicLinkMethod(newFormData, publicLinkData?._id);
+      } else {
+        await addNewPublicLinkMethod(formData);
+      }
+    } else {
+      setErrorData(errorObject);
+    }
+  };
+  const handleSpecificFieldChange = (label, index, value) => {
+    const newSpecificField = [...formData.specificField];
+    newSpecificField[index][label] = value;
+    setFormData({
+      ...formData,
+      specificField: newSpecificField
+    });
+  };
+  const addSpecificField = () => {
+    setFormData({
+      ...formData,
+      specificField: [...formData.specificField, { label: "", type: "text" }] // Add new empty specificField
+    });
+  };
+  const removeSpecificField = (index) => {
+    const newSpecificField = formData.specificField.filter(
+      (_, i) => i !== index
+    );
+    setFormData({
+      ...formData,
+      specificField: newSpecificField
+    });
+  };
+  return (
+    <>
+      <Drawer
+        title={
+          <div
+            className={`text-xl font-semibold text-${themeColor}-${primaryColorLevel}`}
+          >
+            {publicLinkData ? "Update Public Link" : "Generate Public Link"}
+          </div>
+        }
+        isOpen={isOpen}
+        width={600}
+        onClose={() => {
+          resetErrorData();
+          resetFormData();
+          handleCloseClick();
+        }}
+        onRequestClose={() => {
+          resetErrorData();
+          resetFormData();
+          handleCloseClick();
+        }}
+        footer={
+          <div className="flex w-full justify-between items-center">
+            <div>
+              {!publicLinkData?._id && (
+                <Button
+                  type="reset"
+                  onClick={() => {
+                    resetErrorData();
+                    resetFormData();
+                  }}
+                  variant="solid"
+                  color="red-500"
+                >
+                  Reset
+                </Button>
+              )}
+            </div>
+            <Button
+              className="white-spinner"
+              variant="solid"
+              onClick={SubmitHandle}
+              loading={loading}
+            >
+              {publicLinkData ? "Update" : "Submit"}
+            </Button>
+          </div>
+        }
+        headerClass="items-start bg-gray-100 dark:bg-gray-700"
+        footerClass="border-t-2 p-3"
+      >
+        <div className="text-sm">
+          {/*  Quizze Name */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Quiz Name
+            </div>
+            <div className="col-span-2">
+              <Select
+                placeholder="Select Quiz"
+                loading={quizLoading}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    quizId: e.value
+                  });
+                }}
+                value={quizzeList.find(
+                  (info) => info.value === formData?.quizId
+                )}
+                options={quizzeList}
+                className={errorData.quizId && "select-error"}
+              />
+            </div>
+            {DisplayError(errorData.quizId)}
+          </div>
+          {/* Password */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Password
+            </div>
+            <div className="col-span-2">
+              <PasswordInput
+                type="text"
+                placeholder="Please Enter Link Password"
+                className={errorData.password && "select-error"}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    password: e.target.value
+                  });
+                }}
+                value={formData?.password}
+              />
+            </div>
+            {DisplayError(errorData.password)}
+          </div>
+          {/* no of Hits */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              No Of Hits
+            </div>
+            <div className="col-span-2">
+              <FormNumericInput
+                placeholder="Enter No Of Hits"
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    noofHits: e.target.value
+                  });
+                }}
+                value={formData?.noofHits}
+                className={errorData.noofHits && "select-error"}
+              />
+            </div>
+            {DisplayError(errorData.noofHits)}
+          </div>
+          {/* startDate */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Start Date & Time
+            </div>
+            <div className="col-span-2">
+              <DatePicker.DateTimepicker
+                placeholder="Please Select a Start Date"
+                className={errorData.startDate && "select-error"}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    startDate: e
+                  });
+                }}
+                value={formData?.startDate}
+              />
+            </div>
+            {DisplayError(errorData.startDate)}
+          </div>
+          {/* endDate */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              End Date & Time
+            </div>
+            <div className="col-span-2">
+              <DatePicker.DateTimepicker
+                placeholder="Please Select a End Date"
+                className={errorData.endDate && "select-error"}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    endDate: e
+                  });
+                }}
+                minDate={formData?.startDate}
+                value={formData?.endDate}
+              />
+            </div>
+            {DisplayError(errorData.endDate)}
+          </div>
+          {/* specific Field */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Specific Field
+            </div>
+            <div className="col-span-2">
+              {formData?.specificField?.map((specificField, index) => (
+                <div className="flex gap-4 col-span-2 mt-2" key={index}>
+                  <Input
+                    type="text"
+                    placeholder={`Enter Field Label`}
+                    value={specificField.label}
+                    onChange={(e) =>
+                      handleSpecificFieldChange("label", index, e.target.value)
+                    }
+                  />
+
+                  <Select
+                    placeholder="Select Field Type"
+                    options={typeOptions}
+                    value={typeOptions.filter(
+                      (item) => item.value === specificField.type
+                    )}
+                    onChange={(e) => {
+                      handleSpecificFieldChange("type", index, e.value);
+                    }}
+                    className="w-72 text-sm"
+                  ></Select>
+                  {formData.specificField.length > 1 && (
+                    <Button
+                      shape="circle"
+                      icon={<MdDelete />}
+                      onClick={() => removeSpecificField(index)}
+                    />
+                  )}
+                </div>
+              ))}
+              <Button onClick={addSpecificField} size="sm" className="mt-2">
+                Add New Specific Field
+              </Button>
+            </div>
+            {DisplayError(errorData.specificField)}
+          </div>
+          {/* Active */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Active
+            </div>
+            <div className="col-span-2">
+              <Switcher
+                checked={formData?.active}
+                onChange={(val) => {
+                  setFormData({
+                    ...formData,
+                    active: !val
+                  });
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+export default PublicLinkForm;

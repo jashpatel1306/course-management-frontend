@@ -6,7 +6,6 @@ import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
-import CreatableSelect from "react-select/creatable";
 
 const staffPermissionOptions = [
   "Dashboard",

@@ -129,7 +129,7 @@ const appsRoute = [
   {
     key: "publiccontent.publiclink",
     path: `${ADMIN_PREFIX_PATH}/public-link`,
-    component: React.lazy(() => import("views/contentHub/instructorsContent")),
+    component: React.lazy(() => import("views/publicContent/publicLink")),
     authority: [SUPERADMIN, STAFF]
   },
   {
