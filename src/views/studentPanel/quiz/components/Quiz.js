@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { OptionList } from "./OptionList";
-import { Result } from "./Result";
 import { formatTime } from "utils/formatTime";
 import {
-  playCorrectAnswer,
   playQuizEnd,
-  playWrongAnswer,
 } from "utils/playSound";
 import { Button, Progress } from "components/ui";
 import parse from "html-react-parser";
@@ -15,7 +12,7 @@ import openNotification from "views/common/notification";
 import { useParams } from "react-router-dom";
 
 export const Quiz = (props) => {
-  const { questions, quizData, results, setResults, setDisplayView } = props;
+  const { questions, quizData, setResults, setDisplayView } = props;
   const { quizId } = useParams();
   const TIME_LIMIT = quizData.time * 60; // 1 minute per question
 

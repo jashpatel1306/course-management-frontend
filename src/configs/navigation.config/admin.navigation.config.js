@@ -1,14 +1,14 @@
 import { ADMIN_PREFIX_PATH } from "constants/route.constant";
 import {
   NAV_ITEM_TYPE_COLLAPSE,
-  NAV_ITEM_TYPE_ITEM,
+  NAV_ITEM_TYPE_ITEM
 } from "constants/navigation.constant";
 import {
   ADMIN,
   SUPERADMIN,
   STAFF,
   STUDENT,
-  INSTRUCTOR,
+  INSTRUCTOR
 } from "constants/roles.constant";
 
 const adminNavigationConfig = [
@@ -19,7 +19,7 @@ const adminNavigationConfig = [
     icon: "dashboard",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, SUPERADMIN, STAFF],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.students",
@@ -28,7 +28,7 @@ const adminNavigationConfig = [
     icon: "student",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, SUPERADMIN, STAFF],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.batches",
@@ -37,7 +37,7 @@ const adminNavigationConfig = [
     icon: "batches",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, STAFF],
-    subMenu: [],
+    subMenu: []
   },
 
   {
@@ -55,7 +55,7 @@ const adminNavigationConfig = [
         icon: "",
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
-        subMenu: [],
+        subMenu: []
       },
       {
         key: "contentHub.instructors",
@@ -64,7 +64,7 @@ const adminNavigationConfig = [
         icon: "",
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
-        subMenu: [],
+        subMenu: []
       },
       {
         key: "apps.assigncourses",
@@ -73,9 +73,9 @@ const adminNavigationConfig = [
         icon: "assign",
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
-        subMenu: [],
-      },
-    ],
+        subMenu: []
+      }
+    ]
   },
 
   {
@@ -93,7 +93,7 @@ const adminNavigationConfig = [
         icon: "assessment",
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
-        subMenu: [],
+        subMenu: []
       },
       {
         key: "apps.assignassessmentcourses",
@@ -102,9 +102,37 @@ const adminNavigationConfig = [
         icon: "assign",
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
-        subMenu: [],
+        subMenu: []
+      }
+    ]
+  },
+  {
+    key: "apps.publiccontent",
+    path: `${ADMIN_PREFIX_PATH}/public-content`,
+    title: "Public Content",
+    icon: "quiz",
+    type: NAV_ITEM_TYPE_COLLAPSE,
+    authority: [SUPERADMIN, STAFF],
+    subMenu: [
+      {
+        key: "publiccontent.publicquizcontent",
+        path: `${ADMIN_PREFIX_PATH}/public-content`,
+        title: "Public Quiz Content",
+        icon: "quiz",
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [SUPERADMIN, STAFF],
+        subMenu: []
       },
-    ],
+      {
+        key: "publiccontent.publiclink",
+        path: `${ADMIN_PREFIX_PATH}/public-link`,
+        title: "Public Link",
+        icon: "quiz",
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [SUPERADMIN, STAFF],
+        subMenu: []
+      }
+    ]
   },
   {
     key: "apps.instructors",
@@ -113,7 +141,7 @@ const adminNavigationConfig = [
     icon: "instructors",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, SUPERADMIN, STAFF],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.colleges",
@@ -122,7 +150,7 @@ const adminNavigationConfig = [
     icon: "clients",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [SUPERADMIN],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.staff",
@@ -131,7 +159,7 @@ const adminNavigationConfig = [
     icon: "staff",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, SUPERADMIN],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.policy",
@@ -140,7 +168,7 @@ const adminNavigationConfig = [
     icon: "policy",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, SUPERADMIN],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.configuration",
@@ -157,8 +185,8 @@ const adminNavigationConfig = [
         icon: "",
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
-        subMenu: [],
-      },
+        subMenu: []
+      }
       // {
       //   key: "appconfigurations.policy",
       //   path: `${ADMIN_PREFIX_PATH}/configuration/policy`,
@@ -168,8 +196,8 @@ const adminNavigationConfig = [
       //   authority: [SUPERADMIN],
       //   subMenu: [],
       // },
-    ],
-  },
+    ]
+  }
 ];
 
 export default adminNavigationConfig;

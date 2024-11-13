@@ -2,14 +2,14 @@ import React from "react";
 import {
   ADMIN_PREFIX_PATH,
   INSTRUCTOR_PREFIX_PATH,
-  STUDENT_PREFIX_PATH,
+  STUDENT_PREFIX_PATH
 } from "constants/route.constant";
 import {
   ADMIN,
   SUPERADMIN,
   STAFF,
   STUDENT,
-  INSTRUCTOR,
+  INSTRUCTOR
 } from "constants/roles.constant";
 
 const appsRoute = [
@@ -17,19 +17,19 @@ const appsRoute = [
     key: "apps.dashboard",
     path: `${ADMIN_PREFIX_PATH}/dashboard`,
     component: React.lazy(() => import("views/project/ProjectDashboard")),
-    authority: [ADMIN, SUPERADMIN, STAFF, STUDENT, INSTRUCTOR],
+    authority: [ADMIN, SUPERADMIN, STAFF, STUDENT, INSTRUCTOR]
   },
   {
     key: "apps.students",
     path: `${ADMIN_PREFIX_PATH}/students`,
     component: React.lazy(() => import("views/students")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.batches",
     path: `${ADMIN_PREFIX_PATH}/batches`,
     component: React.lazy(() => import("views/batches")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.batches.details",
@@ -37,20 +37,20 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/batches/components/batchDetails")
     ),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
 
   {
     key: "apps.students",
     path: `${ADMIN_PREFIX_PATH}/students`,
     component: React.lazy(() => import("views/students")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students`,
     component: React.lazy(() => import("views/contentHub/studentsContent")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "contentHub.students",
@@ -58,7 +58,7 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/contentHub/studentsContent/components/courseContentForm")
     ),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.previewCourse",
@@ -68,8 +68,8 @@ const appsRoute = [
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",
-      footer: false,
-    },
+      footer: false
+    }
   },
   {
     key: "apps.previewInstructorCourse",
@@ -79,8 +79,8 @@ const appsRoute = [
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",
-      footer: false,
-    },
+      footer: false
+    }
   },
   {
     key: "apps.viewCourse",
@@ -92,8 +92,8 @@ const appsRoute = [
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",
-      footer: false,
-    },
+      footer: false
+    }
   },
   {
     key: "apps.viewquiz",
@@ -103,8 +103,8 @@ const appsRoute = [
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",
-      footer: false,
-    },
+      footer: false
+    }
   },
   {
     key: "contentHub.students",
@@ -112,13 +112,31 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/contentHub/studentsContent/components/courseView")
     ),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
+  },
+  {
+    key: "publiccontent.publicquizcontent",
+    path: `${ADMIN_PREFIX_PATH}/public-content`,
+    component: React.lazy(() => import("views/publicContent/publicQuizContent")),
+    authority: [SUPERADMIN, STAFF]
+  },
+  {
+    key: "publiccontent.publicquizcontent",
+    path: `${ADMIN_PREFIX_PATH}/public-content/quiz-form/:quiz_id`,
+    component: React.lazy(() => import("views/publicContent/publicQuizContent/components/quizForm")),
+    authority: [SUPERADMIN, STAFF]
+  },
+  {
+    key: "publiccontent.publiclink",
+    path: `${ADMIN_PREFIX_PATH}/public-link`,
+    component: React.lazy(() => import("views/contentHub/instructorsContent")),
+    authority: [SUPERADMIN, STAFF]
   },
   {
     key: "contentHub.instructors",
     path: `${ADMIN_PREFIX_PATH}/content-hub/instructors`,
     component: React.lazy(() => import("views/contentHub/instructorsContent")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "contentHub.instructors",
@@ -126,7 +144,7 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/contentHub/instructorsContent/components/courseContentForm")
     ),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.viewInstructorsCourse",
@@ -138,26 +156,26 @@ const appsRoute = [
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",
-      footer: false,
-    },
+      footer: false
+    }
   },
   {
     key: "apps.assigncourses",
     path: `${ADMIN_PREFIX_PATH}/assign-courses`,
     component: React.lazy(() => import("views/contentHub/assignCourse")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.assessment",
     path: `${ADMIN_PREFIX_PATH}/assessment`,
     component: React.lazy(() => import("views/assessment")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.assignassessmentcourses",
     path: `${ADMIN_PREFIX_PATH}/assign-assessment-courses`,
     component: React.lazy(() => import("views/assignAssessmentCourse")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
 
   {
@@ -166,19 +184,19 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/assessment/components/assessmentForm")
     ),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.instructors",
     path: `${ADMIN_PREFIX_PATH}/instructors`,
     component: React.lazy(() => import("views/instructors")),
-    authority: [ADMIN, SUPERADMIN, STAFF],
+    authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
     key: "apps.colleges",
     path: `${ADMIN_PREFIX_PATH}/colleges`,
     component: React.lazy(() => import("views/colleges")),
-    authority: [SUPERADMIN],
+    authority: [SUPERADMIN]
   },
   {
     key: "apps.college.datails",
@@ -186,19 +204,19 @@ const appsRoute = [
     component: React.lazy(() =>
       import("views/colleges/components/collegeDetails")
     ),
-    authority: [SUPERADMIN, STAFF],
+    authority: [SUPERADMIN, STAFF]
   },
   {
     key: "apps.staff",
     path: `${ADMIN_PREFIX_PATH}/staff`,
     component: React.lazy(() => import("views/staff")),
-    authority: [ADMIN, SUPERADMIN],
+    authority: [ADMIN, SUPERADMIN]
   },
   {
     key: "apps.policy",
     path: `${ADMIN_PREFIX_PATH}/policy`,
     component: React.lazy(() => import("views/policy")),
-    authority: [ADMIN, SUPERADMIN],
+    authority: [ADMIN, SUPERADMIN]
   },
   // {
   //   key: "configuration.policy",
@@ -210,8 +228,8 @@ const appsRoute = [
     key: "configuration.departments",
     path: `${ADMIN_PREFIX_PATH}/configuration/departments`,
     component: React.lazy(() => import("views/configuration/departments")),
-    authority: [ADMIN, SUPERADMIN],
-  },
+    authority: [ADMIN, SUPERADMIN]
+  }
 ];
 
 export default appsRoute;

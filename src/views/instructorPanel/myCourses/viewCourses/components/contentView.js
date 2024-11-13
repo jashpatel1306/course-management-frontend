@@ -1,11 +1,9 @@
-import axiosInstance from "apiServices/axiosInstance";
+/* eslint-disable jsx-a11y/iframe-has-title */
 import { Button, Spinner } from "components/ui";
 import React, { useEffect, useState } from "react";
-import ReactHtmlParser from "react-html-parser";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import openNotification from "views/common/notification";
 const generateSecureUrl = (pptUrl) => {
   const token = generateRandomToken(16); // Generate a 16-byte token
   const expiryTime = Date.now() + 3600000; // Token valid for 1 hour

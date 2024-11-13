@@ -1,44 +1,43 @@
-import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Dialog, Input, Switcher } from "components/ui";
 import React, { useState } from "react";
-import { FaCheckCircle, FaFile, FaPlus } from "react-icons/fa";
-import { HiOutlinePencil } from "react-icons/hi";
-import { useSelector } from "react-redux";
-import openNotification from "views/common/notification";
-import DisplayError from "views/common/displayError";
-import QuestionsList from "./questionList";
-import QuestionForm from "./questionForm";
-import { MdDelete } from "react-icons/md";
-import { FormNumericInput } from "components/shared";
 
-const QuizCard = (props) => {
-  const { assessmentId, quizData, quizIndex, setApiFlag } = props;
+import { useSelector } from "react-redux";
+import { HiPlusCircle } from "react-icons/hi";
+import openNotification from "views/common/notification";
+import axiosInstance from "apiServices/axiosInstance";
+import DisplayError from "views/common/displayError";
+import { useNavigate } from "react-router-dom";
+import QuizList from "./components/quizList";
+import { FormNumericInput } from "components/shared";
+import { MdDelete } from "react-icons/md";
+const QuizContent = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [IsOpen, setIsOpen] = useState(false);
+  const [apiFlag, setApiFlag] = useState(false);
+  const [sectionData, setSectionData] = useState();
   const [formData, setFormData] = useState({
     title: "",
     description: [],
-    assessmentId: assessmentId,
     time: null,
     isPublish: false
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [IsOpen, setIsOpen] = useState(false);
-  const [addQuestion, setAddQuestion] = useState(false);
-  const [questionData, setQuestionData] = useState();
-
   const [error, setError] = useState("");
-  const UpdateQuiz = async () => {
+  const CreateQuiz = async () => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post(`user/quiz`, formData);
+      const response = await axiosInstance.post(`user/public-quiz`, formData);
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
-        // setSectionData(response.data);
+        setSectionData(response.data);
         setIsOpen(false);
         setApiFlag(true);
+        navigate(`/app/admin/public-content/quiz-form/${response.data._id}`);
         setError("");
       } else {
         openNotification("danger", response.message);
@@ -46,7 +45,7 @@ const QuizCard = (props) => {
       setFormData({
         ...formData,
         title: "",
-        description: [""],
+        description: [],
         time: null,
         isPublish: false
       });
@@ -69,17 +68,16 @@ const QuizCard = (props) => {
         setError("Please Enter Quiz Title.");
       }
       if (formData?.title && formData?.time && formData?.description.length) {
-        UpdateQuiz();
-        setApiFlag(true);
+        CreateQuiz();
         setError("");
-        setIsOpen(false);
+        // setIsOpen(false);
         setFormData({
           ...formData,
           title: "",
-          description: [""],
+          description: [],
+          quizId: null,
           time: null,
-          isPublish: false,
-          quizId: null
+          isPublish: false
         });
       }
     } catch (error) {
@@ -109,83 +107,31 @@ const QuizCard = (props) => {
   };
   return (
     <>
-      <Card className="bg-gray-50 border-2 mb-3">
-        <div
-          className={`flex justify-between items-center text-lg font-semibold gap-2 text-${themeColor}-${primaryColorLevel} mb-2`}
-        >
-          <div className="flex items-center gap-2">
-            <FaCheckCircle />
-
-            <div>Quiz {quizIndex} :</div>
-
-            <FaFile />
-
-            <div
-              className="flex capitalize gap-4 items-center"
-              onClick={() => {
-                setFormData({
-                  title: quizData.title,
-                  description: quizData.description,
-                  time: quizData.time,
-                  isPublish: quizData.isPublish,
-                  assessmentId: assessmentId,
-                  quizId: quizData._id
-                });
-                setIsOpen(true);
-              }}
-            >
-              {quizData.title}
-              <div>
-                <HiOutlinePencil />
-              </div>
-            </div>
+      <Card>
+        <div className="flex items-center justify-between ">
+          <div
+            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+          >
+            Public Quiz Contents
           </div>
-          <div className="flex gap-2 ">
-            <div
-              className={`flex items-center text-base font-semibold text-${themeColor}-${primaryColorLevel} px-3 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
-            >
-              Total Marks : {quizData?.totalMarks || "0"}
-            </div>
-            {/* <Button
-              size="sm"
-              icon={<FaPlus />}
-              onClick={() => {
-                setAddQuestion(true);
-              }}
-            >
-              <span>Questions</span>
-            </Button> */}
+          <div>
             <Button
-              className="mr-2"
               size="sm"
-              icon={<FaPlus />}
-              onClick={() => {
-                setAddQuestion(true);
+              variant="solid"
+              icon={<HiPlusCircle color={"#fff"} />}
+              onClick={async () => {
+                setIsOpen(true);
+                //
               }}
             >
-              <span>Questions</span>
+              Add New Content
             </Button>
           </div>
         </div>
-
-        <div>
-          {addQuestion ? (
-            <QuestionForm
-              quizId={quizData._id}
-              setAddQuestion={setAddQuestion}
-              questionData={questionData}
-              setApiFlag={setApiFlag}
-            />
-          ) : (
-            <QuestionsList
-              quizData={quizData}
-              setAddQuestion={setAddQuestion}
-              setQuestionData={setQuestionData}
-              setApiFlag={setApiFlag}
-            />
-          )}
-        </div>
       </Card>
+      <div>
+        <QuizList />
+      </div>
       <Dialog
         isOpen={IsOpen}
         // style={{
@@ -230,7 +176,7 @@ const QuizCard = (props) => {
               <div className="col-span-2">
                 <Input
                   type="text"
-                  placeholder="Please Enter Assessment Name"
+                  placeholder="Please Enter Quiz Name"
                   onChange={(e) => {
                     setFormData({
                       ...formData,
@@ -293,7 +239,12 @@ const QuizCard = (props) => {
                     )}
                   </div>
                 ))}
-                <Button type="button" onClick={addDescription} className="mt-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={addDescription}
+                  className="mt-2"
+                >
                   Add New Instruction
                 </Button>
               </div>
@@ -345,4 +296,4 @@ const QuizCard = (props) => {
   );
 };
 
-export default QuizCard;
+export default QuizContent;

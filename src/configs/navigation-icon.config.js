@@ -31,6 +31,7 @@ import {
   HiDocumentText,
 } from "react-icons/hi";
 import {
+  MdQuiz,
   MdSubscriptions,
   MdTransferWithinAStation,
 } from "react-icons/md";
@@ -67,7 +68,9 @@ const navigationIcon = {
   staff: <Staff />,
   student: <RiGraduationCapFill  />,
   batches: <BiSolidCategoryAlt   />,
-  attempts: <FaRegQuestionCircle />
+  attempts: <FaRegQuestionCircle />,
+  quiz: <MdQuiz />
+
   ,
   //other icon
   apps: <HiOutlineViewGridAdd />,

@@ -153,6 +153,7 @@ const DragAndDrop = (props) => {
             >
               <span
                 onClick={() => {
+                  console.log("props.row.original: ", props.row.original);
                   setAddQuestion(true);
                   setQuestionData(props.row.original);
                 }}
@@ -181,7 +182,7 @@ const DragAndDrop = (props) => {
   const fetchData = async () => {
     try {
       const response = await axiosInstance.post(
-        `user/get-questions/${quizData._id}`,
+        `user/get-questions/${quizData?._id}`,
         {
           pageNo: 1,
           perPage: 100,
@@ -243,7 +244,6 @@ const DragAndDrop = (props) => {
         </Card>
       ) : (
         <>
-          {" "}
           <div className="flex justify-center">
             <Spinner size="3.25rem" />
           </div>

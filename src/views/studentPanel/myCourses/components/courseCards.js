@@ -1,13 +1,8 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Dialog, Progress, Select, Tooltip } from "components/ui";
-import { SUPERADMIN } from "constants/roles.constant";
-import React, { useEffect, useState } from "react";
-import { CgAssign } from "react-icons/cg";
-import { FaRegEye } from "react-icons/fa";
-import { HiEye, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
+import { Button, Progress, Tooltip } from "components/ui";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import DisplayError from "views/common/displayError";
 import openNotification from "views/common/notification";
 const getRandomBgColorClass = () => {
   // Define an array of possible Tailwind background color classes
@@ -21,7 +16,7 @@ const getRandomBgColorClass = () => {
     "bg-indigo-500",
     "bg-teal-500",
     "bg-orange-500",
-    "bg-sky-500",
+    "bg-sky-500"
   ];
 
   // Generate a random index
@@ -31,9 +26,6 @@ const getRandomBgColorClass = () => {
   return bgColors[randomIndex];
 };
 const CourseCard = ({ index, item, trackingRecode }) => {
- 
-  const navigate = useNavigate();
-  const { userData } = useSelector((state) => state.auth.user);
   const [isLoading, setIsLoading] = useState(false);
 
   const enrollCourse = async () => {
