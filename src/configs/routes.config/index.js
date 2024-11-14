@@ -6,7 +6,7 @@ import studentRoute from "./studentRoute";
 import instructorRoute from "./instructorRoute";
 import publicRoute from "./publicRoute";
 
-export const publicRoutes = [...authRoute, ...publicRoute];
+export const publicRoutes = [...authRoute];
 
 export const protectedRoutes = [
   ...appsRoute,
@@ -14,5 +14,6 @@ export const protectedRoutes = [
   ...userProfileRoute,
   ...studentRoute,
   ...instructorRoute,
-  ...publicRoute
+  // ...publicRoute
 ];
+export const quizRoutes = [...publicRoute];

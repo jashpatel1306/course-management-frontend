@@ -138,17 +138,17 @@ const appsRoute = [
     component: React.lazy(() => import("views/publicContent/publicLink")),
     authority: [SUPERADMIN, STAFF]
   },
-  {
-    key: "apps.publicQuiz",
-    path: `${QUIZ_PREFIX_PATH}/:quizId/public`,
-    component: React.lazy(() => import("views/publicQuiz")),
-    authority: [],
-    meta: {
-      layout: "blank",
-      pageContainerType: "gutterless",
-      footer: false
-    }
-  },
+  // {
+  //   key: "apps.publicQuiz",
+  //   path: `${QUIZ_PREFIX_PATH}/:quizId/public`,
+  //   component: React.lazy(() => import("views/publicQuiz")),
+  //   authority: [],
+  //   meta: {
+  //     layout: "blank",
+  //     pageContainerType: "gutterless",
+  //     footer: false
+  //   }
+  // },
   {
     key: "contentHub.instructors",
     path: `${ADMIN_PREFIX_PATH}/content-hub/instructors`,

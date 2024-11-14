@@ -1,6 +1,10 @@
 import React, { Suspense } from "react";
 import { Loading } from "components/shared";
-import { protectedRoutes, publicRoutes } from "configs/routes.config";
+import {
+  protectedRoutes,
+  publicRoutes,
+  quizRoutes
+} from "configs/routes.config";
 import appConfig from "configs/app.config";
 import PageContainer from "components/template/PageContainer";
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -9,6 +13,7 @@ import ProtectedRoute from "components/route/ProtectedRoute";
 import PublicRoute from "components/route/PublicRoute";
 import AuthorityGuard from "components/route/AuthorityGuard";
 import AppRoute from "components/route/AppRoute";
+import QuizRoute from "components/route/quizRoute";
 
 const { authenticatedEntryPath } = appConfig;
 
@@ -49,6 +54,21 @@ const AllRoutes = (props) => {
       </Route>
       <Route path="/" element={<PublicRoute />}>
         {publicRoutes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <AppRoute
+                routeKey={route.key}
+                component={route.component}
+                {...route.meta}
+              />
+            }
+          />
+        ))}
+      </Route>
+      <Route path="/" element={<QuizRoute />}>
+        {quizRoutes.map((route) => (
           <Route
             key={route.path}
             path={route.path}
