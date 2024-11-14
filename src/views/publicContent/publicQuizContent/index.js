@@ -134,11 +134,7 @@ const QuizContent = () => {
       </div>
       <Dialog
         isOpen={IsOpen}
-        // style={{
-        //   content: {
-        //     marginTop: 250,
-        //   },
-        // }}
+       
         contentClassName="pb-0 px-0"
         onClose={() => {
           setIsOpen(false);

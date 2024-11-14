@@ -26,6 +26,7 @@ function PublicLinkForm(props) {
     (state) => state?.theme?.primaryColorLevel
   );
   const publicLinkValidationSchema = Yup.object().shape({
+    publicLinkName: Yup.string().required("name is required"),
     quizId: Yup.string().required("quiz Id is required"),
     password: Yup.string().required("password is required"),
     noofHits: Yup.string().required("noofHits is required"),
@@ -33,7 +34,25 @@ function PublicLinkForm(props) {
     endDate: Yup.date()
       .required("End Date is required")
       .min(Yup.ref("startDate")),
-    specificField: Yup.array().required("specific Field is required"),
+    specificField: Yup.array()
+      .of(
+        Yup.object().shape({
+          label: Yup.string().required("Field label is required"), // Example of a required field in the object
+          type: Yup.string().required("Field type is required") // Another required field
+        })
+      )
+      .test("not-empty", "At least specific Field is required", (arr) => {
+        return arr && arr.every((item) => item.label && item.type);
+      })
+      .min(1, "At least one specific field is required")
+      .required("Specific field is required"),
+    instruction: Yup.array()
+      .of(Yup.string().trim().required("Instruction cannot be empty")) // Ensure each item is a non-empty string
+      .min(1, "At least one instruction is required") // Ensure the array has at least one item
+      .test("not-empty", "At least one instruction is required", (arr) =>
+        arr ? arr.some((item) => item.trim() !== "") : false
+      ) // Custom test to ensure at least one non-empty item
+      .required("Instructions are required"),
     active: Yup.boolean()
   });
   const [loading, setLoading] = useState(false);
@@ -42,29 +61,35 @@ function PublicLinkForm(props) {
   const [formData, setFormData] = useState({
     publicLinkId: "",
     quizId: "",
+    publicLinkName: "",
     password: "",
     noofHits: "",
     endDate: null,
     startDate: null,
     specificField: [{ label: "", type: "" }],
+    instruction: [""],
     active: true
   });
   const [errorData, setErrorData] = useState({
     quizId: "",
     password: "",
+    publicLinkName: "",
     noofHits: "",
     endDate: "",
     startDate: "",
-    specificField: ""
+    specificField: "",
+    instruction: ""
   });
 
   const resetErrorData = () => {
     setErrorData({
       quizId: "",
       password: "",
+      publicLinkName: "",
       noofHits: "",
       endDate: "",
       startDate: "",
+      instruction: "",
       specificField: ""
     });
   };
@@ -74,10 +99,13 @@ function PublicLinkForm(props) {
       publicLinkId: "",
       quizId: "",
       password: "",
+      publicLinkName: "",
       noofHits: "",
+      instruction: [""],
       endDate: null,
       startDate: null,
       specificField: [{ label: "", type: "" }],
+
       active: true
     });
   };
@@ -95,6 +123,9 @@ function PublicLinkForm(props) {
         quizId: publicLinkData?.quizId._id ? publicLinkData?.quizId._id : "",
         password: publicLinkData?.password ? publicLinkData?.password : "",
         noofHits: publicLinkData?.noofHits ? publicLinkData?.noofHits : "",
+        publicLinkName: publicLinkData?.publicLinkName
+          ? publicLinkData?.publicLinkName
+          : "",
         endDate: publicLinkData?.endDate
           ? new Date(publicLinkData?.endDate)
           : null,
@@ -104,6 +135,9 @@ function PublicLinkForm(props) {
         specificField: publicLinkData?.specificField
           ? publicLinkData?.specificField
           : "",
+        instruction: publicLinkData?.instruction
+          ? publicLinkData?.instruction
+          : [""],
         active:
           publicLinkData?.active !== undefined ? publicLinkData?.active : true
       });
@@ -186,6 +220,7 @@ function PublicLinkForm(props) {
         noofHits: "",
         endDate: "",
         startDate: "",
+        instruction: "",
         specificField: ""
       };
     } catch (error) {
@@ -197,17 +232,25 @@ function PublicLinkForm(props) {
           noofHits: "",
           endDate: "",
           startDate: "",
+          instruction: "",
+          publicLinkName: "",
           specificField: ""
         };
       } else {
+        console.log("errorObject.instruction: ", errorObject);
         return {
           ...errorData,
           status: true,
           quizId: errorObject.quizId ? errorObject.quizId : "",
           password: errorObject.password ? errorObject.password : "",
           noofHits: errorObject.noofHits ? errorObject.noofHits : "",
+          publicLinkName: errorObject.publicLinkName
+            ? errorObject.publicLinkName
+            : "",
+
           endDate: errorObject.endDate ? errorObject.endDate : "",
           startDate: errorObject.startDate ? errorObject.startDate : "",
+          instruction: errorObject.instruction ? errorObject.instruction : [""],
           specificField: errorObject.specificField
             ? errorObject.specificField
             : ""
@@ -250,6 +293,29 @@ function PublicLinkForm(props) {
     setFormData({
       ...formData,
       specificField: newSpecificField
+    });
+  };
+  const handleInstructionChange = (index, value) => {
+    const newInstructions = [...formData?.instruction];
+    newInstructions[index] = value;
+    setFormData({
+      ...formData,
+      instruction: newInstructions
+    });
+  };
+  const addInstruction = () => {
+    setFormData({
+      ...formData,
+      instruction: [...formData?.instruction, ""] // Add new empty instruction
+    });
+  };
+  const removeInstruction = (index) => {
+    const newInstructions = formData?.instruction?.filter(
+      (_, i) => i !== index
+    );
+    setFormData({
+      ...formData,
+      instruction: newInstructions
     });
   };
   return (
@@ -305,6 +371,33 @@ function PublicLinkForm(props) {
         footerClass="border-t-2 p-3"
       >
         <div className="text-sm">
+          {/* Name */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Name
+            </div>
+            <div className="col-span-2">
+              <Input
+                type="text"
+                placeholder="Please Enter Name"
+                className={
+                  errorData.publicLinkName
+                    ? "select-error capitalize"
+                    : "capitalize"
+                }
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    publicLinkName: e.target.value
+                  });
+                }}
+                value={formData?.publicLinkName}
+              />
+            </div>
+            {DisplayError(errorData.publicLinkName)}
+          </div>
           {/*  Quizze Name */}
           <div className="col-span-1 gap-4 mb-4">
             <div
@@ -420,6 +513,44 @@ function PublicLinkForm(props) {
               />
             </div>
             {DisplayError(errorData.endDate)}
+          </div>
+          {/* Quiz Instructions */}
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Instructions
+            </div>
+            <div className="col-span-2">
+              {formData?.instruction?.map((instruction, index) => (
+                <div className="flex gap-4 col-span-2 mt-2" key={index}>
+                  <Input
+                    type="text"
+                    placeholder={`Enter Quiz Instruction ${index + 1}`}
+                    value={instruction}
+                    onChange={(e) =>
+                      handleInstructionChange(index, e.target.value)
+                    }
+                  />
+                  {formData?.instruction?.length > 1 && (
+                    <Button
+                      shape="circle"
+                      icon={<MdDelete />}
+                      onClick={() => removeInstruction(index)}
+                    />
+                  )}
+                </div>
+              ))}
+              {DisplayError(errorData.instruction)}
+              <Button
+                type="button"
+                size="sm"
+                onClick={addInstruction}
+                className="mt-2"
+              >
+                Add New Instruction
+              </Button>
+            </div>
           </div>
           {/* specific Field */}
           <div className="col-span-1 gap-4 mb-4">

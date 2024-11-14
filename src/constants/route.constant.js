@@ -4,6 +4,7 @@ export const USER_PREFIX_PATH = "/app/user";
 export const STUDENT_PREFIX_PATH = "/app/student";
 export const INSTRUCTOR_PREFIX_PATH = "/app/instructor";
 export const APP_PREFIX_PATH = "/app";
+export const QUIZ_PREFIX_PATH = "/app/quiz";
 export const AUTH_PREFIX_PATH = "/auth";
 export const UI_COMPONENTS_PREFIX_PATH = "/ui-components";
 export const PAGES_PREFIX_PATH = "/pages";

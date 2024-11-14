@@ -2,6 +2,7 @@ import React from "react";
 import {
   ADMIN_PREFIX_PATH,
   INSTRUCTOR_PREFIX_PATH,
+  QUIZ_PREFIX_PATH,
   STUDENT_PREFIX_PATH
 } from "constants/route.constant";
 import {
@@ -106,6 +107,7 @@ const appsRoute = [
       footer: false
     }
   },
+  
   {
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students/course/:course_id`,
@@ -117,13 +119,17 @@ const appsRoute = [
   {
     key: "publiccontent.publicquizcontent",
     path: `${ADMIN_PREFIX_PATH}/public-content`,
-    component: React.lazy(() => import("views/publicContent/publicQuizContent")),
+    component: React.lazy(() =>
+      import("views/publicContent/publicQuizContent")
+    ),
     authority: [SUPERADMIN, STAFF]
   },
   {
     key: "publiccontent.publicquizcontent",
     path: `${ADMIN_PREFIX_PATH}/public-content/quiz-form/:quiz_id`,
-    component: React.lazy(() => import("views/publicContent/publicQuizContent/components/quizForm")),
+    component: React.lazy(() =>
+      import("views/publicContent/publicQuizContent/components/quizForm")
+    ),
     authority: [SUPERADMIN, STAFF]
   },
   {
@@ -131,6 +137,17 @@ const appsRoute = [
     path: `${ADMIN_PREFIX_PATH}/public-link`,
     component: React.lazy(() => import("views/publicContent/publicLink")),
     authority: [SUPERADMIN, STAFF]
+  },
+  {
+    key: "apps.publicQuiz",
+    path: `${QUIZ_PREFIX_PATH}/:quizId/public`,
+    component: React.lazy(() => import("views/publicQuiz")),
+    authority: [],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false
+    }
   },
   {
     key: "contentHub.instructors",

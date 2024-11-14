@@ -9,6 +9,7 @@ import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import removeSpecials from "views/common/serachText";
+import { FaLink } from "react-icons/fa";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -105,7 +106,10 @@ const PublicLinkList = (props) => {
       setDeleteIsOpen(false);
     }
   };
-
+  const handleCopyClick = (link = "") => {
+    navigator.clipboard.writeText(link);
+    openNotification("success", "Copied");
+  };
   return (
     <>
       <div className="mt-2">
@@ -136,7 +140,7 @@ const PublicLinkList = (props) => {
                 {publicLinkData?.map((item, key) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
-                      <Td>{item?.quizId?.title}</Td>
+                      <Td>{item?.publicLinkName}</Td>
 
                       <Td>{item?.noofHits}</Td>
                       <Td>
@@ -165,6 +169,18 @@ const PublicLinkList = (props) => {
                       </Td>
                       <Td>
                         <div className="flex ">
+                          <Button
+                            shape="circle"
+                            variant="solid"
+                            className="mr-2"
+                            size="sm"
+                            icon={<FaLink />}
+                            onClick={async () => {
+                              handleCopyClick(
+                                `${window.location.origin}/app/quiz/${item._id}/public`
+                              );
+                            }}
+                          />
                           <Button
                             shape="circle"
                             variant="solid"
