@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { OptionList } from "./OptionList";
 import { formatTime } from "utils/formatTime";
 import { playQuizEnd } from "utils/playSound";
-import { Button, Input, Progress } from "components/ui";
+import { Button, Input, Progress, Spinner } from "components/ui";
 import parse from "html-react-parser";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
@@ -17,15 +17,15 @@ export const Quiz = (props) => {
   const TIME_LIMIT = quizData.time * 60; // 1 minute per question
 
   const timerRef = useRef(null);
+  const [questionData, setQuestionData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isQusLoading, setIsQusLoading] = useState(true);
   const [timePassed, setTimePassed] = useState(0);
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(-1);
   const [quizFinished, setQuizFinished] = useState(false);
-  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   console.log("questions:", questions, questions[activeQuestion]);
-  const { question, answers, _id, marks } = questions[activeQuestion];
+  const { _id } = questions[activeQuestion];
   const numberOfQuestions = questions.length;
   const setupTimer = () => {
     if (timerRef.current) {
@@ -149,70 +149,6 @@ export const Quiz = (props) => {
       transition={{ duration: 0.5 }}
     >
       <>
-        <div className="hidden flex flex-col text-black font-bold  text-center w-full">
-          <div className="flex justify-between items-center px-6">
-            <div>
-              <h1 className="font-bold text-2xl text-white">
-                {quizData?.title}
-              </h1>
-            </div>
-            <div>
-              <h3 className="text-black font-medium text-lg">
-                Question {activeQuestion + 1} / {numberOfQuestions}
-              </h3>
-            </div>
-            <div>
-              <Progress
-                percent={(timePassed / TIME_LIMIT) * 100}
-                variant="circle"
-                width={60}
-                customInfo={
-                  <div className="text-center">
-                    <span>{formatTime(timePassed)}</span>
-                  </div>
-                }
-              />
-            </div>
-          </div>
-          <div className="flex justify-end items-center px-6">
-            <p className="px-4 p-1 capitalize rounded-lg border-2 text-base font-semibold">
-              {" "}
-              {/* {marks}  */}0 Marks
-            </p>
-          </div>
-          <div className="max-h-[80vh] overflow-y-scroll hidden-scroll pt-2 pb-8">
-            <div className="mt-2 rounded-2xl border border-brand-light-gray px-7 py-4 w-full mb-8 ">
-              <h4 className="text-black font-medium text-lg">
-                {/* {parse(
-                question?.replaceAll("<pre", `<code><pre`)
-                  .replaceAll("</pre>", `</pre></code>`)
-              )} */}
-                question
-              </h4>
-            </div>
-            {/* <OptionList
-            activeQuestion={questions[activeQuestion]}
-            answers={answers}
-            selectedAnswerIndex={selectedAnswerIndex}
-            onAnswerSelected={handleSelectAnswer}
-            isCorrectAnswer={isCorrectAnswer}
-          /> */}
-          </div>
-        </div>
-        <div className="hidden absolute bottom-0 w-full flex justify-between bg-gray-100 p-2 px-6">
-          <div className="w-full flex justify-end items-center">
-            <Button
-              disabled={selectedAnswerIndex === -1}
-              className="w-48"
-              onClick={handleNextQuestion}
-              variant="solid"
-              loading={isLoading}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-
         <div className="w-full ">
           {/* quiz hearder */}
           <div>
@@ -220,16 +156,12 @@ export const Quiz = (props) => {
               <div className="flex gap-4">
                 <div className="font-bold text-2xl ">LMS</div>
                 <div className="border-r-2"></div>
-                <div className="font-bold text-lg ">
-                  {quizData?.publicLinkName}
-                </div>
+                <div className="font-bold text-lg ">{quizData?.title}</div>
               </div>
 
               <div className="flex gap-4 items-center">
                 <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
                   <MdTimer size={25} />
-                  {/* <span className="text-xl">Time</span> */}
-                  {/* <span className="text-xl">:</span> */}
                   <span className="text-xl">{formatTime(timePassed)}</span>
                 </div>
                 <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
@@ -248,47 +180,64 @@ export const Quiz = (props) => {
           </div>
           {/* quiz main content */}
           <div className="w-[70%] max-h-[80vh] overflow-y-scroll hidden-scroll mx-auto my-8">
-            <div className="flex justify-between items-center">
-              <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                Question : Fill the Question
-              </p>
-              <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                2 Marks
-              </p>
-            </div>
-            <div className=" pt-2 pb-8">
-              <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
-                <h4 className="text-gray-700 font-semibold text-lg">
-                  .................. the primary function of a router?
-                </h4>
-              </div>
-              <Input
-                placeholder="Wrtie Your Answer Here"
-                textArea
-                className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                Question : MCQ
-              </p>
-              <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                2 Marks
-              </p>
-            </div>
-            <div className=" pt-2 pb-8">
-              <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
-                <h4 className="text-gray-700 font-semibold text-lg">
-                  What is the primary function of a router?
-                </h4>
-              </div>
+            {isQusLoading ? (
+              <>
+                <div className="flex justify-center items-center">
+                  <Spinner className="mr-4" color="grzy-900" size="40px" />
+                </div>
+              </>
+            ) : (
+              <>
+                {questionData?.questionType === "fill" ? (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                        Question : Fill the Question
+                      </p>
+                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                        2 Marks
+                      </p>
+                    </div>
+                    <div className=" pt-2 pb-8">
+                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
+                        <h4 className="text-gray-700 font-semibold text-lg">
+                          .................. the primary function of a router?
+                        </h4>
+                      </div>
+                      <Input
+                        placeholder="Wrtie Your Answer Here"
+                        textArea
+                        className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                        Question : MCQ
+                      </p>
+                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                        2 Marks
+                      </p>
+                    </div>
+                    <div className=" pt-2 pb-8">
+                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
+                        <h4 className="text-gray-700 font-semibold text-lg">
+                          What is the primary function of a router?
+                        </h4>
+                      </div>
 
-              <OptionList
-                answers={anserarr}
-                selectedAnswerIndex={selectedAnswerIndex}
-                onAnswerSelected={handleSelectAnswer}
-              />
-            </div>
+                      <OptionList
+                        answers={anserarr}
+                        selectedAnswerIndex={selectedAnswerIndex}
+                        onAnswerSelected={handleSelectAnswer}
+                      />
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
           {/* quiz footer */}
           <div>
@@ -303,9 +252,6 @@ export const Quiz = (props) => {
               </div>
 
               <div className="flex gap-4 items-center text-lg">
-                {/* <Button variant="solid" color="blue-600">
-                  Submit
-                </Button>{" "} */}
                 <Button
                   variant="solid"
                   color="gray-600"

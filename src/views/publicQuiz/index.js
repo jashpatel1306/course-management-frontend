@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { useSelector } from "react-redux";
 import { Countdown } from "./components/Countdown";
 import Intro from "./components/Intro";
 import { Quiz } from "./components/Quiz";
@@ -11,9 +10,7 @@ import { Spinner } from "components/ui";
 import { Result } from "./components/Result";
 const QuizMainContent = () => {
   const { quizId } = useParams();
-  // const [displayView, setDisplayView] = useState("quiz");
   const [displayView, setDisplayView] = useState("intro");
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
   const [isLoading, setIsLoading] = useState(true);
   const [quizData, setQuizData] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -29,16 +26,21 @@ const QuizMainContent = () => {
 
       if (response?.success) {
         setQuizData({
-          _id: response.data.quizId?._id,
-          title: response.data.quizId?.title,
-          publicLinkName: response.data.publicLinkName,
-          noofHits: response.data?.noofHits,
+          _id: response.data?._id,
+          quizId: response.data?.quizId,
+          password: response.data?.password,
           startDate: response.data?.startDate,
           endDate: response.data?.endDate,
-          specificField: response.data?.specificField
-          // questions: response.data.quizId?.questions
+          specificField: response.data?.specificField,
+          instruction: response.data?.instruction,
+          title: response.data?.publicLinkName,
+          soltStatus: response.data?.soltStatus,
+          totalQuestions: response.data?.quizdetails?.totalQuestions,
+          // questionIds: response.data?.questionIds,
+          totalTime: response.data?.quizdetails?.totalTime,
+          totalMarks: response.data?.quizdetails?.totalMarks
         });
-        setQuestions(response.data.quizId?.questions);
+        setQuestions(response.data.quizdetails?.questionIds);
         setIsLoading(false);
       } else {
         openNotification("danger", response.message?.message);
@@ -47,28 +49,6 @@ const QuizMainContent = () => {
     } catch (error) {
       console.log("get-all-quiz error:", error);
       openNotification("danger", error.message?.message);
-      setIsLoading(false);
-    }
-  };
-  const ErollQuizData = async () => {
-    try {
-      const response = await axiosInstance.post(
-        `student/quiz/enroll/${quizId}`
-      );
-
-      if (response.success) {
-        setDisplayView("quiz");
-        setIsLoading(false);
-      } else {
-        openNotification(
-          "danger",
-          response.message?.message || response.message
-        );
-        setIsLoading(false);
-      }
-    } catch (error) {
-      console.log("get-all-course error:", error);
-      openNotification("danger", error.message?.message || error.message);
       setIsLoading(false);
     }
   };
@@ -84,7 +64,6 @@ const QuizMainContent = () => {
   useEffect(() => {
     setApiFlag(true);
   }, []);
-  console.log("displayView: ", displayView);
   return (
     <>
       <main

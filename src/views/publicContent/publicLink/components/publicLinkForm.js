@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { FormNumericInput, PasswordInput } from "components/shared";
 import { MdDelete } from "react-icons/md";
+import useEncryption from "common/useEncryption";
 const typeOptions = [
   { value: "text", label: "Text" },
   { value: "number", label: "Number" },
@@ -27,7 +28,13 @@ function PublicLinkForm(props) {
   );
   const publicLinkValidationSchema = Yup.object().shape({
     publicLinkName: Yup.string().required("name is required"),
-    quizId: Yup.string().required("quiz Id is required"),
+    quizId: Yup.array()
+      .of(Yup.string().trim().required("Quiz cannot be empty"))
+      .min(1, "At least one Quiz is required")
+      .test("not-empty", "At least one Quiz is required", (arr) =>
+        arr ? arr.some((item) => item.trim() !== "") : false
+      )
+      .required("Instructions are required"),
     password: Yup.string().required("password is required"),
     noofHits: Yup.string().required("noofHits is required"),
     startDate: Yup.date().required("start Date is required"),
@@ -60,7 +67,7 @@ function PublicLinkForm(props) {
   const [quizzeList, setQuizzeList] = useState([]);
   const [formData, setFormData] = useState({
     publicLinkId: "",
-    quizId: "",
+    quizId: [],
     publicLinkName: "",
     password: "",
     noofHits: "",
@@ -97,7 +104,7 @@ function PublicLinkForm(props) {
   const resetFormData = () => {
     setFormData({
       publicLinkId: "",
-      quizId: "",
+      quizId: [],
       password: "",
       publicLinkName: "",
       noofHits: "",
@@ -115,32 +122,37 @@ function PublicLinkForm(props) {
       getQuizzeOptionData();
     }
   }, [isOpen]);
-
+  const setUpdateData = async (publicLinkData) => {
+    const decryptPassword = await useEncryption.decryptData(
+      publicLinkData.password
+    );
+    setFormData({
+      publicLinkId: publicLinkData?._id ? publicLinkData?._id : "",
+      quizId: publicLinkData?.quizId ? publicLinkData?.quizId : [],
+      password: publicLinkData?.password ? decryptPassword : "",
+      noofHits: publicLinkData?.noofHits ? publicLinkData?.noofHits : "",
+      publicLinkName: publicLinkData?.publicLinkName
+        ? publicLinkData?.publicLinkName
+        : "",
+      endDate: publicLinkData?.endDate
+        ? new Date(publicLinkData?.endDate)
+        : null,
+      startDate: publicLinkData?.startDate
+        ? new Date(publicLinkData?.startDate)
+        : null,
+      specificField: publicLinkData?.specificField
+        ? publicLinkData?.specificField
+        : "",
+      instruction: publicLinkData?.instruction
+        ? publicLinkData?.instruction
+        : [""],
+      active:
+        publicLinkData?.active !== undefined ? publicLinkData?.active : true
+    });
+  };
   useEffect(() => {
     if (publicLinkData?._id) {
-      setFormData({
-        publicLinkId: publicLinkData?._id ? publicLinkData?._id : "",
-        quizId: publicLinkData?.quizId._id ? publicLinkData?.quizId._id : "",
-        password: publicLinkData?.password ? publicLinkData?.password : "",
-        noofHits: publicLinkData?.noofHits ? publicLinkData?.noofHits : "",
-        publicLinkName: publicLinkData?.publicLinkName
-          ? publicLinkData?.publicLinkName
-          : "",
-        endDate: publicLinkData?.endDate
-          ? new Date(publicLinkData?.endDate)
-          : null,
-        startDate: publicLinkData?.startDate
-          ? new Date(publicLinkData?.startDate)
-          : null,
-        specificField: publicLinkData?.specificField
-          ? publicLinkData?.specificField
-          : "",
-        instruction: publicLinkData?.instruction
-          ? publicLinkData?.instruction
-          : [""],
-        active:
-          publicLinkData?.active !== undefined ? publicLinkData?.active : true
-      });
+      setUpdateData(publicLinkData);
     }
   }, [publicLinkData]);
 
@@ -263,7 +275,10 @@ function PublicLinkForm(props) {
     if (!errorObject.status) {
       resetErrorData();
       if (publicLinkData?._id) {
-        const newFormData = { ...formData };
+        const newFormData = {
+          ...formData,
+          password: await useEncryption.encryptData(formData.password)
+        };
         await editPublicLinkMethod(newFormData, publicLinkData?._id);
       } else {
         await addNewPublicLinkMethod(formData);
@@ -407,17 +422,21 @@ function PublicLinkForm(props) {
             </div>
             <div className="col-span-2">
               <Select
+                isMulti
                 placeholder="Select Quiz"
                 loading={quizLoading}
-                onChange={(e) => {
+                onChange={(value) => {
                   setFormData({
                     ...formData,
-                    quizId: e.value
+                    quizId: value.map((info) => info.value)
                   });
                 }}
-                value={quizzeList.find(
-                  (info) => info.value === formData?.quizId
+                value={quizzeList.filter((quiz) =>
+                  formData?.quizId.includes(quiz.value)
                 )}
+                // defaultValue={quizzeList.filter((quiz) =>
+                //     formData?.quizId.includes(quiz.value)
+                //   )}
                 options={quizzeList}
                 className={errorData.quizId && "select-error"}
               />

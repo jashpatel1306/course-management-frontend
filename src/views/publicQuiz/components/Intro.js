@@ -7,23 +7,35 @@ import { useSelector } from "react-redux";
 import { FormNumericInput, PasswordInput } from "components/shared";
 import DisplayError from "views/common/displayError";
 import { useNavigate } from "react-router-dom";
+import useEncryption from "common/useEncryption";
+import axiosInstance from "apiServices/axiosInstance";
+import openNotification from "views/common/notification";
+const removeDefaultCss =
+  "focus:ring-gray-700 focus-within:ring-gray-700 focus-within:border-gray-700 focus:border-gray-700";
 function isLinkExpired(expirationDate) {
   const now = new Date();
   const expiryDate = new Date(expirationDate);
 
   return expiryDate < now;
 }
+function formatDate(dateString) {
+  const date = new Date(dateString);
+
+  return date.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+}
 
 const Intro = ({ onGetStartedClick, quizData }) => {
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
   const navigate = useNavigate();
-
   const calculateTimeLeft = () => {
     const difference = +new Date(quizData.startDate) - +new Date();
-    let timeLeft = {};
+    let timeLeft = null;
 
     if (difference > 0) {
       timeLeft = {
@@ -37,41 +49,27 @@ const Intro = ({ onGetStartedClick, quizData }) => {
     }
     return timeLeft;
   };
-  const [step, setStep] = useState("instructions");
+  const [step, setStep] = useState("timeLeft");
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
   const [timeCondition, setTimeCondition] = useState(false);
   const [expired, setExpired] = useState(isLinkExpired(quizData.endDate));
-
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
-      setTimeCondition(calculateTimeLeft().days !== undefined);
+      setTimeCondition(calculateTimeLeft()?.days !== undefined);
     }, 1000);
 
     // Cleanup the interval when the component is unmounted
     return () => clearInterval(timer);
   }, []);
-
-  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [password, setPassword] = useState("Admin@123");
+  const [errorPassword, setErrorPassword] = useState("");
   const [specificField, setSpecificField] = useState();
   const [errorData, setErrorData] = useState({ status: false });
 
   const handleSubmit = () => {
     let errorStatus = false;
-    // if (password) {
-    //   setErrorData((prevState) => ({
-    //     ...prevState,
-    //     status: false,
-    //     password: ""
-    //   }));
-    // } else {
-    //   errorStatus = true;
-    //   setErrorData((prevState) => ({
-    //     ...prevState,
-    //     status: true,
-    //     password: "Password is requied"
-    //   }));
-    // }
     if (quizData.specificField.length > 0) {
       quizData.specificField.map((item) => {
         if (specificField && specificField[item.label]) {
@@ -92,14 +90,56 @@ const Intro = ({ onGetStartedClick, quizData }) => {
     }
 
     if (!errorStatus) {
-      console.log("api calling...", specificField, password);
+      console.log("api calling...", specificField);
+      ErollQuizData(specificField);
+    }
+  };
+  const handlePasswordSubmit = async () => {
+    if (password) {
+      const quizPassword = await useEncryption.decryptData(quizData.password);
+      if (quizPassword.trim() === password.trim()) {
+        setStep("form");
+        setErrorPassword("");
+        // setPassword("")
+      } else {
+        setErrorPassword("Password does not match");
+      }
+    } else {
+      setErrorPassword("Password is requied");
+    }
+  };
+  const ErollQuizData = async (data) => {
+    try {
+      const response = await axiosInstance.post(
+        `student/quiz/public-enroll/${quizData._id}`,
+        { specificField: data }
+      );
+
+      if (response.success) {
+        onGetStartedClick();
+        setIsLoading(false);
+      } else {
+        openNotification(
+          "danger",
+          response.message?.message || response.message
+        );
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log("get-all-course error:", error);
+      openNotification("danger", error.message?.message || error.message);
+      setIsLoading(false);
     }
   };
   useEffect(() => {
+    if (!timeLeft) {
+      setStep("instructions");
+    }
     if (expired) {
       navigate(`/expired-link`);
     }
-  }, [expired]);
+  }, [expired, timeLeft]);
+
   return (
     <>
       {!expired && (
@@ -117,7 +157,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                       <span className="flex" aria-hidden="true">
                         Welcome to
                       </span>
-                      <span aria-hidden="true">{quizData?.publicLinkName}</span>
+                      <span aria-hidden="true">{quizData?.title}</span>
                     </h1>
                     <div className="mt-8">
                       <div className="flex gap-8 ">
@@ -126,18 +166,18 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                             Test duration
                           </span>
                           <span
-                            className="block text-gray-800 text-2xl"
+                            className="block text-gray-800 text-xl"
                             data-automation="test-duration"
                           >
-                            105 mins
+                            {quizData?.totalTime} mins
                           </span>
                         </div>
                         <div>
                           <span className="text-base font-semibold text-gray-500">
                             No. of questions
                           </span>
-                          <span className="block text-gray-800 text-2xl">
-                            4 questions
+                          <span className="block text-gray-800 text-xl">
+                            {quizData?.totalQuestions} questions
                           </span>
                         </div>
                       </div>
@@ -152,18 +192,18 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                           Start Date
                         </span>
                         <span
-                          className="block text-gray-800 text-lg"
+                          className="block text-gray-800 text-base"
                           data-automation="test-duration"
                         >
-                          10 Nov 2024, 02:12 PM
+                          {formatDate(quizData?.startDate)}
                         </span>
                       </div>
                       <div>
                         <span className="text-base font-semibold text-gray-500">
                           End Date
                         </span>
-                        <span className="block text-gray-800 text-lg">
-                          10 Nov 2024, 02:12 PM
+                        <span className="block text-gray-800 text-base">
+                          {formatDate(quizData?.endDate)}
                         </span>
                       </div>
                     </div>
@@ -175,7 +215,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
               className={`w-[65%] h-screen bg-gray-200 overflow-y-scroll custom-scrollbar`}
             >
               {/* awaiting activation */}
-              {step === "" ? (
+              {step === "timeLeft" ? (
                 <section className=" flex flex-col h-full justify-around items-start text-start pl-16 pr-32 p-6 gap-y-6">
                   <div></div>
                   <div>
@@ -191,55 +231,49 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                       </div>
                       <div>
                         <div className="w-fit">
-                          <div
-                            className={`flex justify-around gap-4 border-[2px] rounded-xl border-black p-1`}
-                          >
+                          {timeLeft ? (
                             <div
-                              className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                              className={`flex justify-around gap-4 border-[2px] rounded-xl border-black p-1`}
                             >
-                              <p className="text-center text-3xl mb-2">
-                                {timeLeft.days || "00"}
-                              </p>
-                              <p className="text-lg">Days</p>
-                            </div>
+                              <div
+                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                              >
+                                <p className="text-center text-3xl mb-2">
+                                  {timeLeft?.days || "00"}
+                                </p>
+                                <p className="text-lg">Days</p>
+                              </div>
 
-                            <div
-                              className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
-                            >
-                              <p className="text-center text-3xl mb-2">
-                                {timeLeft.hours || "00"}
-                              </p>
-                              <p className="text-lg">Hours</p>
+                              <div
+                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                              >
+                                <p className="text-center text-3xl mb-2">
+                                  {timeLeft?.hours || "00"}
+                                </p>
+                                <p className="text-lg">Hours</p>
+                              </div>
+                              <div
+                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                              >
+                                <p className="text-center text-3xl mb-2">
+                                  {timeLeft?.minutes || "00"}
+                                </p>
+                                <p className="text-lg">Minutes</p>
+                              </div>
+                              <div
+                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                              >
+                                <p className="text-center text-3xl mb-2">
+                                  {timeLeft?.seconds || "00"}
+                                </p>
+                                <p className="text-lg">Seconds</p>
+                              </div>
                             </div>
-                            <div
-                              className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
-                            >
-                              <p className="text-center text-3xl mb-2">
-                                {timeLeft.minutes || "00"}
-                              </p>
-                              <p className="text-lg">Minutes</p>
-                            </div>
-                            <div
-                              className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
-                            >
-                              <p className="text-center text-3xl mb-2">
-                                {timeLeft.seconds || "00"}
-                              </p>
-                              <p className="text-lg">Seconds</p>
-                            </div>
-                          </div>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </div>
-
-                      {/* <div className="flex gap-x-4">
-                      <Button
-                        variant="solid"
-                        className="text-white py-2 px-4 rounded"
-                        color="gray-600"
-                      >
-                        Continue
-                      </Button>
-                    </div> */}
                     </div>
                   </div>
                   <div></div>
@@ -264,15 +298,20 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                       </div>
                       <div className="text-gray-700">
                         <div className="col-span-2">
-                          <PasswordInput
+                          <Input
                             type="text"
                             placeholder="Please Enter Password"
-                            className={errorData.password && "select-error"}
+                            className={
+                              errorData.errorPassword
+                                ? "select-error"
+                                : removeDefaultCss
+                            }
                             onChange={(e) => {
                               setPassword(e.target.value);
                             }}
                             value={password}
                           />
+                          {DisplayError(errorPassword)}
                         </div>
                       </div>
                       <div className="flex gap-x-4">
@@ -280,9 +319,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                           variant="solid"
                           className="text-white py-2 px-4 rounded"
                           color="gray-600"
-                          onClick={()=>{
-                            setStep("form")
-                          }}
+                          onClick={handlePasswordSubmit}
                         >
                           Next
                         </Button>
@@ -303,38 +340,13 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                       <h2 className="text-4xl font-semibold">Instructions</h2>
                       <div className="text-gray-700">
                         <ol className="flex flex-col  list-decimal list-inside gap-y-2 text-base pl-[30px]">
-                          <li className="text-justify">
-                            This is a timed test. Please make sure you are not
-                            interrupted during the test, as the timer cannot be
-                            paused once started.This is a timed test. Please
-                            make sure you are not interrupted during the test,
-                            as the timer cannot be paused once started.
-                          </li>
-                          <li>
-                            Please ensure you have a stable internet connection.
-                          </li>
-                          <li>
-                            We recommend you to try the sample test for a couple
-                            of minutes, before taking the main test.
-                          </li>
-                          <li>
-                            We recommend you to try the sample test for a couple
-                            of minutes, before taking the main test.
-                          </li>
-                          <li>
-                            Before taking the test, please go through the FAQs
-                            to resolve your queries related to the test or the
-                            HackerRank platform.
-                          </li>
-                          <li>
-                            We recommend you to try the sample test for a couple
-                            of minutes, before taking the main test.
-                          </li>
-                          <li>
-                            Before taking the test, please go through the FAQs
-                            to resolve your queries related to the test or the
-                            HackerRank platform.
-                          </li>
+                          {quizData?.instruction.map((instruction, index) => {
+                            return (
+                              <li key={`${quizData?._id}-${index}`}>
+                                {instruction}
+                              </li>
+                            );
+                          })}
                         </ol>
                       </div>
                       <div className="flex gap-x-4">
@@ -342,8 +354,8 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                           variant="solid"
                           className="text-white py-2 px-4 rounded"
                           color="gray-600"
-                          onClick={()=>{
-                            setStep("password")
+                          onClick={() => {
+                            setStep("password");
                           }}
                         >
                           Next
@@ -380,15 +392,16 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                                 {field.type === "number" && (
                                   <div className="col-span-1 mb-4">
                                     <div
-                                      className={`font-bold capitalize mb-1 text-gray-${primaryColorLevel}`}
+                                      className={`font-bold capitalize mb-1 text-gray-700`}
                                     >
                                       {field.label} *
                                     </div>
                                     <div className="col-span-2">
                                       <FormNumericInput
                                         className={
-                                          errorData[field.label] &&
-                                          "select-error"
+                                          errorData[field.label]
+                                            ? "select-error"
+                                            : removeDefaultCss
                                         }
                                         placeholder={`please enter ${field.label} value`}
                                         onChange={(e) => {
@@ -407,7 +420,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                                   field.type === "email") && (
                                   <div className="col-span-1 mb-4">
                                     <div
-                                      className={`font-bold capitalize mb-1 text-gray-${primaryColorLevel}`}
+                                      className={`font-bold capitalize mb-1 text-gray-700`}
                                     >
                                       {field.label} *
                                     </div>
@@ -415,8 +428,9 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                                       <Input
                                         type="text"
                                         className={
-                                          errorData[field.label] &&
-                                          "select-error"
+                                          errorData[field.label]
+                                            ? "select-error"
+                                            : removeDefaultCss
                                         }
                                         placeholder={`please enter ${field.label} value`}
                                         onChange={(e) => {
@@ -442,6 +456,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                             color="gray-600"
                             // onClick={handleSubmit}
                             onClick={onGetStartedClick}
+                            isLoading={isLoading}
                           >
                             Start Test
                           </Button>
