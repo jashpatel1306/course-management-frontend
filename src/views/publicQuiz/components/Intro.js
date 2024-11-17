@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import useEncryption from "common/useEncryption";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
+import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 const removeDefaultCss =
   "focus:ring-gray-700 focus-within:ring-gray-700 focus-within:border-gray-700 focus:border-gray-700";
 function isLinkExpired(expirationDate) {
@@ -18,20 +19,8 @@ function isLinkExpired(expirationDate) {
 
   return expiryDate < now;
 }
-function formatDate(dateString) {
-  const date = new Date(dateString);
 
-  return date.toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true
-  });
-}
-
-const Intro = ({ onGetStartedClick, quizData }) => {
+const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
   const navigate = useNavigate();
   const calculateTimeLeft = () => {
     const difference = +new Date(quizData.startDate) - +new Date();
@@ -62,14 +51,14 @@ const Intro = ({ onGetStartedClick, quizData }) => {
     // Cleanup the interval when the component is unmounted
     return () => clearInterval(timer);
   }, []);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("Admin@123");
   const [errorPassword, setErrorPassword] = useState("");
   const [specificField, setSpecificField] = useState();
   const [errorData, setErrorData] = useState({ status: false });
-
   const handleSubmit = () => {
     let errorStatus = false;
+
     if (quizData.specificField.length > 0) {
       quizData.specificField.map((item) => {
         if (specificField && specificField[item.label]) {
@@ -90,7 +79,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
     }
 
     if (!errorStatus) {
-      console.log("api calling...", specificField);
+      setIsLoading(true);
       ErollQuizData(specificField);
     }
   };
@@ -116,6 +105,12 @@ const Intro = ({ onGetStartedClick, quizData }) => {
       );
 
       if (response.success) {
+        setResults({
+          ...results,
+          trackingId: response?.data?._id,
+          wrongAnswers: response?.data?.wrongAnswers,
+          secondsUsed: response?.data?.totalTime
+        });
         onGetStartedClick();
         setIsLoading(false);
       } else {
@@ -195,7 +190,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                           className="block text-gray-800 text-base"
                           data-automation="test-duration"
                         >
-                          {formatDate(quizData?.startDate)}
+                          {formatTimestampToReadableDate(quizData?.startDate)}
                         </span>
                       </div>
                       <div>
@@ -203,7 +198,7 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                           End Date
                         </span>
                         <span className="block text-gray-800 text-base">
-                          {formatDate(quizData?.endDate)}
+                          {formatTimestampToReadableDate(quizData?.endDate)}
                         </span>
                       </div>
                     </div>
@@ -454,9 +449,9 @@ const Intro = ({ onGetStartedClick, quizData }) => {
                             variant="solid"
                             className="text-white py-2 px-4 rounded mt-4"
                             color="gray-600"
-                            // onClick={handleSubmit}
-                            onClick={onGetStartedClick}
-                            isLoading={isLoading}
+                            onClick={handleSubmit}
+                            // onClick={onGetStartedClick}
+                            loading={isLoading}
                           >
                             Start Test
                           </Button>

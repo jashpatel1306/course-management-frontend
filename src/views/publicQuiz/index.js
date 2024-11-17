@@ -16,6 +16,7 @@ const QuizMainContent = () => {
   const [questions, setQuestions] = useState([]);
   const [apiFlag, setApiFlag] = useState(false);
   const [results, setResults] = useState({
+    trackingId:"",
     correctAnswers: 0,
     wrongAnswers: 0,
     secondsUsed: 0
@@ -83,6 +84,8 @@ const QuizMainContent = () => {
                   intro: (
                     <Intro
                       quizData={quizData}
+                      setResults={setResults}
+                      results={results}
                       onGetStartedClick={() => {
                         setDisplayView("countdown");
                       }}
@@ -110,6 +113,7 @@ const QuizMainContent = () => {
                     <Result
                       quizData={quizData}
                       totalQuestions={questions?.length}
+                      setResults={setResults}
                       results={results}
                     />
                   )

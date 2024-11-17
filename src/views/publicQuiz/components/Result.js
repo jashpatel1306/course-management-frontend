@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import DonutChart from "./DonutChart";
 import { Button } from "components/ui";
@@ -6,25 +5,25 @@ import { Button } from "components/ui";
 export const Result = (props) => {
   const { results, totalQuestions, quizData } = props;
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
-  const TIME_LIMIT = quizData.time * 60; // 1 minute per question
+  const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
 
   const handleRetry = () => {
     // Restart quiz
     window.location.reload();
   };
-
+  console.log("results:  ",quizData,results)
   return (
     <motion.div
       key={"result"}
       variants={{
         initial: {
-          background: "#FF6A66",
-          clipPath: "circle(0% at 50% 50%)",
+          background: "#666769",
+          clipPath: "circle(0% at 50% 50%)"
         },
         animate: {
-          background: "#FF6A66",
-          clipPath: "circle(100% at 50% 50%)",
-        },
+          background: "#c3b7b7",
+          clipPath: "circle(100% at 50% 50%)"
+        }
       }}
       className="w-full h-full flex justify-center p-5"
       initial="initial"
@@ -36,8 +35,9 @@ export const Result = (props) => {
         <h1 className="font-bold text-2xl text-white">{quizData.title}</h1>
 
         {/* Result Box */}
-        <div className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2`}>
-         
+        <div
+          className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2`}
+        >
           <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4">
             Congratulations!
           </h3>
@@ -62,13 +62,13 @@ export const Result = (props) => {
                 {
                   label: "Time Used",
                   value: secondsUsed,
-                  color: "#374CB7",
+                  color: "#374CB7"
                 },
                 {
                   label: "Time Left",
                   value: TIME_LIMIT - secondsUsed,
-                  color: "#F0F0F0",
-                },
+                  color: "#F0F0F0"
+                }
               ]}
             />
 
@@ -81,13 +81,13 @@ export const Result = (props) => {
                 {
                   label: "Correct",
                   value: correctAnswers,
-                  color: "#56C490",
+                  color: "#56C490"
                 },
                 {
                   label: "Wrong",
                   value: wrongAnswers,
-                  color: "#FF6A66",
-                },
+                  color: "#FF6A66"
+                }
               ]}
             />
           </div>

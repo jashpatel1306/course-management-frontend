@@ -1,10 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { OptionList } from "./OptionList";
 import { formatTime } from "utils/formatTime";
 import { playQuizEnd } from "utils/playSound";
-import { Button, Input, Progress, Spinner } from "components/ui";
-import parse from "html-react-parser";
+import { Button, Input, Spinner } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import { useParams } from "react-router-dom";
@@ -12,7 +12,7 @@ import { MdTimer } from "react-icons/md";
 import { FaQuestionCircle } from "react-icons/fa";
 
 export const Quiz = (props) => {
-  const { questions, quizData, setResults, setDisplayView } = props;
+  const { questions, quizData, setResults, setDisplayView, results } = props;
   const { quizId } = useParams();
   const TIME_LIMIT = quizData.time * 60;
 
@@ -24,8 +24,8 @@ export const Quiz = (props) => {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(-1);
   const [quizFinished, setQuizFinished] = useState(false);
-  console.log("questions:", questions, questions[activeQuestion]);
-  const { _id } = questions[activeQuestion];
+  const [nextButton, setNextButton] = useState(false);
+  const [fillAnswer, setFillAnswer] = useState("");
   const numberOfQuestions = questions.length;
   const setupTimer = () => {
     if (timerRef.current) {
@@ -39,55 +39,52 @@ export const Quiz = (props) => {
     }, 1000);
   };
 
-  useEffect(() => {
-    if (quizFinished) return;
-
-    setupTimer();
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
+  const fetchQuestionData = async (questionId) => {
+    try {
+      setIsQusLoading(true);
+      const response = await axiosInstance.get(
+        `user/public-question/${questionId}`
+      );
+      if (response.success) {
+        console.log("response : ", response);
+        setQuestionData(response.data);
+        setIsQusLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setIsQusLoading(false);
       }
-    };
-  }, [quizFinished]);
-
-  useEffect(() => {
-    if (quizFinished) return;
-
-    if (timePassed > TIME_LIMIT) {
-      // The time limit has been reached for this question
-      // So the answerr will be considered wrong
-
-      setResults((prev) => ({
-        ...prev,
-        secondsUsed: prev.secondsUsed + TIME_LIMIT,
-        wrongAnswers: prev.wrongAnswers + 1
-      }));
-
-      // handleNextQuestion();
-      // Restart timer
-      // setTimePassed(0);
-      setQuizFinished(true);
+    } catch (error) {
+      console.log("Update Quiz Question Data error:", error);
+      openNotification("danger", error.message);
+      setIsQusLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timePassed]);
-
-  const UpdateQuizQuestionData = async (questionId, answerId) => {
+  };
+  const UpdateQuizQuestionData = async (questionId, answerId, questionType) => {
     try {
       setIsLoading(true);
+      console.log("results: ", results);
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
-        { questionId, answerId, time: timePassed }
+        {
+          questionId,
+          answerId,
+          time: timePassed,
+          questionType: questionType,
+          trackingId: results.trackingId
+        }
       );
       if (response.success) {
         setSelectedAnswerIndex(-1);
+        setFillAnswer("");
         if (activeQuestion + 1 >= questions.length) {
           //Quiz finished!
           setResults({
+            ...results,
             correctAnswers: response?.data?.correctAnswers,
             wrongAnswers: response?.data?.wrongAnswers,
             secondsUsed: response?.data?.totalTime
           });
+
           playQuizEnd();
           setQuizFinished(true);
           return;
@@ -97,6 +94,8 @@ export const Quiz = (props) => {
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
+        setSelectedAnswerIndex(-1);
+        setFillAnswer("");
         setIsLoading(false);
       }
     } catch (error) {
@@ -106,9 +105,21 @@ export const Quiz = (props) => {
     }
   };
   const handleNextQuestion = async () => {
-    if (_id && selectedAnswerIndex) {
-      await UpdateQuizQuestionData(_id, selectedAnswerIndex);
+    if (questionData.questionType === "fill" && fillAnswer) {
+      await UpdateQuizQuestionData(
+        questionData._id,
+        fillAnswer,
+        questionData.questionType
+      );
     }
+    if (questionData.questionType === "mcq" && selectedAnswerIndex) {
+      await UpdateQuizQuestionData(
+        questionData._id,
+        selectedAnswerIndex,
+        questionData.questionType
+      );
+    }
+    //
   };
 
   const handleSelectAnswer = (answerIndex) => {
@@ -129,6 +140,43 @@ export const Quiz = (props) => {
       content: "hidden flex flex-col text-black font-bold  text-center w-full"
     }
   ];
+  useEffect(() => {
+    if (quizFinished) return;
+
+    setupTimer();
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [quizFinished]);
+
+  useEffect(() => {
+    if (quizFinished) return;
+
+    if (timePassed > TIME_LIMIT) {
+      setResults((prev) => ({
+        ...prev,
+        secondsUsed: prev.secondsUsed + TIME_LIMIT,
+        wrongAnswers: prev.wrongAnswers + 1
+      }));
+      setQuizFinished(true);
+    }
+  }, [timePassed]);
+  useEffect(() => {
+    fetchQuestionData(questions[activeQuestion]);
+  }, [activeQuestion]);
+  useEffect(() => {
+    if (fillAnswer) {
+      console.log("ffgf");
+      setNextButton(true);
+    }
+    if (selectedAnswerIndex !== -1) {
+      console.log("ffgf");
+      setNextButton(true);
+    }
+  }, [fillAnswer, selectedAnswerIndex]);
   return (
     <motion.div
       key={"countdown"}
@@ -195,19 +243,28 @@ export const Quiz = (props) => {
                         Question : Fill the Question
                       </p>
                       <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                        2 Marks
+                        {`${questionData?.marks}  Marks`}
                       </p>
                     </div>
                     <div className=" pt-2 pb-8">
                       <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
                         <h4 className="text-gray-700 font-semibold text-lg">
-                          .................. the primary function of a router?
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: questionData?.question
+                            }}
+                          ></span>
                         </h4>
                       </div>
                       <Input
-                        placeholder="Wrtie Your Answer Here"
                         textArea
+                        placeholder="Wrtie Your Answer Here"
+                        value={fillAnswer}
                         className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
+                        onChange={(e) => {
+                          console.log("e.target.valu: ", e.target.value);
+                          setFillAnswer(e.target.value);
+                        }}
                       />
                     </div>
                   </>
@@ -224,12 +281,16 @@ export const Quiz = (props) => {
                     <div className=" pt-2 pb-8">
                       <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
                         <h4 className="text-gray-700 font-semibold text-lg">
-                          What is the primary function of a router?
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: questionData?.question
+                            }}
+                          ></span>
                         </h4>
                       </div>
 
                       <OptionList
-                        answers={anserarr}
+                        answers={questionData?.answers}
                         selectedAnswerIndex={selectedAnswerIndex}
                         onAnswerSelected={handleSelectAnswer}
                       />
@@ -255,10 +316,10 @@ export const Quiz = (props) => {
                 <Button
                   variant="solid"
                   color="gray-600"
-                  disabled={selectedAnswerIndex === -1}
+                  disabled={!nextButton}
                   className="w-48"
                   onClick={handleNextQuestion}
-                  loading={isLoading}
+                  // loading={isLoading}
                 >
                   Next
                 </Button>

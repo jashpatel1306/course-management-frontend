@@ -7,6 +7,7 @@ import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
 import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
+import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 import { useSelector } from "react-redux";
 import removeSpecials from "views/common/serachText";
 import { FaLink } from "react-icons/fa";
@@ -143,30 +144,8 @@ const PublicLinkList = (props) => {
                       <Td>{item?.publicLinkName}</Td>
 
                       <Td>{item?.noofHits}</Td>
-                      <Td>
-                        {new Date(item?.startDate)?.toLocaleString("en-US", {
-                          weekday: "short",
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                          timeZone: "UTC"
-                        })}
-                      </Td>
-                      <Td>
-                        {new Date(item?.endDate)?.toLocaleString("en-US", {
-                          weekday: "short",
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                          timeZone: "UTC"
-                        })}
-                      </Td>
+                      <Td>{formatTimestampToReadableDate(item?.startDate)}</Td>
+                      <Td>{formatTimestampToReadableDate(item?.endDate)}</Td>
                       <Td>
                         <div className="flex ">
                           <Button

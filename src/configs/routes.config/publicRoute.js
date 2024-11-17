@@ -12,6 +12,17 @@ const appsRoute = [
       pageContainerType: "gutterless",
       footer: false
     }
+  },
+  {
+    key: "pages.expiredLink",
+    path: "/expired-link",
+    component: React.lazy(() => import("views/pages/expiredLink")),
+    authority: [],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false
+    }
   }
 ];
 
