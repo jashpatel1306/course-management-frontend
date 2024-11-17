@@ -326,7 +326,6 @@ const ContentView = (props) => {
             loading={isLoading}
             onClick={() => {
               const currentContent = contentData[currentContentIndex];
-              console.log("currentContent:  ", currentContent);
               if (!currentContent.status) {
                 updateTrackingRecode();
               } else {

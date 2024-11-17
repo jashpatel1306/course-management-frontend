@@ -14,7 +14,7 @@ import { FaQuestionCircle } from "react-icons/fa";
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView, results } = props;
   const { quizId } = useParams();
-  const TIME_LIMIT = quizData.time * 60;
+  const TIME_LIMIT = quizData.totalTime * 60;
 
   const timerRef = useRef(null);
   const [questionData, setQuestionData] = useState({});
@@ -46,7 +46,6 @@ export const Quiz = (props) => {
         `user/public-question/${questionId}`
       );
       if (response.success) {
-        console.log("response : ", response);
         setQuestionData(response.data);
         setIsQusLoading(false);
       } else {
@@ -62,7 +61,6 @@ export const Quiz = (props) => {
   const UpdateQuizQuestionData = async (questionId, answerId, questionType) => {
     try {
       setIsLoading(true);
-      console.log("results: ", results);
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
         {
@@ -76,6 +74,7 @@ export const Quiz = (props) => {
       if (response.success) {
         setSelectedAnswerIndex(-1);
         setFillAnswer("");
+        setNextButton(false);
         if (activeQuestion + 1 >= questions.length) {
           //Quiz finished!
           setResults({
@@ -86,6 +85,7 @@ export const Quiz = (props) => {
           });
 
           playQuizEnd();
+      
           setQuizFinished(true);
           return;
         }
@@ -97,6 +97,7 @@ export const Quiz = (props) => {
         setSelectedAnswerIndex(-1);
         setFillAnswer("");
         setIsLoading(false);
+        setNextButton(false);
       }
     } catch (error) {
       console.log("Update Quiz Question Data error:", error);
@@ -131,15 +132,7 @@ export const Quiz = (props) => {
   if (quizFinished) {
     setDisplayView("result");
   }
-  const anserarr = [
-    { _id: "1", content: "panthil" },
-    { _id: "2", content: "panthil" },
-    { _id: "3", content: "panthil" },
-    {
-      _id: "4",
-      content: "hidden flex flex-col text-black font-bold  text-center w-full"
-    }
-  ];
+
   useEffect(() => {
     if (quizFinished) return;
 
@@ -154,7 +147,6 @@ export const Quiz = (props) => {
 
   useEffect(() => {
     if (quizFinished) return;
-
     if (timePassed > TIME_LIMIT) {
       setResults((prev) => ({
         ...prev,
@@ -169,11 +161,9 @@ export const Quiz = (props) => {
   }, [activeQuestion]);
   useEffect(() => {
     if (fillAnswer) {
-      console.log("ffgf");
       setNextButton(true);
     }
     if (selectedAnswerIndex !== -1) {
-      console.log("ffgf");
       setNextButton(true);
     }
   }, [fillAnswer, selectedAnswerIndex]);
@@ -304,12 +294,7 @@ export const Quiz = (props) => {
           <div>
             <div className="absolute bottom-0 w-full flex justify-between items-center px-6 bg-gray-200 text-white p-2 py-3">
               <div className="flex gap-4">
-                <div className="flex gap-4 items-center text-lg">
-                  {" "}
-                  <Button variant="solid" color="gray-600">
-                    Submit Test
-                  </Button>
-                </div>
+                
               </div>
 
               <div className="flex gap-4 items-center text-lg">
@@ -321,7 +306,9 @@ export const Quiz = (props) => {
                   onClick={handleNextQuestion}
                   // loading={isLoading}
                 >
-                  Next
+                  {activeQuestion + 1 >= questions.length
+                    ? "Submit Test"
+                    : "Next"}
                 </Button>
               </div>
             </div>

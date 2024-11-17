@@ -1,17 +1,13 @@
 import { motion } from "framer-motion";
 import DonutChart from "./DonutChart";
 import { Button } from "components/ui";
+import { BsPatchCheckFill } from "react-icons/bs";
 
 export const Result = (props) => {
   const { results, totalQuestions, quizData } = props;
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
   const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
 
-  const handleRetry = () => {
-    // Restart quiz
-    window.location.reload();
-  };
-  console.log("results:  ",quizData,results)
   return (
     <motion.div
       key={"result"}
@@ -21,7 +17,7 @@ export const Result = (props) => {
           clipPath: "circle(0% at 50% 50%)"
         },
         animate: {
-          background: "#c3b7b7",
+          background: "#666769",
           clipPath: "circle(100% at 50% 50%)"
         }
       }}
@@ -32,11 +28,11 @@ export const Result = (props) => {
       transition={{ duration: 0.5 }}
     >
       <div className="flex flex-col text-black font-bold  text-center w-full">
-        <h1 className="font-bold text-2xl text-white">{quizData.title}</h1>
+        <h1 className="font-bold text-[48px] text-white">{quizData.title}</h1>
 
-        {/* Result Box */}
+        {/* Result student Box */}
         <div
-          className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2`}
+          className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col justify-center  items-center py-7 px-2 hidden`}
         >
           <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4">
             Congratulations!
@@ -92,18 +88,18 @@ export const Result = (props) => {
             />
           </div>
         </div>
-
-        {/* Retry Button */}
-        <div className="mt-auto hidden">
-          <Button
-            intent={"secondary"}
-            variant="solid"
-            block
-            className="mt-6"
-            onClick={handleRetry}
-          >
-            Try Again
-          </Button>
+        <div
+          className={`mt-6 flex-1 bg-white  rounded-2xl flex flex-col justify-center items-center my-7 mx-2 gap-y-6`}
+        >
+          <h3 className="text-brand-midnight text-[48px] font-medium leading-9 mt-4 text-green-700">
+            <BsPatchCheckFill size={100} />
+          </h3>
+          <h3 className="text-brand-midnight text-[48px] font-bold leading-9 mt-4 text-green-700">
+            Congratulations!
+          </h3>
+          <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4 text-gray-700">
+            You Submitted The Test!
+          </h3>
         </div>
       </div>
     </motion.div>

@@ -196,8 +196,6 @@ const QuizCard = (props) => {
                   size="sm"
                   icon={<FaPlus />}
                   onClick={() => {
-                    // console.log("Click : ", e);
-                    // setQuestionType(e);
                     setAddQuestion(true);
                   }}
                 >

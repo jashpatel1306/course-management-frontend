@@ -55,7 +55,6 @@ const InstructorList = (props) => {
   const { authority, collegeId } = useSelector(
     (state) => state.auth.user.userData
   );
-  console.log("collegeId: ", collegeId);
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [instructorData, setInstructorData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

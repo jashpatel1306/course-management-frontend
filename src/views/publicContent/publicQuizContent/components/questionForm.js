@@ -166,7 +166,7 @@ function QuestionForm(props) {
       };
       addUpdateQuestion(formData);
     } catch (error) {
-      console.log("handleSave Error :", handleSave);
+      console.log("handleSave Error :", error);
     }
   };
 
@@ -272,7 +272,6 @@ function QuestionForm(props) {
                         placeholder="Add an answer..."
                         value={answer.content}
                         onChange={(e) => {
-                          console.log("value, index :", e.target.value, index);
                           handleAnswerChange("content", e.target.value, index);
                         }}
                       ></textarea>

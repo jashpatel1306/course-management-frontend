@@ -153,7 +153,6 @@ const DragAndDrop = (props) => {
             >
               <span
                 onClick={() => {
-                  console.log("props.row.original: ", props.row.original);
                   setAddQuestion(true);
                   setQuestionData(props.row.original);
                 }}

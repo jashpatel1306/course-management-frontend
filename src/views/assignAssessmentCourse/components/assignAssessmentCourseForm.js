@@ -76,7 +76,6 @@ function AssignCourseForm(props) {
     startDate: null,
     endDate: null,
   });
-  console.log("formData: ", formData);
   const [errorData, setErrorData] = useState({
     collegeId: "",
     batchId: "",
@@ -118,10 +117,7 @@ function AssignCourseForm(props) {
   };
   useEffect(() => {
     if (isOpen) {
-      console.log(
-        "userData.authority[0].toString() : ",
-        userData.authority[0].toString()
-      );
+     
       if (userData.authority[0].toString() === SUPERADMIN) {
         getCollegeOptionData();
       }
@@ -399,12 +395,7 @@ function AssignCourseForm(props) {
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
-    console.log(
-      "errorObject : ",
-      userData?.authority.toString() === SUPERADMIN ? "" : userData.collegeId,
-      formData,
-      errorObject
-    );
+   
     if (!errorObject.status) {
       resetErrorData();
       if (assignCourseData?._id) {
@@ -421,7 +412,6 @@ function AssignCourseForm(props) {
     }
   };
   useEffect(() => {
-    console.log("userData: ", userData);
     if (userData.authority.toString() !== SUPERADMIN) {
       getBatchOptionData();
       getAssessmentOptionData(userData.collegeId);
