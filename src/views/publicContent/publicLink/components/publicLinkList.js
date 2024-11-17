@@ -11,14 +11,25 @@ import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 import { useSelector } from "react-redux";
 import removeSpecials from "views/common/serachText";
 import { FaLink } from "react-icons/fa";
+import { RiFileChartFill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
-const columns = ["Name", "no of Hits", "start Date", "end Date", "Active"];
+const columns = [
+  "Name",
+  "no of Hits",
+  "start Date",
+  "end Date",
+  "Active",
+  "Results"
+];
 
 const PublicLinkList = (props) => {
   const { flag, parentCallback, setData, parentCloseCallback, refreshFlag } =
     props;
+  const navigate = useNavigate();
+
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -187,6 +198,27 @@ const PublicLinkList = (props) => {
                               }}
                             />
                           )}
+                        </div>
+                      </Td>
+                      <Td>
+                        <div className="flex items-center ">
+                          <Button
+                            shape="circle"
+                            variant="solid"
+                            className="mr-2"
+                            size="sm"
+                            icon={<RiFileChartFill />}
+                            onClick={async () => {
+                              navigate(
+                                `/app/admin/public-content/quiz-result/${item._id}`,
+                                {
+                                  state: {
+                                    quizName: item?.publicLinkName
+                                  }
+                                }
+                              );
+                            }}
+                          />
                         </div>
                       </Td>
                     </Tr>

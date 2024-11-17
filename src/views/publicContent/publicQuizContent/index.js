@@ -9,7 +9,6 @@ import DisplayError from "views/common/displayError";
 import { useNavigate } from "react-router-dom";
 import QuizList from "./components/quizList";
 import { FormNumericInput } from "components/shared";
-import { MdDelete } from "react-icons/md";
 const QuizContent = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(

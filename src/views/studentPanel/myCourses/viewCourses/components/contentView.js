@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Spinner } from "components/ui";
 import React, { useEffect, useState } from "react";

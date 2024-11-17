@@ -107,7 +107,7 @@ const appsRoute = [
       footer: false
     }
   },
-  
+
   {
     key: "contentHub.students",
     path: `${ADMIN_PREFIX_PATH}/content-hub/students/course/:course_id`,
@@ -129,6 +129,14 @@ const appsRoute = [
     path: `${ADMIN_PREFIX_PATH}/public-content/quiz-form/:quiz_id`,
     component: React.lazy(() =>
       import("views/publicContent/publicQuizContent/components/quizForm")
+    ),
+    authority: [SUPERADMIN, STAFF]
+  },
+  {
+    key: "publiccontent.publicquizresult",
+    path: `${ADMIN_PREFIX_PATH}/public-content/quiz-result/:quiz_id`,
+    component: React.lazy(() =>
+      import("views/publicContent/publicLink/components/publicResult")
     ),
     authority: [SUPERADMIN, STAFF]
   },

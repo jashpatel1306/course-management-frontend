@@ -1,20 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Table,
-  Card,
-  Pagination,
-  Select,
-  Button,
-  Dialog,
-  Badge
-} from "components/ui";
+import { Table, Card, Pagination, Button, Dialog, Badge } from "components/ui";
 import React, { useEffect, useState } from "react";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import axiosInstance from "apiServices/axiosInstance";
 import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
-import { SUPERADMIN } from "constants/roles.constant";
 import { TableRowSkeleton } from "components/shared";
 import { DataNoFound } from "assets/svg";
 import { useNavigate } from "react-router-dom";
@@ -28,8 +19,8 @@ const columns = [
   "publish",
   "Active"
 ];
-const AssessmentList = (props) => {
-  const { flag} = props;
+const QuizList = (props) => {
+  const { flag } = props;
   const navigate = useNavigate();
 
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -183,8 +174,9 @@ const AssessmentList = (props) => {
                               size="sm"
                               icon={<HiOutlinePencil />}
                               onClick={async () => {
-                                navigate(`/app/admin/public-content/quiz-form/${item._id}`);
-
+                                navigate(
+                                  `/app/admin/public-content/quiz-form/${item._id}`
+                                );
                               }}
                             />
                             {item?.active && (
@@ -202,6 +194,7 @@ const AssessmentList = (props) => {
                             )}
                           </div>
                         </Td>
+                      
                       </Tr>
                     );
                   })}
@@ -275,4 +268,4 @@ const AssessmentList = (props) => {
   );
 };
 
-export default AssessmentList;
+export default QuizList;

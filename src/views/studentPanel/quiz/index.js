@@ -14,9 +14,7 @@ const QuizMainContent = () => {
   // const [displayView, setDisplayView] = useState("quiz");
   const [displayView, setDisplayView] = useState("intro");
   const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
+
   const [isLoading, setIsLoading] = useState(true);
   const [quizData, setQuizData] = useState([]);
   const [questions, setQuestions] = useState([]);

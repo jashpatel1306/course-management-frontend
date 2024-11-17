@@ -2,11 +2,8 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "apiServices/axiosInstance";
 import { useSelector } from "react-redux";
-import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
 import { useDebounce } from "use-debounce";
-import removeSpecials from "views/common/serachText";
-import { SUPERADMIN } from "constants/roles.constant";
 
 import CourseCard from "./courseCards";
 import { Pagination } from "components/ui";
@@ -15,26 +12,10 @@ import { DataNoFound } from "assets/svg";
 const CourseList = (props) => {
   const { flag } = props;
 
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
-  const { userData } = useSelector((state) => state.auth.user);
-
-  const { authority, collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
-  const [currentTab, setCurrentTab] = useState();
-  const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [courseData, setCourseData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectObject, setSelectObject] = useState();
-  const [deleteIsOpen, setDeleteIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [debouncedText] = useDebounce(searchText, 1000);
-  const [batchList, setBatchList] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+  const [totalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
   const onPaginationChange = (val) => {
     setPage(val);
@@ -71,9 +52,6 @@ const CourseList = (props) => {
   }, [apiFlag]);
 
   useEffect(() => {
-    setApiFlag(true);
-  }, []);
-  useEffect(() => {
     if (!flag) {
       setApiFlag(true);
     }
@@ -82,27 +60,8 @@ const CourseList = (props) => {
   useEffect(() => {
     setPage(1);
     setApiFlag(true);
-  }, [debouncedText]);
+  }, []);
 
-  const onHandleDeleteBox = async () => {
-    try {
-      const response = await axiosInstance.put(
-        `user/course/status/${selectObject._id}`
-      );
-      if (response.success) {
-        openNotification("success", response.message);
-        setApiFlag(true);
-        setDeleteIsOpen(false);
-      } else {
-        openNotification("danger", response.message);
-        setDeleteIsOpen(false);
-      }
-    } catch (error) {
-      console.log("onHandleDeleteBox error:", error);
-      openNotification("danger", error.message);
-      setDeleteIsOpen(false);
-    }
-  };
   return (
     <>
       <div>

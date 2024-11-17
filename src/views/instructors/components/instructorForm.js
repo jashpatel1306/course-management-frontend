@@ -10,7 +10,7 @@ import { SUPERADMIN } from "constants/roles.constant";
 import CreatableSelect from "react-select/creatable";
 
 function InstructorForm(props) {
-  const { handleCloseClick, instructorData, isOpen, collegeId } = props;
+  const { handleCloseClick, instructorData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -36,12 +36,8 @@ function InstructorForm(props) {
       .required("At least one course ID is required"),
   });
   const [loading, setLoading] = useState(false);
-  const [batchLoading, setBatchLoading] = useState(false);
-  const [batchList, setBatchList] = useState([]);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
-  const [departmentList, setDepartmentList] = useState([]);
-  const [departmentLoading, setDepartmentLoading] = useState(false);
   const [coursesLoading, setCoursesLoading] = useState(false);
   const [coursesList, setCoursesList] = useState([]);
 

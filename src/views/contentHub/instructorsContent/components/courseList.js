@@ -15,24 +15,13 @@ import { DataNoFound } from "assets/svg";
 const CourseList = (props) => {
   const { flag } = props;
 
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
   const { userData } = useSelector((state) => state.auth.user);
 
-  const { authority, collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
-  const [currentTab, setCurrentTab] = useState();
-  const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
+  const { collegeId } = useSelector((state) => state.auth.user.userData);
+  const [currentCollegeTab] = useState(collegeId);
   const [courseData, setCourseData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectObject, setSelectObject] = useState();
-  const [deleteIsOpen, setDeleteIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [debouncedText] = useDebounce(searchText, 1000);
-  const [batchList, setBatchList] = useState([]);
+  const [selectObject] = useState();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
@@ -46,14 +35,14 @@ const CourseList = (props) => {
       // const bodyData =
       //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
       let formData = {
-        search: removeSpecials(debouncedText),
+        search: "",
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
       if (userData?.authority.toString() !== SUPERADMIN && currentCollegeTab) {
         formData = {
           ...formData,
-          collegeId: currentCollegeTab,
+          collegeId: currentCollegeTab
         };
       }
 
@@ -88,10 +77,6 @@ const CourseList = (props) => {
       fetchData();
     }
   }, [apiFlag]);
-
-  useEffect(() => {
-    setApiFlag(true);
-  }, []);
   useEffect(() => {
     if (!flag) {
       setApiFlag(true);
@@ -101,27 +86,8 @@ const CourseList = (props) => {
   useEffect(() => {
     setPage(1);
     setApiFlag(true);
-  }, [debouncedText]);
+  }, []);
 
-  const onHandleDeleteBox = async () => {
-    try {
-      const response = await axiosInstance.put(
-        `user/course/status/${selectObject._id}`
-      );
-      if (response.success) {
-        openNotification("success", response.message);
-        setApiFlag(true);
-        setDeleteIsOpen(false);
-      } else {
-        openNotification("danger", response.message);
-        setDeleteIsOpen(false);
-      }
-    } catch (error) {
-      console.log("onHandleDeleteBox error:", error);
-      openNotification("danger", error.message);
-      setDeleteIsOpen(false);
-    }
-  };
   return (
     <>
       <div>

@@ -114,7 +114,7 @@ const Students = () => {
   const onHandleBox = async () => {
     try {
       if (!selectImportData?.file?.name) {
-        setError("Please Select CSV file.");
+        setError("Please Select file.");
       }
       if (
         userData.authority.toString() === SUPERADMIN &&

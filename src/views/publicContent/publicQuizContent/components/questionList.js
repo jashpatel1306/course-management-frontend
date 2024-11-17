@@ -204,6 +204,7 @@ const DragAndDrop = (props) => {
 
   useEffect(() => {
     if (quizData?._id) {
+      setLoading(true)
       fetchData();
     }
   }, [quizData]);

@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import SectionView from "./sectionview";
 import { useSelector } from "react-redux";
 import { HiCheckCircle } from "react-icons/hi";
 import { FaRegCircleCheck } from "react-icons/fa6";
-import { FaFileAlt } from "react-icons/fa";
-import { IoIosArrowDown } from "react-icons/io";
 import { GrTest } from "react-icons/gr";
 
 const SideBar = (props) => {
