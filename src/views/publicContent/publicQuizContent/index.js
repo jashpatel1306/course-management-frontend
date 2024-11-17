@@ -23,7 +23,7 @@ const QuizContent = () => {
   const [sectionData, setSectionData] = useState();
   const [formData, setFormData] = useState({
     title: "",
-    description: [],
+    description: [""],
     time: null,
     isPublish: false
   });
@@ -74,7 +74,7 @@ const QuizContent = () => {
         setFormData({
           ...formData,
           title: "",
-          description: [],
+          description: [""],
           quizId: null,
           time: null,
           isPublish: false
@@ -84,27 +84,7 @@ const QuizContent = () => {
       console.log("onHandleQuizBox error :", error);
     }
   };
-  const handleDescriptionChange = (index, value) => {
-    const newDescriptions = [...formData.description];
-    newDescriptions[index] = value;
-    setFormData({
-      ...formData,
-      description: newDescriptions
-    });
-  };
-  const addDescription = () => {
-    setFormData({
-      ...formData,
-      description: [...formData.description, ""] // Add new empty description
-    });
-  };
-  const removeDescription = (index) => {
-    const newDescriptions = formData.description.filter((_, i) => i !== index);
-    setFormData({
-      ...formData,
-      description: newDescriptions
-    });
-  };
+
   return (
     <>
       <Card>
@@ -134,7 +114,6 @@ const QuizContent = () => {
       </div>
       <Dialog
         isOpen={IsOpen}
-       
         contentClassName="pb-0 px-0"
         onClose={() => {
           setIsOpen(false);
@@ -208,43 +187,7 @@ const QuizContent = () => {
                 />
               </div>
             </div>
-            {/* Quiz Instructions */}
-            <div className="col-span-1 gap-4 mb-4">
-              <div
-                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-              >
-                Instructions
-              </div>
-              <div className="col-span-2">
-                {formData?.description?.map((description, index) => (
-                  <div className="flex gap-4 col-span-2 mt-2" key={index}>
-                    <Input
-                      type="text"
-                      placeholder={`Enter Quiz Instruction ${index + 1}`}
-                      value={description}
-                      onChange={(e) =>
-                        handleDescriptionChange(index, e.target.value)
-                      }
-                    />
-                    {formData.description.length > 1 && (
-                      <Button
-                        shape="circle"
-                        icon={<MdDelete />}
-                        onClick={() => removeDescription(index)}
-                      />
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={addDescription}
-                  className="mt-2"
-                >
-                  Add New Instruction
-                </Button>
-              </div>
-            </div>
+
             {/* Quiz Publish Status */}
             <div className="col-span-1 gap-4 mb-4">
               <div

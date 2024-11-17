@@ -16,7 +16,6 @@ import openNotification from "views/common/notification";
 import DisplayError from "views/common/displayError";
 import QuestionsList from "./questionList";
 import QuestionForm from "./questionForm";
-import { MdDelete } from "react-icons/md";
 import { FormNumericInput } from "components/shared";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -37,7 +36,6 @@ const QuizCard = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [IsOpen, setIsOpen] = useState(false);
   const [addQuestion, setAddQuestion] = useState(false);
-  const [questionType, setQuestionType] = useState("");
   const [questionData, setQuestionData] = useState();
   const [quizData, setQuizData] = useState();
   const [apiFlag, setApiFlag] = useState(false);
@@ -100,27 +98,7 @@ const QuizCard = (props) => {
       console.log("onHandleQuizBox error :", error);
     }
   };
-  const handleDescriptionChange = (index, value) => {
-    const newDescriptions = [...formData.description];
-    newDescriptions[index] = value;
-    setFormData({
-      ...formData,
-      description: newDescriptions
-    });
-  };
-  const addDescription = () => {
-    setFormData({
-      ...formData,
-      description: [...formData.description, ""] // Add new empty description
-    });
-  };
-  const removeDescription = (index) => {
-    const newDescriptions = formData.description.filter((_, i) => i !== index);
-    setFormData({
-      ...formData,
-      description: newDescriptions
-    });
-  };
+  
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`user/quiz/${quiz_id}`);
@@ -225,19 +203,7 @@ const QuizCard = (props) => {
                 >
                   <span>Question</span>
                 </Button>
-                {/* <Dropdown
-                  renderTitle={
-                    
-                  }
-                  
-                >
-                  <Dropdown.Item eventKey="mcq" className="text-sm">
-                    MCQ Question
-                  </Dropdown.Item>
-                  <Dropdown.Item eventKey="fill" className="text-sm">
-                    Fill Question
-                  </Dropdown.Item>
-                </Dropdown> */}
+                
               </div>
             </div>
 
@@ -338,38 +304,7 @@ const QuizCard = (props) => {
                 />
               </div>
             </div>
-            {/* Quiz Instructions */}
-            <div className="col-span-1 gap-4 mb-4">
-              <div
-                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-              >
-                Instructions
-              </div>
-              <div className="col-span-2">
-                {formData?.description?.map((description, index) => (
-                  <div className="flex gap-4 col-span-2 mt-2" key={index}>
-                    <Input
-                      type="text"
-                      placeholder={`Enter Quiz Instruction ${index + 1}`}
-                      value={description}
-                      onChange={(e) =>
-                        handleDescriptionChange(index, e.target.value)
-                      }
-                    />
-                    {formData.description.length > 1 && (
-                      <Button
-                        shape="circle"
-                        icon={<MdDelete />}
-                        onClick={() => removeDescription(index)}
-                      />
-                    )}
-                  </div>
-                ))}
-                <Button type="button" onClick={addDescription} className="mt-2">
-                  Add New Instruction
-                </Button>
-              </div>
-            </div>
+           
             {/* Quiz Publish Status */}
             <div className="col-span-1 gap-4 mb-4">
               <div

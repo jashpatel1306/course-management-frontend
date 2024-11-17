@@ -228,22 +228,29 @@ const DragAndDrop = (props) => {
   };
   return (
     <>
-      {data?.length > 0 ? (
-        <Card>
-          <div className="block text-gray-700 text-lg font-bold mb-3 ">
-            Questions
-          </div>
-          <ReactTable
-            columns={columns}
-            onChange={(newList) => setData(newList)}
-            data={data}
-            quizData={quizData}
-            setAddQuestion={setAddQuestion}
-          />
-        </Card>
+      {!loading ? (
+        data?.length > 0 ? (
+          <Card>
+            <div className="block text-gray-700 text-lg font-bold mb-3 ">
+              Questions
+            </div>
+            <ReactTable
+              columns={columns}
+              onChange={(newList) => setData(newList)}
+              data={data}
+              quizData={quizData}
+              setAddQuestion={setAddQuestion}
+            />
+          </Card>
+        ) : (
+          <>
+            <div className="flex justify-center text-base">
+              There is no data to display.
+            </div>
+          </>
+        )
       ) : (
         <>
-          {" "}
           <div className="flex justify-center">
             <Spinner size="3.25rem" />
           </div>

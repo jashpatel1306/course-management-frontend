@@ -281,7 +281,11 @@ function PublicLinkForm(props) {
         };
         await editPublicLinkMethod(newFormData, publicLinkData?._id);
       } else {
-        await addNewPublicLinkMethod(formData);
+        const newFormData = {
+          ...formData,
+          password: await useEncryption.encryptData(formData.password)
+        };
+        await addNewPublicLinkMethod(newFormData);
       }
     } else {
       setErrorData(errorObject);

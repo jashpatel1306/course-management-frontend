@@ -14,7 +14,7 @@ import { FaQuestionCircle } from "react-icons/fa";
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView } = props;
   const { quizId } = useParams();
-  const TIME_LIMIT = quizData.time * 60; // 1 minute per question
+  const TIME_LIMIT = quizData.time * 60;
 
   const timerRef = useRef(null);
   const [questionData, setQuestionData] = useState({});

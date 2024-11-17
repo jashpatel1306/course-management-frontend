@@ -266,38 +266,7 @@ const QuizCard = (props) => {
                 />
               </div>
             </div>
-            {/* Quiz Instructions */}
-            <div className="col-span-1 gap-4 mb-4">
-              <div
-                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-              >
-                Instructions
-              </div>
-              <div className="col-span-2">
-                {formData?.description?.map((description, index) => (
-                  <div className="flex gap-4 col-span-2 mt-2" key={index}>
-                    <Input
-                      type="text"
-                      placeholder={`Enter Quiz Instruction ${index + 1}`}
-                      value={description}
-                      onChange={(e) =>
-                        handleDescriptionChange(index, e.target.value)
-                      }
-                    />
-                    {formData.description.length > 1 && (
-                      <Button
-                        shape="circle"
-                        icon={<MdDelete />}
-                        onClick={() => removeDescription(index)}
-                      />
-                    )}
-                  </div>
-                ))}
-                <Button type="button" onClick={addDescription} className="mt-2">
-                  Add New Instruction
-                </Button>
-              </div>
-            </div>
+          
             {/* Quiz Publish Status */}
             <div className="col-span-1 gap-4 mb-4">
               <div

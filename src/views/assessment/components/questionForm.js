@@ -153,7 +153,7 @@ function QuestionForm(props) {
         return;
       }
 
-      if (!answers.some((answer) => answer.correct)) {
+      if (questionType === "mcq" && !answers.some((answer) => answer.correct)) {
         openNotification("danger", "Please select a correct answer.");
         return;
       }
@@ -200,9 +200,7 @@ function QuestionForm(props) {
                     evt.preventDefault()
                   }
                   className={"w-16"}
-                  //   className={
-                  //     errorData.batchNumber ? "select-error w-16" : "w-16"
-                  //   }
+                
                   value={questionMark}
                   onChange={(e) => {
                     setQuestionMark(e.target.value);
@@ -237,6 +235,7 @@ function QuestionForm(props) {
                       type="radio"
                       name="correct"
                       className="mt-2"
+                      defaultChecked ={answer.correct}
                       onChange={(value) =>
                         handleAnswerChange("correct", true, index)
                       }

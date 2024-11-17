@@ -96,8 +96,8 @@ const Intro = ({ onGetStartedClick, quizData }) => {
   };
   const handlePasswordSubmit = async () => {
     if (password) {
-      const quizPassword = await useEncryption.decryptData(quizData.password);
-      if (quizPassword.trim() === password.trim()) {
+      const quizPassword = await useEncryption.decryptData(quizData?.password);
+      if (quizPassword?.trim() === password.trim()) {
         setStep("form");
         setErrorPassword("");
         // setPassword("")
