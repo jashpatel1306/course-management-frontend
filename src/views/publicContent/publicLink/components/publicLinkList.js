@@ -13,7 +13,7 @@ import removeSpecials from "views/common/serachText";
 import { FaLink } from "react-icons/fa";
 import { RiFileChartFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { FRONTEND_BASE_URL } from "apiServices/baseurl";
+import { FRONTEND_BASE_URL, REACT_FRONTEND_URL } from "apiServices/baseurl";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -120,6 +120,7 @@ const PublicLinkList = (props) => {
     }
   };
   const handleCopyClick = (link = "") => {
+    console.log("link : ", link);
     navigator.clipboard.writeText(link);
     openNotification("success", "Copied");
   };
@@ -167,12 +168,11 @@ const PublicLinkList = (props) => {
                             size="sm"
                             icon={<FaLink />}
                             onClick={async () => {
+                              console.log(
+                                `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
+                              );
                               handleCopyClick(
-                                `${
-                                  process.env.REACT_APP_URL
-                                    ? process.env.REACT_APP_URL
-                                    : FRONTEND_BASE_URL
-                                }/app/quiz/${item._id}/public`
+                                `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
                               );
                             }}
                           />
