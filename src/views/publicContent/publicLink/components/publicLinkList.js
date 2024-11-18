@@ -121,7 +121,7 @@ const PublicLinkList = (props) => {
   };
   const handleCopyClick = (link = "") => {
     console.log("link : ", link);
-    navigator.clipboard.writeText(link);
+    window.open(link, "_blank");
     openNotification("success", "Copied");
   };
   return (
