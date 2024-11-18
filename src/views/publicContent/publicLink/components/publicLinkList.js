@@ -13,6 +13,7 @@ import removeSpecials from "views/common/serachText";
 import { FaLink } from "react-icons/fa";
 import { RiFileChartFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { FRONTEND_BASE_URL } from "apiServices/baseurl";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -167,7 +168,11 @@ const PublicLinkList = (props) => {
                             icon={<FaLink />}
                             onClick={async () => {
                               handleCopyClick(
-                                `${window.location.origin}/app/quiz/${item._id}/public`
+                                `${
+                                  process.env.REACT_APP_URL
+                                    ? process.env.REACT_APP_URL
+                                    : FRONTEND_BASE_URL
+                                }/app/quiz/${item._id}/public`
                               );
                             }}
                           />
