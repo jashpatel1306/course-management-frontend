@@ -284,7 +284,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
         isOpen={IsOpen}
         style={{
           content: {
-            marginTop: 250,
+            marginTop: 100,
           },
         }}
         contentClassName="pb-0 px-0"
