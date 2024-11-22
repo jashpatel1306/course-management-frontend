@@ -144,7 +144,7 @@ const QuizList = (props) => {
                         <Td>{item?.questions?.length}</Td>
                         <Td>{item?.totalMarks}</Td>
                         <Td>
-                          {item?.active ? (
+                          {item?.isPublish ? (
                             <div className="flex items-center gap-2">
                               <Badge className="bg-emerald-500" />
                               <span

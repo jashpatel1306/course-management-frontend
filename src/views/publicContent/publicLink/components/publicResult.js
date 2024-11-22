@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Dialog,
-  Button,
-  Pagination,
-  Card
-} from "components/ui";
+import { Table, Dialog, Button, Pagination, Card } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import { IoInformation } from "react-icons/io5";
 import axiosInstance from "apiServices/axiosInstance";
@@ -14,7 +8,8 @@ import DataNoFound from "assets/svg/dataNoFound";
 import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { HiArrowNarrowLeft } from "react-icons/hi";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -31,6 +26,7 @@ const columns = [
 const PublicResultList = () => {
   const { quiz_id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -104,7 +100,17 @@ const PublicResultList = () => {
   return (
     <>
       <Card className="mb-8">
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center gap-2 ">
+          <div className="text-xl font-semibold text-center mr-4">
+            <Button
+              className={`back-button px-1 font-bold text-${themeColor}-${primaryColorLevel} border-2 border-${themeColor}-${primaryColorLevel} dark:text-white`}
+              size="sm"
+              icon={<HiArrowNarrowLeft size={30} />}
+              onClick={async () => {
+                navigate("/app/admin/public-content");
+              }}
+            />
+          </div>
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
@@ -162,8 +168,7 @@ const PublicResultList = () => {
                             shape="circle"
                             variant="solid"
                             size="sm"
-                            icon={<IoInformation  />
-                            }
+                            icon={<IoInformation />}
                             onClick={() => {
                               setSelectObject(item);
                               setIsOpen(true);

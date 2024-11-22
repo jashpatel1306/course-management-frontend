@@ -8,16 +8,17 @@ import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 
 const staffPermissionOptions = [
-  "Dashboard",
-  "Students",
-  "Batches",
-  "ContentHub",
-  "Assessment",
-  "Instructors",
-  "Configuration",
-].map((staff) => {
-  return { value: staff, label: staff };
-});
+  { value: "Dashboard", label: "Dashboard" },
+  { value: "Students", label: "Students" },
+
+  { value: "Batches", label: "Batches" },
+  { value: "ContentHub", label: "ContentHub" },
+  { value: "Assessment", label: "Assessment" },
+  { value: "Instructors", label: "Instructors" },
+
+  { value: "Configuration", label: "Configuration" },
+  { value: "publiccontent", label: "Public Content" }
+]
 function StaffForm(props) {
   const { handleCloseClick, staffData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -35,10 +36,10 @@ function StaffForm(props) {
       is: (userData) =>
         userData?.authority.toString() === SUPERADMIN.toString(),
       then: Yup.string().required("College Name is required"),
-      otherwise: Yup.string().notRequired(),
+      otherwise: Yup.string().notRequired()
     }),
     permissions: Yup.array().required("permissions is required"),
-    active: Yup.boolean(),
+    active: Yup.boolean()
   });
   const [loading, setLoading] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
@@ -51,7 +52,7 @@ function StaffForm(props) {
     collegeUserId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
     permissions: [],
-    active: true,
+    active: true
   });
   const [errorData, setErrorData] = useState({
     name: "",
@@ -59,7 +60,7 @@ function StaffForm(props) {
     phone: "",
     collegeUserId: "",
     permissions: "",
-    active: true,
+    active: true
   });
 
   const resetErrorData = () => {
@@ -68,7 +69,7 @@ function StaffForm(props) {
       email: "",
       phone: "",
       collegeUserId: "",
-      permissions: "",
+      permissions: ""
     });
   };
 
@@ -83,7 +84,7 @@ function StaffForm(props) {
           ? null
           : userData.collegeId,
       permissions: [],
-      active: true,
+      active: true
     });
   };
 
@@ -114,7 +115,7 @@ function StaffForm(props) {
               return { value: staff, label: staff };
             })
           : [],
-        active: staffData?.active !== undefined ? staffData?.active : true,
+        active: staffData?.active !== undefined ? staffData?.active : true
       });
     }
   }, [staffData]);
@@ -189,7 +190,7 @@ function StaffForm(props) {
         email: "",
         phone: "",
         collegeUserId: "",
-        permissions: "",
+        permissions: ""
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -199,7 +200,7 @@ function StaffForm(props) {
           email: "",
           phone: "",
           collegeUserId: "",
-          permissions: "",
+          permissions: ""
         };
       } else {
         return {
@@ -211,7 +212,7 @@ function StaffForm(props) {
           collegeUserId: errorObject.collegeUserId
             ? errorObject.collegeUserId
             : "",
-          permissions: errorObject.permissions ? errorObject.permissions : "",
+          permissions: errorObject.permissions ? errorObject.permissions : ""
         };
       }
     }
@@ -299,7 +300,7 @@ function StaffForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    name: e.target.value,
+                    name: e.target.value
                   });
                 }}
                 value={formData?.name}
@@ -322,7 +323,7 @@ function StaffForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    email: e.target.value.trim(),
+                    email: e.target.value.trim()
                   });
                 }}
                 value={formData?.email}
@@ -346,7 +347,7 @@ function StaffForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    phone: e.target.value,
+                    phone: e.target.value
                   });
                 }}
                 value={formData?.phone}
@@ -370,7 +371,7 @@ function StaffForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeUserId: e.value,
+                        collegeUserId: e.value
                       });
                     }}
                     value={collegeList.find(
@@ -404,9 +405,9 @@ function StaffForm(props) {
                     permissions: e.map((e) => {
                       return {
                         label: e.label,
-                        value: e.value,
+                        value: e.value
                       };
-                    }),
+                    })
                   });
                 }}
                 options={staffPermissionOptions}
@@ -431,7 +432,7 @@ function StaffForm(props) {
                 onChange={(val) => {
                   setFormData({
                     ...formData,
-                    active: !val,
+                    active: !val
                   });
                 }}
               />

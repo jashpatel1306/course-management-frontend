@@ -20,7 +20,7 @@ export const Quiz = (props) => {
   const [questionData, setQuestionData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isQusLoading, setIsQusLoading] = useState(true);
-  const [timePassed, setTimePassed] = useState(0);
+  const [timePassed, setTimePassed] = useState(TIME_LIMIT);
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(-1);
   const [quizFinished, setQuizFinished] = useState(false);
@@ -34,7 +34,7 @@ export const Quiz = (props) => {
 
     timerRef.current = setInterval(() => {
       setTimePassed((prevTimePassed) =>
-        prevTimePassed > TIME_LIMIT ? TIME_LIMIT : prevTimePassed + 1
+        prevTimePassed > TIME_LIMIT ? TIME_LIMIT : prevTimePassed - 1
       );
     }, 1000);
   };
@@ -85,7 +85,7 @@ export const Quiz = (props) => {
           });
 
           playQuizEnd();
-      
+
           setQuizFinished(true);
           return;
         }
@@ -121,6 +121,12 @@ export const Quiz = (props) => {
       );
     }
     //
+  };
+  const handleBackQuestion = async () => {
+    setActiveQuestion((prev) => prev - 1);
+  };
+  const handleSkipQuestion = async () => {
+    setActiveQuestion((prev) => prev + 1);
   };
 
   const handleSelectAnswer = (answerIndex) => {
@@ -294,10 +300,36 @@ export const Quiz = (props) => {
           <div>
             <div className="absolute bottom-0 w-full flex justify-between items-center px-6 bg-gray-200 text-white p-2 py-3">
               <div className="flex gap-4">
-                
+                {activeQuestion + 1 >= questions.length ? (
+                  <></>
+                ) : (
+                  <Button
+                    variant="solid"
+                    color="gray-600"
+                    disabled={activeQuestion + 1 >= questions.length}
+                    className="w-48"
+                    onClick={handleSkipQuestion}
+                    // loading={isLoading}
+                  >
+                    Skip
+                  </Button>
+                )}
               </div>
 
               <div className="flex gap-4 items-center text-lg">
+                {activeQuestion + 1 >= questions.length ? (
+                  <></>
+                ) : (
+                  <Button
+                    variant="solid"
+                    color="gray-600"
+                    className="w-48"
+                    onClick={handleBackQuestion}
+                    // loading={isLoading}
+                  >
+                    Back
+                  </Button>
+                )}
                 <Button
                   variant="solid"
                   color="gray-600"

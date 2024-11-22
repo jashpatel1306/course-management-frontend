@@ -13,7 +13,7 @@ import removeSpecials from "views/common/serachText";
 import { FaLink } from "react-icons/fa";
 import { RiFileChartFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { FRONTEND_BASE_URL, REACT_FRONTEND_URL } from "apiServices/baseurl";
+import { FRONTEND_BASE_URL } from "apiServices/baseurl";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -22,8 +22,10 @@ const columns = [
   "no of Hits",
   "start Date",
   "end Date",
-  "Active",
-  "Results"
+  "like",
+  "edit",
+  "Results",
+  "delete",
 ];
 
 const PublicLinkList = (props) => {
@@ -137,7 +139,7 @@ const PublicLinkList = (props) => {
                   })}
                 </Tr>
               </THead>
-              <TableRowSkeleton columns={9} rows={10} />
+              <TableRowSkeleton columns={8} rows={10} />
             </Table>
           </>
         ) : publicLinkData && publicLinkData?.length ? (
@@ -160,50 +162,38 @@ const PublicLinkList = (props) => {
                       <Td>{formatTimestampToReadableDate(item?.startDate)}</Td>
                       <Td>{formatTimestampToReadableDate(item?.endDate)}</Td>
                       <Td>
-                        <div className="flex ">
-                          <Button
-                            shape="circle"
-                            variant="solid"
-                            className="mr-2"
-                            size="sm"
-                            icon={<FaLink />}
-                            onClick={async () => {
-                              console.log(
-                                `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
-                              );
-                              handleCopyClick(
-                                `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
-                              );
-                            }}
-                          />
-                          <Button
-                            shape="circle"
-                            variant="solid"
-                            className="mr-2"
-                            size="sm"
-                            icon={<HiOutlinePencil />}
-                            onClick={async () => {
-                              parentCloseCallback();
-                              setData(item);
-                              setTimeout(() => {
-                                parentCallback();
-                              }, 50);
-                            }}
-                          />
-                          {item?.active && (
-                            <Button
-                              shape="circle"
-                              color="red-700"
-                              variant="solid"
-                              size="sm"
-                              icon={<HiOutlineTrash />}
-                              onClick={() => {
-                                setSelectObject(item);
-                                setDeleteIsOpen(true);
-                              }}
-                            />
-                          )}
-                        </div>
+                        {" "}
+                        <Button
+                          shape="circle"
+                          variant="solid"
+                          className="mr-2"
+                          size="sm"
+                          icon={<FaLink />}
+                          onClick={async () => {
+                            console.log(
+                              `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
+                            );
+                            handleCopyClick(
+                              `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
+                            );
+                          }}
+                        />
+                      </Td>
+                      <Td>
+                        <Button
+                          shape="circle"
+                          variant="solid"
+                          className="mr-2"
+                          size="sm"
+                          icon={<HiOutlinePencil />}
+                          onClick={async () => {
+                            parentCloseCallback();
+                            setData(item);
+                            setTimeout(() => {
+                              parentCallback();
+                            }, 50);
+                          }}
+                        />
                       </Td>
                       <Td>
                         <div className="flex items-center ">
@@ -226,6 +216,24 @@ const PublicLinkList = (props) => {
                           />
                         </div>
                       </Td>
+                      <Td>
+                        {" "}
+                        {item?.active && (
+                          <Button
+                            shape="circle"
+                            color="red-700"
+                            variant="solid"
+                            size="sm"
+                            icon={<HiOutlineTrash />}
+                            onClick={() => {
+                              setSelectObject(item);
+                              setDeleteIsOpen(true);
+                            }}
+                          />
+                        )}
+                      </Td>
+
+                 
                     </Tr>
                   );
                 })}
