@@ -444,7 +444,7 @@ function InstructorForm(props) {
               <Select
                 isClearable
                 isMulti
-                placeholder="Select Department"
+                placeholder="Select skills"
                 onChange={(e) => {
                   setFormData({
                     ...formData,

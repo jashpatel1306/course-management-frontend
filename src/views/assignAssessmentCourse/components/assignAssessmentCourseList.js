@@ -330,7 +330,7 @@ const AssessmentList = (props) => {
             </>
           )}
         </div>
-        <div className="flex items-center justify-center mt-4">
+        {/* <div className="flex items-center justify-center mt-4">
           {totalPage > 1 && (
             <Pagination
               total={totalPage}
@@ -338,7 +338,7 @@ const AssessmentList = (props) => {
               onChange={onPaginationChange}
             />
           )}
-        </div>
+        </div> */}
       </Card>
       <Dialog
         isOpen={deleteIsOpen}
