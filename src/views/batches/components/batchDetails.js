@@ -110,7 +110,7 @@ const BatchDetails = () => {
                           key={index}
                           className={`bg-${themeColor}-${primaryColorLevel} text-white text-base font-semibold rounded p-1 px-4 capitalize`}
                         >
-                          {item}
+                          {item.courseName}
                         </div>
                       ))
                     ) : (

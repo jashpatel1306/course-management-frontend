@@ -262,8 +262,7 @@ const CourseCard = ({ index, item }) => {
       >
         <div className="px-6 pb-4">
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-            Assign Course To Colleges{" "}
-            {selectAssignData.courseId ? "true" : "false"}
+            Assign Course To Colleges
           </h5>
           <div className="col-span-1 gap-4 mb-4">
             {userData.authority.toString() === SUPERADMIN && (

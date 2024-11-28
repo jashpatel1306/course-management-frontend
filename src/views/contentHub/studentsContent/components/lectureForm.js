@@ -6,7 +6,7 @@ import {
   Switcher,
   Upload,
   Table,
-  Progress,
+  Progress
 } from "components/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -14,14 +14,14 @@ import {
   FaEye,
   FaFile,
   FaFileAlt,
-  FaVideo,
+  FaVideo
 } from "react-icons/fa";
 import {
   HiOutlineMenu,
   HiOutlinePencil,
   HiOutlineTrash,
   HiPlusCircle,
-  HiTrash,
+  HiTrash
 } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -45,18 +45,18 @@ const modules = {
       { list: "ordered" },
       { list: "bullet" },
       { indent: "-1" },
-      { indent: "+1" },
+      { indent: "+1" }
     ],
-    ["bold", "italic", "underline", "link", "image", "code-block"],
+    ["bold", "italic", "underline", "link", "image", "code-block"]
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
-    matchVisual: false,
+    matchVisual: false
   },
   imageResize: {
     parchment: Quill.import("parchment"),
-    modules: ["Resize", "DisplaySize"],
-  },
+    modules: ["Resize", "DisplaySize"]
+  }
 };
 const formats = [
   "header",
@@ -74,7 +74,7 @@ const formats = [
   "image",
   "video",
   "code",
-  "code-block",
+  "code-block"
 ];
 const CircleCustomInfo = ({ percent }) => {
   return (
@@ -91,7 +91,7 @@ const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
       const [movedRow] = newData.splice(startIndex, 1);
       newData.splice(endIndex, 0, movedRow);
       const formData = {
-        lectureContent: newData,
+        lectureContent: newData
       };
       const response = await axiosInstance.put(
         `user/lecture-content-drag-drop/${lectureId}`,
@@ -155,7 +155,7 @@ const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
                               })}
                             >
                               {cell.render("Cell", {
-                                dragHandleProps: provided.dragHandleProps,
+                                dragHandleProps: provided.dragHandleProps
                               })}
                             </Td>
                           ))}
@@ -197,12 +197,13 @@ const LectureForm = (props) => {
   const [videoLoading, setVideoLoading] = useState(false);
   const [lectureDeleteIsOpen, setLectureDeleteIsOpen] = useState(false);
   const [lecturePublishIsOpen, setLecturePublishIsOpen] = useState(false);
+  const [lectureUnpublishIsOpen, setLectureUnpublishIsOpen] = useState(false);
   const [selectObject, setSelectObject] = useState();
   const [progress, setProgress] = useState(0); // State for progress
   const [lectureForm, setLectureForm] = useState({
     type: "",
     content: "",
-    title: "",
+    title: ""
   });
   // const [lectureFormFlag, setLectureFormFlag] = useState(false);
   const fetchLectureData = async () => {
@@ -228,13 +229,13 @@ const LectureForm = (props) => {
       const response = await axiosInstance.put(`user/lecture/${lecture.id}`, {
         name: lectureName,
         courseId: courseId,
-        sectionId: sectionId,
+        sectionId: sectionId
       });
       if (response.success) {
         openNotification("success", response.message);
         setLectureData({
           ...lectureData,
-          name: lectureName,
+          name: lectureName
         });
         setIsOpen(false);
         setError("");
@@ -272,7 +273,7 @@ const LectureForm = (props) => {
       setLectureForm({
         type: "",
         content: "",
-        title: "",
+        title: ""
       });
     }
   }, [lectureOpen]);
@@ -289,7 +290,7 @@ const LectureForm = (props) => {
       setLectureForm({
         type: "",
         content: "",
-        title: "",
+        title: ""
       });
     }
   }, [lectureOpen]);
@@ -306,7 +307,7 @@ const LectureForm = (props) => {
       "application/msword", // DOC (old)
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX (new)
       "application/vnd.ms-excel", // XLS (old)
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX (new)
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX (new)
     ];
     const maxFileSize = 5000000;
     for (let file of files) {
@@ -333,7 +334,7 @@ const LectureForm = (props) => {
       "video/x-ms-wmv",
       "video/x-flv",
       "video/x-matroska",
-      "video/3gpp",
+      "video/3gpp"
     ];
     const maxFileSize = 1073741824;
     for (let file of files) {
@@ -360,7 +361,7 @@ const LectureForm = (props) => {
         setLectureForm({
           type: "",
           content: "",
-          title: "",
+          title: ""
         });
         setLectureFormFlag(false);
         setApiFlag(true);
@@ -377,7 +378,7 @@ const LectureForm = (props) => {
   const startUpload = async (file) => {
     const data = await axiosInstance.post("user/start-upload", {
       filename: file.name,
-      filetype: file.type,
+      filetype: file.type
     });
     return { uploadId: data.uploadId, key: data.key };
   };
@@ -386,7 +387,7 @@ const LectureForm = (props) => {
       uploadId: uploadId,
       key: key,
       partNumber: partNumber,
-      part: part,
+      part: part
     };
 
     const data = await axiosInstance.post("user/upload-part", formData);
@@ -395,13 +396,13 @@ const LectureForm = (props) => {
   const completeUpload = async (uploadId, key, parts) => {
     const finalParts = parts.map((response, index) => ({
       ETag: response.ETag,
-      PartNumber: index + 1,
+      PartNumber: index + 1
     }));
 
     const res = await axiosInstance.post("user/complete-upload", {
       uploadId,
       key,
-      parts: finalParts,
+      parts: finalParts
     });
 
     return res.fileUrl;
@@ -482,7 +483,7 @@ const LectureForm = (props) => {
             await UpdateLectureContent({
               type: "file",
               content: filePath.data,
-              title: lectureForm.title,
+              title: lectureForm.title
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
@@ -494,7 +495,7 @@ const LectureForm = (props) => {
             await UpdateLectureContent({
               type: "video",
               content: lectureForm.content,
-              title: lectureForm.title,
+              title: lectureForm.title
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
@@ -515,7 +516,7 @@ const LectureForm = (props) => {
             await UpdateLectureContent({
               type: "video",
               content: filePath,
-              title: lectureForm.title,
+              title: lectureForm.title
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
@@ -527,7 +528,7 @@ const LectureForm = (props) => {
             await UpdateLectureContent({
               type: "file",
               content: lectureForm.content,
-              title: lectureForm.title,
+              title: lectureForm.title
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
@@ -564,7 +565,7 @@ const LectureForm = (props) => {
               </>
             </>
           );
-        },
+        }
       },
       {
         id: "dragger",
@@ -582,7 +583,7 @@ const LectureForm = (props) => {
                     type: props?.row?.original?.type,
                     content: props?.row?.original?.content,
                     title: props?.row?.original?.title,
-                    id: props?.row?.original?._id,
+                    id: props?.row?.original?._id
                   });
                 }}
               >
@@ -602,8 +603,8 @@ const LectureForm = (props) => {
               </span>
             </div>
           </>
-        ),
-      },
+        )
+      }
     ],
     []
   );
@@ -639,7 +640,25 @@ const LectureForm = (props) => {
       openNotification("danger", error.message);
     } finally {
       setLecturePublishIsOpen(false);
-    }
+      setLectureUnpublishIsOpen(false);    }
+  };
+  const onHandleLectureUnpublishBox = async () => {
+    try {
+      const response = await axiosInstance.put(
+        `user/lecture/unpublish/${lecture.id}`
+      );
+      if (response.success) {
+        openNotification("success", response.message);
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log("onHandleLecturePublishBox error:", error);
+      openNotification("danger", error.message);
+    } finally {
+      setLecturePublishIsOpen(false);
+      setLectureUnpublishIsOpen(false);    }
   };
   const onHandleLectureContentDeleteBox = async () => {
     try {
@@ -709,7 +728,7 @@ const LectureForm = (props) => {
                     setLectureForm({
                       type: "",
                       content: "",
-                      title: "",
+                      title: ""
                     });
                     if (!lectureOpen) {
                       setLectureOpen(true);
@@ -755,7 +774,7 @@ const LectureForm = (props) => {
                                       onChange={(e) => {
                                         setLectureForm({
                                           ...lectureForm,
-                                          title: e.target.value,
+                                          title: e.target.value
                                         });
                                       }}
                                     />
@@ -771,7 +790,7 @@ const LectureForm = (props) => {
                                   onChange={(value) => {
                                     setLectureForm({
                                       ...lectureForm,
-                                      content: value,
+                                      content: value
                                     });
                                   }}
                                   modules={modules}
@@ -811,7 +830,7 @@ const LectureForm = (props) => {
                                       onChange={(e) => {
                                         setLectureForm({
                                           ...lectureForm,
-                                          title: e.target.value,
+                                          title: e.target.value
                                         });
                                       }}
                                     />
@@ -832,7 +851,7 @@ const LectureForm = (props) => {
                                             onClick={() => {
                                               setLectureForm({
                                                 ...lectureForm,
-                                                content: "",
+                                                content: ""
                                               });
                                             }}
                                             className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
@@ -946,8 +965,8 @@ const LectureForm = (props) => {
                                       onChange={(e) => {
                                         setLectureForm({
                                           ...lectureForm,
-                                          type:"file",
-                                          title: e.target.value,
+                                          type: "file",
+                                          title: e.target.value
                                         });
                                       }}
                                     />
@@ -964,7 +983,7 @@ const LectureForm = (props) => {
                                             onClick={() => {
                                               setLectureForm({
                                                 ...lectureForm,
-                                                content: "",
+                                                content: ""
                                               });
                                             }}
                                             className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
@@ -1058,7 +1077,7 @@ const LectureForm = (props) => {
                                   setFile(null);
                                   setLectureForm({
                                     ...lectureForm,
-                                    type: "video",
+                                    type: "video"
                                   });
                                 }}
                               >
@@ -1076,7 +1095,7 @@ const LectureForm = (props) => {
                                 onClick={() => {
                                   setLectureForm({
                                     ...lectureForm,
-                                    type: "text",
+                                    type: "text"
                                   });
                                 }}
                               >
@@ -1093,7 +1112,7 @@ const LectureForm = (props) => {
                                 onClick={() => {
                                   setLectureForm({
                                     ...lectureForm,
-                                    type: "file",
+                                    type: "file"
                                   });
                                 }}
                               >
@@ -1123,6 +1142,18 @@ const LectureForm = (props) => {
                                 >
                                   Publish
                                 </div>
+                                <Switcher
+                                  defaultChecked={false}
+                                  color="blue-500"
+                                  checked={lectureData.isPublish}
+                                  onChange={(val) => {
+                                    console.log("val: ", val);
+                                    if (val) {
+                                      setLectureUnpublishIsOpen(true);
+                                      setLecturePublishIsOpen(false);
+                                    }
+                                  }}
+                                />
                               </>
                             ) : (
                               <>
@@ -1142,6 +1173,7 @@ const LectureForm = (props) => {
                                   onChange={(val) => {
                                     if (!val) {
                                       setLecturePublishIsOpen(true);
+                                      setLectureUnpublishIsOpen(false);
                                     }
                                   }}
                                 />
@@ -1183,8 +1215,8 @@ const LectureForm = (props) => {
         isOpen={IsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -1243,8 +1275,8 @@ const LectureForm = (props) => {
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -1281,8 +1313,8 @@ const LectureForm = (props) => {
         isOpen={lectureDeleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -1319,17 +1351,17 @@ const LectureForm = (props) => {
         isOpen={lecturePublishIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
+          lectureUnpublishIsOpen(false);
           setLecturePublishIsOpen(false);
-          // setApiFlag(true);
         }}
         onRequestClose={() => {
+          lectureUnpublishIsOpen(false);
           setLecturePublishIsOpen(false);
-          // setApiFlag(true);
         }}
       >
         <div className="px-6 pb-6">
@@ -1342,12 +1374,51 @@ const LectureForm = (props) => {
           <Button
             className="ltr:mr-2 rtl:ml-2"
             onClick={() => {
+              lectureUnpublishIsOpen(false);
               setLecturePublishIsOpen(false);
             }}
           >
             Cancel
           </Button>
           <Button variant="solid" onClick={onHandleLecturePublishBox}>
+            Okay
+          </Button>
+        </div>
+      </Dialog>
+      <Dialog
+        isOpen={lectureUnpublishIsOpen}
+        style={{
+          content: {
+            marginTop: 250
+          }
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          lectureUnpublishIsOpen(false);
+          setLectureUnpublishIsOpen(false);
+        }}
+        onRequestClose={() => {
+          setLecturePublishIsOpen(false);
+          setLectureUnpublishIsOpen(false);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm UnPublish Lecture
+          </h5>
+          <p>Are you sure you want to UnPublish this Lecture?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setLecturePublishIsOpen(false);
+              setLectureUnpublishIsOpen(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleLectureUnpublishBox}>
             Okay
           </Button>
         </div>

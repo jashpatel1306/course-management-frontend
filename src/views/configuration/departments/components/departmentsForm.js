@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Dialog, Drawer, Input, Select, Switcher } from "components/ui";
+import { Button, Dialog, Input, Select, Switcher } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
-import AsyncSelect from "react-select/async";
 import { SUPERADMIN } from "constants/roles.constant";
-import { useDebounce } from "use-debounce";
 
 function DepartmentForm(props) {
   const { handleCloseClick, departmentData, IsOpen, setIsOpen } = props;
@@ -18,22 +16,23 @@ function DepartmentForm(props) {
   const { authority, collegeId } = useSelector(
     (state) => state.auth.user.userData
   );
+  const [collegeList, setCollegeList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     college: authority.toString() !== SUPERADMIN ? collegeId : "",
     department: "",
-    active: true,
+    active: true
   });
+  console.log("formData: ", formData);
   const [apiFlag, setApiFlag] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
-  const [collegeList, setCollegeList] = useState([]);
   const [error, setError] = useState("");
 
   const resetFormData = () => {
     setFormData({
       college: authority.toString() !== SUPERADMIN ? collegeId : "",
       department: "",
-      active: true,
+      active: true
     });
     setError("");
   };
@@ -45,6 +44,13 @@ function DepartmentForm(props) {
 
       if (response.success) {
         setCollegeList(response.data);
+        // setFormData({
+        //   ...formData,
+        //   college:
+        //     authority.toString() !== SUPERADMIN
+        //       ? response.data.find((info) => info.value === collegeId)
+        //       : ""
+        // });
       } else {
         openNotification("danger", response.error);
       }
@@ -69,11 +75,13 @@ function DepartmentForm(props) {
   useEffect(() => {
     if (departmentData?._id) {
       setFormData({
-        college: departmentData?.collegeId ? departmentData?.collegeId : "",
+        college: departmentData?.collegeId
+          ? collegeList.find((info) => info.value === departmentData?.collegeId)
+          : "",
         department: departmentData?.department
           ? departmentData?.department
           : "",
-        active: departmentData?.active ? departmentData?.active : false,
+        active: departmentData?.active ? departmentData?.active : false
       });
     }
   }, [departmentData]);
@@ -83,7 +91,7 @@ function DepartmentForm(props) {
       let apiData = {
         department: formData.department,
         active: formData.active,
-        collegeId: formData.college.value || formData.college,
+        collegeId: formData.college.value || formData.college
       };
 
       const response = departmentData?._id
@@ -108,6 +116,7 @@ function DepartmentForm(props) {
   };
   const onHandleBox = async () => {
     try {
+      console.log("formData onHandleBox: ", formData);
       if (!formData?.department) {
         setError("Please Enter Department Name");
       }
@@ -133,8 +142,8 @@ function DepartmentForm(props) {
         isOpen={IsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -165,13 +174,11 @@ function DepartmentForm(props) {
                     placeholder="Colleges"
                     options={collegeList}
                     loading={collegeLoading}
-                    value={collegeList.find(
-                      (info) => info.value === formData?.college
-                    )}
+                    value={formData?.college}
                     onChange={(item) => {
                       setFormData({
                         ...formData,
-                        college: item,
+                        college: item
                       });
                     }}
                   />
@@ -192,7 +199,7 @@ function DepartmentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    department: e.target.value,
+                    department: e.target.value
                   });
                 }}
                 value={formData?.department}
@@ -212,7 +219,7 @@ function DepartmentForm(props) {
                   onChange={(val) => {
                     setFormData({
                       ...formData,
-                      active: !val,
+                      active: !val
                     });
                   }}
                 />

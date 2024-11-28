@@ -5,7 +5,7 @@ import {
   HiOutlinePencil,
   HiOutlineTrash,
   HiPlusCircle,
-  HiTrash,
+  HiTrash
 } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -71,7 +71,7 @@ const ReactTable = ({ columns, data }) => {
                               })}
                             >
                               {cell.render("Cell", {
-                                dragHandleProps: provided.dragHandleProps,
+                                dragHandleProps: provided.dragHandleProps
                               })}
                             </Td>
                           ))}
@@ -103,7 +103,7 @@ const CourseContentForm = () => {
   const [lectureForm, setLectureForm] = useState({
     type: "file",
     content: "",
-    title: "",
+    title: ""
   });
   const [file, setFile] = useState();
   const [error, setError] = useState("");
@@ -149,7 +149,7 @@ const CourseContentForm = () => {
       "application/msword", // DOC (old)
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX (new)
       "application/vnd.ms-excel", // XLS (old)
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX (new)
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX (new)
     ];
     const maxFileSize = 5000000;
     for (let file of files) {
@@ -188,7 +188,7 @@ const CourseContentForm = () => {
         setLectureForm({
           type: "file",
           content: "",
-          title: "",
+          title: ""
         });
         setLectureFormFlag(false);
         setApiFlag(true);
@@ -218,7 +218,7 @@ const CourseContentForm = () => {
             await UpdateLectureContent({
               type: "file",
               content: filePath.data,
-              title: lectureForm.title,
+              title: lectureForm.title
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
@@ -230,7 +230,7 @@ const CourseContentForm = () => {
             await UpdateLectureContent({
               type: "file",
               content: lectureForm.content,
-              title: lectureForm.title,
+              title: lectureForm.title
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
@@ -265,7 +265,7 @@ const CourseContentForm = () => {
               </>
             </>
           );
-        },
+        }
       },
       {
         id: "dragger",
@@ -283,7 +283,7 @@ const CourseContentForm = () => {
                     type: props?.row?.original?.type,
                     content: props?.row?.original?.content,
                     title: props?.row?.original?.title,
-                    id: props?.row?.original?._id,
+                    id: props?.row?.original?._id
                   });
                 }}
               >
@@ -299,8 +299,8 @@ const CourseContentForm = () => {
               </span>
             </div>
           </>
-        ),
-      },
+        )
+      }
     ],
     []
   );
@@ -398,7 +398,7 @@ const CourseContentForm = () => {
                           onChange={(e) => {
                             setLectureForm({
                               ...lectureForm,
-                              title: e.target.value,
+                              title: e.target.value
                             });
                           }}
                         />
@@ -418,10 +418,9 @@ const CourseContentForm = () => {
                             <div className="h-32 w-full rounded absolute inset-2 bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
                               <span
                                 onClick={() => {
-
                                   setLectureForm({
                                     ...lectureForm,
-                                    content: "",
+                                    content: ""
                                   });
                                 }}
                                 className="text-gray-100 hover:text-gray-300 cursor-pointer p-1.5"
@@ -514,6 +513,11 @@ const CourseContentForm = () => {
                       loading={lectureLoading}
                       onClick={() => {
                         setLectureFormFlag(true);
+                        setLectureForm({
+                          type: "file",
+                          content: "",
+                          title: ""
+                        });
                       }}
                     >
                       <span>Add New Content</span>

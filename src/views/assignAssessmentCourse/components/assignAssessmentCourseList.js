@@ -1,16 +1,12 @@
-import { Table, Card, Input, Pagination, Select, Button, Dialog } from "components/ui";
+import { Table, Card,  Pagination, Select, Button, Dialog } from "components/ui";
 import React, { useEffect, useState } from "react";
 import {
   HiOutlinePencil,
-  HiOutlineSearch,
   HiOutlineTrash,
 } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import { useDebounce } from "use-debounce";
-import removeSpecials from "views/common/serachText";
 import axiosInstance from "apiServices/axiosInstance";
 import appConfig from "configs/app.config";
-import { AiOutlineClose } from "react-icons/ai";
 import openNotification from "views/common/notification";
 import { SUPERADMIN } from "constants/roles.constant";
 import { TableRowSkeleton } from "components/shared";
@@ -330,15 +326,7 @@ const AssessmentList = (props) => {
             </>
           )}
         </div>
-        {/* <div className="flex items-center justify-center mt-4">
-          {totalPage > 1 && (
-            <Pagination
-              total={totalPage}
-              currentPage={page}
-              onChange={onPaginationChange}
-            />
-          )}
-        </div> */}
+
       </Card>
       <Dialog
         isOpen={deleteIsOpen}

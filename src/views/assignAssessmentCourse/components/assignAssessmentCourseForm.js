@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 import dayjs from "dayjs";
+import DatePickerRange from "components/ui/DatePicker/DatePickerRange";
 const positionTypeOption = [
   { label: "Preliminary Assessment", value: "pre" },
   { label: "Section-Based Assessment", value: "section" },
@@ -727,6 +728,7 @@ function AssignCourseForm(props) {
           </div>
           {DisplayError(errorData.endDate)}
         </div>
+        <DatePickerRange placeholder="Select dates range" />
       </Drawer>
     </>
   );

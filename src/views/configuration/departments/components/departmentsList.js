@@ -1,28 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Dialog,
-  Button,
-  Pagination,
-  Input,
-  Select,
-  Badge,
-} from "components/ui";
+import { Table, Dialog, Button, Select, Badge } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
-import {
-  HiOutlinePencil,
-  HiOutlineSearch,
-  HiOutlineTrash,
-} from "react-icons/hi";
+import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
-import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
-import { useDebounce } from "use-debounce";
-import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;
@@ -55,6 +39,7 @@ const DepartmentList = (props) => {
       if (response.success) {
         setCollegeList(response.data);
         setCurrentTab(response.data[0].value);
+        setApiFlag(true);
       } else {
         openNotification("danger", response.error);
       }
@@ -94,23 +79,22 @@ const DepartmentList = (props) => {
     }
   }, []);
   useEffect(() => {
-    if (currentTab) {
+    if (apiFlag && currentTab) {
+      setApiFlag(false);
       fetchData();
     }
-  }, [currentTab]);
+  }, [apiFlag, currentTab]);
   useEffect(() => {
     setApiFlag(true);
   }, []);
   useEffect(() => {
-    if (!flag) {
-      setApiFlag(true);
-    }
+    setApiFlag(true);
   }, [flag]);
 
   const onHandleDeleteBox = async () => {
     try {
-      const response = await axiosInstance.put(
-        `user/student/status/${selectObject._id}`
+      const response = await axiosInstance.delete(
+        `user/department/${selectObject._id}`
       );
       if (response.success) {
         openNotification("success", response.message);
@@ -266,8 +250,8 @@ const DepartmentList = (props) => {
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -281,9 +265,9 @@ const DepartmentList = (props) => {
       >
         <div className="px-6 pb-6">
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-            Confirm Deactivation of Department
+            Confirm delete of Department
           </h5>
-          <p>Are you sure you want to deactivate this student?</p>
+          <p>Are you sure you want to delete this student?</p>
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button
