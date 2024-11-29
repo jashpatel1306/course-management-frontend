@@ -94,7 +94,7 @@ const BasePicker = forwardRef((props, ref) => {
     referenceRef.current,
     popperRef.current,
     {
-      placement: "bottom-start",
+      placement: "top-start",
       modifiers: [
         {
           name: "offset",

@@ -281,6 +281,11 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
       </Card>
 
       <Dialog
+      style={{
+        content: {
+          marginTop: 250,
+        },
+      }}
         isOpen={IsOpen}
         
         contentClassName="pb-0 px-0"

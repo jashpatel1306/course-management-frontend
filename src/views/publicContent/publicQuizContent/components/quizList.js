@@ -217,15 +217,7 @@ const QuizList = (props) => {
             </>
           )}
         </div>
-        <div className="flex items-center justify-center mt-4">
-          {totalPage > 1 && (
-            <Pagination
-              total={totalPage}
-              currentPage={page}
-              onChange={onPaginationChange}
-            />
-          )}
-        </div>
+      
       </Card>
       <Dialog
         isOpen={deleteIsOpen}
