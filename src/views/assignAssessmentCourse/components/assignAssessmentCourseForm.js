@@ -728,7 +728,6 @@ function AssignCourseForm(props) {
           </div>
           {DisplayError(errorData.endDate)}
         </div>
-        <DatePickerRange placeholder="Select dates range" />
       </Drawer>
     </>
   );

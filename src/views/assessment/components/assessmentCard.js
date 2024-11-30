@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import {
-  FaQuestionCircle,
-  FaRegClock,
-  FaUserFriends,
-} from "react-icons/fa";
-import {
-  Button,
-  Card,
-  DatePicker,
-  Dialog,
-  Select,
-} from "components/ui";
+import { FaQuestionCircle, FaRegClock, FaUserFriends } from "react-icons/fa";
+import { Button, Card, DatePicker, Dialog, Select } from "components/ui";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
@@ -33,7 +23,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
     startDate: Yup.date().required("Start Date is required"),
     endDate: Yup.date()
       .required("End Date is required")
-      .min(Yup.ref("startDate")),
+      .min(Yup.ref("startDate"))
   });
   const cardClasses = ` border-2 border-${themeColor}-${primaryColorLevel} text-${themeColor}-${primaryColorLevel} rounded-xl shadow-lg ${
     variant === "full" ? "w-full" : "w-56"
@@ -49,14 +39,14 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
     batchId: "",
     assessmentId: assessmentData._id,
     startDate: null,
-    endDate: null,
+    endDate: null
   });
   const [errorData, setErrorData] = useState({
     collegeId: "",
     batchId: "",
     assessmentId: "",
     startDate: null,
-    endDate: null,
+    endDate: null
   });
   const resetErrorData = () => {
     setErrorData({
@@ -64,7 +54,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
       batchId: "",
       assessmentId: "",
       startDate: null,
-      endDate: null,
+      endDate: null
     });
   };
   const resetFormData = () => {
@@ -73,7 +63,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
       batchId: "",
       assessmentId: assessmentData._id,
       startDate: null,
-      endDate: null,
+      endDate: null
     });
   };
   const getBatchOptionData = async (collegeId = "") => {
@@ -108,14 +98,14 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
   const formValidation = () => {
     try {
       assignAssessmentValidationSchema.validateSync(formData, {
-        abortEarly: false,
+        abortEarly: false
       });
       return {
         collegeId: "",
         batchId: "",
         assessmentId: "",
         startDate: null,
-        endDate: null,
+        endDate: null
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -124,7 +114,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
           courseId: "",
           collegeId: "",
           assessmentId: "",
-          batchId: "",
+          batchId: ""
         };
       } else {
         return {
@@ -136,7 +126,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
             ? errorObject?.assessmentId
             : "",
           startDate: errorObject?.startDate ? errorObject?.startDate : null,
-          endDate: errorObject?.endDate ? errorObject?.endDate : null,
+          endDate: errorObject?.endDate ? errorObject?.endDate : null
         };
       }
     }
@@ -256,7 +246,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
                 setFormData({
                   ...formData,
                   collegeId: assessmentData?.collegeId,
-                  assessmentId: assessmentData?._id,
+                  assessmentId: assessmentData?._id
                 });
                 getBatchOptionData(assessmentData.collegeId);
                 setIsOpen(true);
@@ -270,7 +260,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
               className="md:w-auto py-2 rounded-lg font-semibold shadow-md"
               onClick={() => {
                 navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
-                  state: assessmentData,
+                  state: assessmentData
                 });
               }}
             >
@@ -281,13 +271,12 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
       </Card>
 
       <Dialog
-      style={{
-        content: {
-          marginTop: 250,
-        },
-      }}
+        style={{
+          content: {
+            marginTop: 150
+          }
+        }}
         isOpen={IsOpen}
-        
         contentClassName="pb-0 px-0"
         onClose={() => {
           setIsOpen(false);
@@ -313,7 +302,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    batchId: e.value,
+                    batchId: e.value
                   });
                 }}
                 loading={batchLoading}
@@ -338,7 +327,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    startDate: new Date(e),
+                    startDate: new Date(e)
                   });
                 }}
                 value={formData?.startDate}
@@ -358,7 +347,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    endDate: new Date(e),
+                    endDate: new Date(e)
                   });
                 }}
                 minDate={formData?.startDate}

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { Table, Dialog, Button, Pagination, Card } from "components/ui";
@@ -10,6 +11,7 @@ import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { HiArrowNarrowLeft } from "react-icons/hi";
+import { CSVExport } from "./csvExport";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -32,6 +34,9 @@ const PublicResultList = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportData, setExportData] = useState([]);
+
   const [publicResultData, setPublicResultData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
@@ -82,12 +87,37 @@ const PublicResultList = () => {
       setIsLoading(false);
     }
   };
+  const getExportfetchData = async () => {
+    try {
+      let formData = {
+        search: "",
+        pageNo: page,
+        perPage: 1000
+      };
+      const response = await axiosInstance.post(
+        `user/quiz-results-by-quizid/${quiz_id}`,
+        formData
+      );
+      if (response.success) {
+        setExportData(response.data);
 
+        setExportLoading(false);
+      } else {
+        openNotification("danger", response.message);
+        setExportLoading(false);
+      }
+    } catch (error) {
+      console.log("get-all-publicResult error:", error);
+      openNotification("danger", error.message);
+      setExportLoading(false);
+    }
+  };
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
       setIsLoading(true);
-
+      setExportLoading(true);
+      getExportfetchData();
       fetchData();
     }
   }, [apiFlag]);
@@ -100,23 +130,31 @@ const PublicResultList = () => {
   return (
     <>
       <Card className="mb-8">
-        <div className="flex items-center gap-2 ">
-          <div className="text-xl font-semibold text-center mr-4">
-            <Button
-              className={`back-button px-1 font-bold text-${themeColor}-${primaryColorLevel} border-2 border-${themeColor}-${primaryColorLevel} dark:text-white`}
-              size="sm"
-              icon={<HiArrowNarrowLeft size={30} />}
-              onClick={async () => {
-                navigate("/app/admin/public-content");
-              }}
+        <div className="flex justify-between items-center gap-2 ">
+          <div className="flex gap-2 items-center">
+            <div className="text-xl font-semibold text-center mr-4">
+              <Button
+                className={`back-button px-1 font-bold text-${themeColor}-${primaryColorLevel} border-2 border-${themeColor}-${primaryColorLevel} dark:text-white`}
+                size="sm"
+                icon={<HiArrowNarrowLeft size={30} />}
+                onClick={async () => {
+                  navigate("/app/admin/public-content");
+                }}
+              />
+            </div>
+            <div
+              className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+            >
+              Quiz : {location?.state?.quizName}
+            </div>
+          </div>
+          <div>
+            {" "}
+            <CSVExport
+              searchedData={exportData}
+              exportLoading={exportLoading}
             />
           </div>
-          <div
-            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
-          >
-            Quiz : {location?.state?.quizName}
-          </div>
-          <div></div>
         </div>
       </Card>
       <Card>
@@ -162,7 +200,7 @@ const PublicResultList = () => {
                         <Td>{item?.correctAnswers}</Td>
                         <Td>{item?.wrongAnswers}</Td>
                         <Td>{item?.totalMarks}</Td>
-                        <Td>{item?.totalTime}</Td>
+                        <Td>{Math.ceil(item?.totalTime/60)} min</Td>
                         <Td>
                           <Button
                             shape="circle"

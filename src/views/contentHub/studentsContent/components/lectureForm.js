@@ -365,6 +365,7 @@ const LectureForm = (props) => {
         });
         setLectureFormFlag(false);
         setApiFlag(true);
+        setError("");
       } else {
         openNotification("danger", response.message);
       }
@@ -477,7 +478,7 @@ const LectureForm = (props) => {
         if (!lectureForm.title) {
           setError("Please Enter a Content Title");
         }
-        if (file) {
+        if (lectureForm.title && file) {
           const filePath = await FileUpload(file, "content/files");
           if (filePath.status) {
             await UpdateLectureContent({
@@ -510,7 +511,7 @@ const LectureForm = (props) => {
         if (!lectureForm.title) {
           setError("Please Enter a Video Title");
         }
-        if (file) {
+        if (lectureForm.title && file) {
           const filePath = await VideoUpload(file);
           if (filePath) {
             await UpdateLectureContent({
@@ -532,6 +533,7 @@ const LectureForm = (props) => {
               // id: lectureForm.id ? lectureForm.id : "",
             });
             setFile(null);
+            setError("");
           }
         }
       }
@@ -640,7 +642,8 @@ const LectureForm = (props) => {
       openNotification("danger", error.message);
     } finally {
       setLecturePublishIsOpen(false);
-      setLectureUnpublishIsOpen(false);    }
+      setLectureUnpublishIsOpen(false);
+    }
   };
   const onHandleLectureUnpublishBox = async () => {
     try {
@@ -658,7 +661,8 @@ const LectureForm = (props) => {
       openNotification("danger", error.message);
     } finally {
       setLecturePublishIsOpen(false);
-      setLectureUnpublishIsOpen(false);    }
+      setLectureUnpublishIsOpen(false);
+    }
   };
   const onHandleLectureContentDeleteBox = async () => {
     try {
