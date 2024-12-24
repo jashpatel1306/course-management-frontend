@@ -9,9 +9,12 @@ import { SUPERADMIN } from "constants/roles.constant";
 import dayjs from "dayjs";
 import DatePickerRange from "components/ui/DatePicker/DatePickerRange";
 const positionTypeOption = [
-  { label: "Preliminary Assessment", value: "pre" },
-  { label: "Section-Based Assessment", value: "section" },
-  { label: "Grand Test Assessment ", value: "grand" },
+  // { label: "Preliminary Assessment", value: "pre" },
+  // { label: "Section-Based Assessment", value: "section" },
+  // { label: "Grand Test Assessment ", value: "grand" },
+  { label: "Preliminary assessment", value: "pre" },
+  { label: "Inside section", value: "section" },
+  { label: "Grand test ", value: "grand" },
 ];
 function AssignCourseForm(props) {
   const {
@@ -715,7 +718,7 @@ function AssignCourseForm(props) {
           </div>
           <div className="col-span-2">
             <DatePicker
-              placeholder="Please Select Start Date of the assessment"
+              placeholder="Please Select End Date of the assessment"
               onChange={(e) => {
                 setFormData({
                   ...formData,

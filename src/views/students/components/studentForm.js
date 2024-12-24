@@ -226,6 +226,7 @@ function StudentForm(props) {
       setLoading(true);
       const response = await axiosInstance.post(`user/student`, value);
       if (response.success) {
+        openNotification("success", response.message);
         setLoading(false);
         resetErrorData();
         resetFormData();
@@ -250,6 +251,7 @@ function StudentForm(props) {
         setLoading(false);
         resetErrorData();
         resetFormData();
+        openNotification("success", response.message);
         handleCloseClick();
       } else {
         setLoading(false);

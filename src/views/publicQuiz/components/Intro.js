@@ -11,6 +11,7 @@ import useEncryption from "common/useEncryption";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import { formatTimestampToReadableDate } from "views/common/commonFuntion";
+import Logo from "components/template/Logo";
 const removeDefaultCss =
   "focus:ring-gray-700 focus-within:ring-gray-700 focus-within:border-gray-700 focus:border-gray-700";
 function isLinkExpired(expirationDate) {
@@ -22,6 +23,9 @@ function isLinkExpired(expirationDate) {
 
 const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
   const navigate = useNavigate();
+
+  const mode = useSelector(state => state.theme.mode)
+  
   const calculateTimeLeft = () => {
     const difference = +new Date(quizData.startDate) - +new Date();
     let timeLeft = null;
@@ -142,7 +146,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
           <div className="flex">
             <div className={`w-[35%]  h-screen bg-white`}>
               <section className="flex flex-col  h-full justify-around items-start text-start px-16  gap-y-8">
-                <div className="flex justify-start text-2xl">LMS</div>
+                <Logo mode={mode} className="hidden md:block" />
                 <div>
                   <div className="gap-y-4">
                     <h1

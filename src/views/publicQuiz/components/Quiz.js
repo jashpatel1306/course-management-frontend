@@ -10,9 +10,13 @@ import openNotification from "views/common/notification";
 import { useParams } from "react-router-dom";
 import { MdTimer } from "react-icons/md";
 import { FaQuestionCircle } from "react-icons/fa";
+import Logo from "components/template/Logo";
+import { useSelector } from 'react-redux'
 
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView, results } = props;
+  const mode = useSelector(state => state.theme.mode)
+
   const { quizId } = useParams();
   const TIME_LIMIT = quizData.totalTime * 60;
 
@@ -173,6 +177,20 @@ export const Quiz = (props) => {
       setNextButton(true);
     }
   }, [fillAnswer, selectedAnswerIndex]);
+
+  const test = Array.from({ length: numberOfQuestions }, (_, i) => i + 1); // 1 to 30
+  const answered = [2]; // Example answered questions
+ 
+  const answeredAndMarked = []; // Example answered and marked questions
+
+  const getStatusClass = (number) => {
+    if (answeredAndMarked.includes(number)) return 'bg-orange-500';
+    if (answered.includes(number)) return 'bg-green-500';
+    return 'border-gray-300';
+  };
+
+  console.log("numberOfQuestions", numberOfQuestions)
+
   return (
     <motion.div
       key={"countdown"}
@@ -198,7 +216,7 @@ export const Quiz = (props) => {
           <div>
             <div className="flex justify-between items-center px-6 bg-gray-600 text-white p-2 py-3">
               <div className="flex gap-4">
-                <div className="font-bold text-2xl ">LMS</div>
+                <Logo mode={mode} className="hidden md:block" />
                 <div className="border-r-2"></div>
                 <div className="font-bold text-lg ">{quizData?.title}</div>
               </div>
@@ -223,79 +241,114 @@ export const Quiz = (props) => {
             </div>
           </div>
           {/* quiz main content */}
-          <div className="w-[70%] max-h-[80vh] overflow-y-scroll hidden-scroll mx-auto my-8">
-            {isQusLoading ? (
-              <>
-                <div className="flex justify-center items-center">
-                  <Spinner className="mr-4" color="grzy-900" size="40px" />
-                </div>
-              </>
-            ) : (
-              <>
-                {questionData?.questionType === "fill" ? (
-                  <>
-                    <div className="flex justify-between items-center">
-                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                        Question : Fill the Question
-                      </p>
-                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                        {`${questionData?.marks}  Marks`}
-                      </p>
-                    </div>
-                    <div className=" pt-2 pb-8">
-                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
-                        <h4 className="text-gray-700 font-semibold text-lg">
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: questionData?.question
-                            }}
-                          ></span>
-                        </h4>
-                      </div>
-                      <Input
-                        textArea
-                        placeholder="Wrtie Your Answer Here"
-                        value={fillAnswer}
-                        className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
-                        onChange={(e) => {
-                          console.log("e.target.valu: ", e.target.value);
-                          setFillAnswer(e.target.value);
-                        }}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex justify-between items-center">
-                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                        Question : MCQ
-                      </p>
-                      <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
-                        2 Marks
-                      </p>
-                    </div>
-                    <div className=" pt-2 pb-8">
-                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
-                        <h4 className="text-gray-700 font-semibold text-lg">
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: questionData?.question
-                            }}
-                          ></span>
-                        </h4>
-                      </div>
 
-                      <OptionList
-                        answers={questionData?.answers}
-                        selectedAnswerIndex={selectedAnswerIndex}
-                        onAnswerSelected={handleSelectAnswer}
-                      />
+          <div className="flex">
+            <div className="w-[15%] overflow-y-scroll hidden-scroll my-8 border-r border-gray-500">
+              <div className="flex flex-col items-center p-4 space-y-4">
+                <h2 className="text-lg font-bold">Quantitative Aptitude</h2>
+                <h3 className="text-sm font-medium">Analytical Ability</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {test.map((q) => (
+                    <div
+                      key={q}
+                      className={`w-8 h-8 flex items-center justify-center border rounded-full ${getStatusClass(q)}`}
+                    >
+                      {q}
                     </div>
-                  </>
-                )}
-              </>
-            )}
+                  ))}
+                </div>
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-white border border-gray-300 rounded-full"></div>
+                    <span className="text-sm">Unanswered</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                    <span className="text-sm">Answered</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+                    <span className="text-sm">Answered & Marked</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-[70%] max-h-[80vh] overflow-y-scroll hidden-scroll mx-auto my-8">
+              {isQusLoading ? (
+                <>
+                  <div className="flex justify-center items-center">
+                    <Spinner className="mr-4" color="grzy-900" size="40px" />
+                  </div>
+                </>
+              ) : (
+                <>
+
+                  {questionData?.questionType === "fill" ? (
+                    <>
+                      <div className="flex justify-between items-center">
+                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                          Question : Fill the Question
+                        </p>
+                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                          {`${questionData?.marks}  Marks`}
+                        </p>
+                      </div>
+                      <div className=" pt-2 pb-8">
+                        <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
+                          <h4 className="text-gray-700 font-semibold text-lg">
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: questionData?.question
+                              }}
+                            ></span>
+                          </h4>
+                        </div>
+                        <Input
+                          textArea
+                          placeholder="Wrtie Your Answer Here"
+                          value={fillAnswer}
+                          className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
+                          onChange={(e) => {
+                            console.log("e.target.valu: ", e.target.value);
+                            setFillAnswer(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center">
+                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                          Question : MCQ
+                        </p>
+                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                          2 Marks
+                        </p>
+                      </div>
+                      <div className=" pt-2 pb-8">
+                        <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
+                          <h4 className="text-gray-700 font-semibold text-lg">
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: questionData?.question
+                              }}
+                            ></span>
+                          </h4>
+                        </div>
+
+                        <OptionList
+                          answers={questionData?.answers}
+                          selectedAnswerIndex={selectedAnswerIndex}
+                          onAnswerSelected={handleSelectAnswer}
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
+
           {/* quiz footer */}
           <div>
             <div className="absolute bottom-0 w-full flex justify-between items-center px-6 bg-gray-200 text-white p-2 py-3">
@@ -309,7 +362,7 @@ export const Quiz = (props) => {
                     disabled={activeQuestion + 1 >= questions.length}
                     className="w-48"
                     onClick={handleSkipQuestion}
-                    // loading={isLoading}
+                  // loading={isLoading}
                   >
                     Skip
                   </Button>
@@ -325,7 +378,7 @@ export const Quiz = (props) => {
                     color="gray-600"
                     className="w-48"
                     onClick={handleBackQuestion}
-                    // loading={isLoading}
+                  // loading={isLoading}
                   >
                     Back
                   </Button>
@@ -336,7 +389,7 @@ export const Quiz = (props) => {
                   disabled={!nextButton}
                   className="w-48"
                   onClick={handleNextQuestion}
-                  // loading={isLoading}
+                // loading={isLoading}
                 >
                   {activeQuestion + 1 >= questions.length
                     ? "Submit Test"

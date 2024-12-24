@@ -19,7 +19,7 @@ const { Tr, Th, Td, THead, TBody } = Table;
 
 const columns = [
   "Name",
-  "no of Hits",
+  "hits to licenses",
   "start Date",
   "end Date",
   "like",

@@ -137,7 +137,7 @@ const SectionForm = (props) => {
                 }}
               />
             </div>
-            <div>Section {sectionIndex + 1} :</div>
+            <div>Chapter {sectionIndex + 1} :</div>
             {/* <FaFile /> */}
 
             <div

@@ -693,7 +693,7 @@ const LectureForm = (props) => {
               <div className="flex items-center gap-2">
                 <FaCheckCircle />
 
-                <div>Lecture {lectureIndex + 1} :</div>
+                <div>Unit {lectureIndex + 1} :</div>
 
                 <FaFile />
 

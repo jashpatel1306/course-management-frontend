@@ -380,12 +380,12 @@ function CollegeForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              College No
+            College Phone Number
             </div>
             <div className="col-span-2">
               <Input
                 type="text"
-                placeholder="Please Enter College No"
+                placeholder="Please Enter College Phone Number"
                 className={
                   errorData.collegeNo ? "select-error capitalize" : "capitalize"
                 }
@@ -457,12 +457,12 @@ function CollegeForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              Contact Person No
+              Contact Person Phone Number
             </div>
             <div className="col-span-2">
               <Input
                 type="text"
-                placeholder="Please Enter Contact Person Name"
+                placeholder="Please Enter Contact Person Phone Number"
                 className={
                   errorData.contactPersonNo
                     ? "select-error capitalize"

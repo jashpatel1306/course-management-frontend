@@ -343,7 +343,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
             </div>
             <div className="col-span-2">
               <DatePicker
-                placeholder="Please Select Start Date of the assessment"
+                placeholder="Please Select End Date of the assessment"
                 onChange={(e) => {
                   setFormData({
                     ...formData,
