@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Input, Button, Switcher, Drawer, Select } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
@@ -8,17 +9,30 @@ import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 
 const staffPermissionOptions = [
-  { value: "Dashboard", label: "Dashboard" },
-  { value: "Students", label: "Students" },
-
+  { value: "dashboard", label: "Dashboard" },
+  { value: "students", label: "Students" },
   { value: "Batches", label: "Batches" },
   { value: "ContentHub", label: "ContentHub" },
   { value: "Assessment", label: "Assessment" },
   { value: "Instructors", label: "Instructors" },
-
-  { value: "Configuration", label: "Configuration" },
+  { value: "assessmentResult", label: "Assessment Result" },
+  { value: "configuration", label: "Configuration" },
   { value: "publiccontent", label: "Public Content" }
-]
+];
+const superAdminPermissionOptions = [
+  { value: "dashboard", label: "Dashboard" },
+  { value: "students", label: "Students" },
+  { value: "batches", label: "Batches" },
+  { value: "contentHub", label: "ContentHub" },
+  { value: "assessment", label: "Assessment" },
+  { value: "publiccontent", label: "Public Content" },
+  { value: "instructors", label: "Instructors" },
+  { value: "assessmentResult", label: "Assessment Result" },
+  { value: "colleges", label: "Colleges" },
+  { value: "staff", label: "Staff" },
+  { value: "policy", label: "Policy" },
+  { value: "configuration", label: "General Configuration" }
+];
 function StaffForm(props) {
   const { handleCloseClick, staffData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -32,13 +46,19 @@ function StaffForm(props) {
       .email("Invalid email address")
       .required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
-    collegeUserId: Yup.string().when([], {
-      is: (userData) =>
-        userData?.authority.toString() === SUPERADMIN.toString(),
-      then: Yup.string().required("College Name is required"),
-      otherwise: Yup.string().notRequired()
+    // collegeUserId: Yup.string().when([], {
+    //   is: (userData) =>
+    //     userData?.authority.toString() === SUPERADMIN.toString(),
+    //   then: Yup.string().required("College Name is required"),
+    //   otherwise: Yup.string().notRequired()
+    // }),
+    collegeUserId: Yup.string().when("isSuperAdmin", {
+      is: false, // When isSuperAdmin is false
+      then: Yup.string().required("College Name is required"), // Make it required
+      otherwise: Yup.string().notRequired() // Otherwise not required
     }),
     permissions: Yup.array().required("permissions is required"),
+    isSuperAdmin: Yup.boolean(),
     active: Yup.boolean()
   });
   const [loading, setLoading] = useState(false);
@@ -46,14 +66,16 @@ function StaffForm(props) {
   const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
     staffId: "",
-    name: "",
-    email: "",
-    phone: "",
+    name: "panthil",
+    email: "panthil@gmail.com",
+    phone: "8523697410",
     collegeUserId:
-      userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
+      userData?.authority.toString() === SUPERADMIN ? "" : userData.collegeId,
     permissions: [],
+    isSuperAdmin: false,
     active: true
   });
+
   const [errorData, setErrorData] = useState({
     name: "",
     email: "",
@@ -83,6 +105,8 @@ function StaffForm(props) {
         userData?.authority.toString() === SUPERADMIN
           ? null
           : userData.collegeId,
+      isSuperAdmin:
+        userData?.authority.toString() === SUPERADMIN ? true : false,
       permissions: [],
       active: true
     });
@@ -98,6 +122,7 @@ function StaffForm(props) {
 
   useEffect(() => {
     if (staffData?._id) {
+      console.log("staffData?.collegeUserId._id: ", staffData?.collegeUserId);
       setFormData({
         staffId: staffData?._id ? staffData?._id : "",
         name: staffData?.name ? staffData?.name : "",
@@ -105,11 +130,11 @@ function StaffForm(props) {
         phone: staffData?.phone ? staffData?.phone : "",
         collegeUserId:
           userData?.authority.toString() === SUPERADMIN
-            ? staffData?.collegeUserId._id
-              ? staffData?.collegeUserId._id
+            ? staffData?.collegeUserId
+              ? staffData?.collegeUserId
               : ""
             : userData.collegeId,
-
+        isSuperAdmin: staffData?.isSuperAdmin,
         permissions: staffData?.permissions
           ? staffData?.permissions.map((staff) => {
               return { value: staff, label: staff };
@@ -203,6 +228,7 @@ function StaffForm(props) {
           permissions: ""
         };
       } else {
+        console.log("errorObject", errorObject);
         return {
           ...errorData,
           status: true,
@@ -357,32 +383,58 @@ function StaffForm(props) {
           </div>
           {userData?.authority.toString() === SUPERADMIN.toString() ? (
             <>
-              {/*  College Name */}
               <div className="col-span-1 gap-4 mb-4">
                 <div
                   className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
                 >
-                  College Name
+                  Staff SuperAdmin
                 </div>
                 <div className="col-span-2">
-                  <Select
-                    placeholder="Select College"
-                    loading={collegeLoading}
-                    onChange={(e) => {
+                  <Switcher
+                    checked={formData?.isSuperAdmin}
+                    onChange={(val) => {
                       setFormData({
                         ...formData,
-                        collegeUserId: e.value
+                        isSuperAdmin: !val,
+                        permissions: [],
+                        collegeUserId: ""
                       });
                     }}
-                    value={collegeList.find(
-                      (info) => info.value === formData?.collegeUserId
-                    )}
-                    options={collegeList}
-                    className={errorData.collegeUserId && "select-error"}
                   />
                 </div>
-                {DisplayError(errorData.collegeUserId)}
               </div>
+              {/*  College Name */}
+              {!formData?.isSuperAdmin ? (
+                <>
+                  <div className="col-span-1 gap-4 mb-4">
+                    <div
+                      className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                    >
+                      College Name
+                    </div>
+                    <div className="col-span-2">
+                      <Select
+                        placeholder="Select College"
+                        loading={collegeLoading}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            collegeUserId: e.value
+                          });
+                        }}
+                        value={collegeList.find(
+                          (info) => info.value === formData?.collegeUserId
+                        )}
+                        options={collegeList}
+                        className={errorData.collegeUserId && "select-error"}
+                      />
+                    </div>
+                    {DisplayError(errorData.collegeUserId)}
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </>
           ) : (
             <></>
@@ -410,7 +462,11 @@ function StaffForm(props) {
                     })
                   });
                 }}
-                options={staffPermissionOptions}
+                options={
+                  !formData?.isSuperAdmin
+                    ? staffPermissionOptions
+                    : superAdminPermissionOptions
+                }
                 value={formData.permissions}
                 // componentAs={CreatableSelect}
                 className={errorData.permissions && "select-error"}

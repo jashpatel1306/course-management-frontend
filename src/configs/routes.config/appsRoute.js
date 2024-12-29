@@ -158,6 +158,12 @@ const appsRoute = [
   //   }
   // },
   {
+    key: "apps.assessmentResult",
+    path: `${ADMIN_PREFIX_PATH}/assessment-result`,
+    component: React.lazy(() => import("views/assessmentResult")),
+    authority: [ADMIN, SUPERADMIN, STAFF]
+  },
+  {
     key: "contentHub.instructors",
     path: `${ADMIN_PREFIX_PATH}/content-hub/instructors`,
     component: React.lazy(() => import("views/contentHub/instructorsContent")),

@@ -1,41 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Dialog,
-  Button,
-  Pagination,
-  Input,
-  Select
-} from "components/ui";
+import { Table, Dialog, Button, Pagination, Select } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
-import {
-  HiOutlinePencil,
-  HiOutlineSearch,
-  HiOutlineTrash
-} from "react-icons/hi";
+import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
 import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
 import { useDebounce } from "use-debounce";
-import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
-const columns = ["Name", "Email", "Phone No", "permissions", "Active"];
+const columns = [
+  "Roll No",
+  "Name",
+  "Email",
+  "quiz Name",
+  "correct Answers	",
+  "wrong Answers	",
+  "total Marks	",
+  "total Time	",
+  "Active"
+];
 
-const StaffList = (props) => {
+const AssessmentResult = (props) => {
   const {
     flag,
     parentCallback,
-    setAllCollegeList,
+
     setData,
     parentCloseCallback,
-    setAllBatchList,
     refreshFlag
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -45,20 +41,26 @@ const StaffList = (props) => {
   const { userData } = useSelector((state) => state.auth.user);
 
   const { collegeId } = useSelector((state) => state.auth.user.userData);
-  const [currentTab, setCurrentTab] = useState();
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
-  const [staffData, setStaffData] = useState([]);
+  const [currentBatchTab, setCurrentBatchTab] = useState(collegeId);
+  const [currentAssessmentTab, setCurrentAssessmentTab] = useState(collegeId);
+  const [resultData, setResultData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
+  const [batchLoading, setBatchLoading] = useState(false);
 
+  const [batchList, setBatchList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
+  const [assessmentLoading, setAssessmentsLoading] = useState(false);
+  const [assessmentList, setAssessmentsList] = useState([]);
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -69,10 +71,7 @@ const StaffList = (props) => {
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList([{ label: "All", value: "all" },{ label: "Own Staff", value: "own" }, ...response.data]);
-        setAllCollegeList([{ label: "All", value: "all" }, ...response.data]);
-        setAllBatchList([]);
-        setCurrentTab(response.data[0].value);
+        setCollegeList(response.data);
       } else {
         openNotification("danger", response.error);
       }
@@ -83,32 +82,69 @@ const StaffList = (props) => {
       setCollegeLoading(false);
     }
   };
+  const getBatchOptionData = async (collegeId = "") => {
+    try {
+      setBatchLoading(true);
+      const response =
+        userData.authority.toString() === SUPERADMIN && collegeId
+          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
+          : await axiosInstance.get(`user/batches-option`);
 
+      if (response.success) {
+        setBatchList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getBatchOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setBatchLoading(false);
+    }
+  };
+  const getAssessmentOptionData = async (collegeId = "") => {
+    try {
+      setAssessmentsLoading(true);
+      const response = await axiosInstance.get(
+        `user/assessment-option-by-college/${collegeId}`
+      );
+      if (response.success) {
+        setAssessmentsList(response.data.filter((e) => e.value !== "all"));
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getAssessmentOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setAssessmentsLoading(false);
+    }
+  };
   const fetchData = async () => {
     try {
-      // const bodyData =
-      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
       let formData = {
-        search: removeSpecials(debouncedText),
         pageNo: page,
         perPage: appConfig.pagePerData
       };
-      if (userData?.authority.toString() === SUPERADMIN) {
-        formData = {
-          ...formData,
-          collegeId: currentCollegeTab ? currentCollegeTab : "all"
-        };
+      if (currentCollegeTab) {
+        formData = { ...formData, collegeId: currentCollegeTab };
+      }
+      if (currentBatchTab) {
+        formData = { ...formData, batchId: currentBatchTab };
+      }
+      if (currentAssessmentTab) {
+        formData = { ...formData, assessmentId: currentAssessmentTab };
       }
 
       const response = await axiosInstance.post(
-        `user/college-wise-staff`,
+        `user/get-all-result`,
         formData
       );
       if (response.success) {
-        setStaffData(response.data);
+        setResultData(response?.data);
         setTotalPage(
-          response.pagination.total
-            ? Math.ceil(response.pagination.total / appConfig.pagePerData)
+          response.pagination?.total
+            ? Math.ceil(response.pagination?.total / appConfig?.pagePerData)
             : 0
         );
         setIsLoading(false);
@@ -117,7 +153,7 @@ const StaffList = (props) => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.log("get-all-staff error:", error);
+      console.log("get-all-student error:", error);
       openNotification("danger", error.message);
       setIsLoading(false);
     }
@@ -134,8 +170,11 @@ const StaffList = (props) => {
 
   useEffect(() => {
     setApiFlag(true);
-    if (userData.authority.toString() === SUPERADMIN) {
+    if (userData.authority.toString() !== SUPERADMIN) {
+      getBatchOptionData();
+    } else {
       getCollegeOptionData();
+      getBatchOptionData(collegeId);
     }
   }, []);
   useEffect(() => {
@@ -152,11 +191,17 @@ const StaffList = (props) => {
     setPage(1);
     setApiFlag(true);
   }, [debouncedText]);
-
+  useEffect(() => {
+    if (currentCollegeTab) {
+      getAssessmentOptionData(currentCollegeTab);
+    } else {
+      setAssessmentsList([]);
+    }
+  }, [currentCollegeTab]);
   const onHandleDeleteBox = async () => {
     try {
       const response = await axiosInstance.put(
-        `user/staff/status/${selectObject._id}`
+        `user/student/status/${selectObject._id}`
       );
       if (response.success) {
         openNotification("success", response.message);
@@ -172,11 +217,11 @@ const StaffList = (props) => {
       setDeleteIsOpen(false);
     }
   };
-  console.log("collegeList: ", collegeList);
+
   return (
     <>
       <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 ">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
               isSearchable={true}
@@ -189,41 +234,48 @@ const StaffList = (props) => {
               )}
               onChange={(item) => {
                 setCurrentCollegeTab(item.value);
+                getBatchOptionData(item.value);
                 setApiFlag(true);
                 setPage(1);
               }}
             />
           )}
-        </div>
-        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
-          {userData.authority.toString() === SUPERADMIN && (
-            <Input
-              placeholder="Search By Name, Email"
-              className=" input-wrapper md:mb-0 mb-4"
-              value={searchText}
-              prefix={
-                <HiOutlineSearch
-                  className={`text-xl text-${themeColor}-${primaryColorLevel}`}
-                />
-              }
-              onChange={(e) => {
-                setSearchText(e.target.value);
-                setPage(1);
-                setApiFlag(true);
-              }}
-              suffix={
-                searchText && (
-                  <AiOutlineClose
-                    className={`text-xl text-${themeColor}-${primaryColorLevel}`}
-                    onClick={() => {
-                      setSearchText("");
-                      setApiFlag(true);
-                    }}
-                  />
-                )
-              }
-            />
-          )}
+          <Select
+            isSearchable={true}
+            className="w-96 md:mb-0 mb-4 sm:mb-0"
+            placeholder="Batches"
+            options={batchList}
+            loading={batchLoading}
+            value={
+              currentBatchTab
+                ? batchList.find((item) => item.value === currentBatchTab)
+                : null
+            }
+            onChange={(item) => {
+              setCurrentBatchTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
+          <Select
+            isSearchable={true}
+            className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+            placeholder="Assessment"
+            options={assessmentList}
+            loading={assessmentLoading}
+            value={
+              currentAssessmentTab
+                ? assessmentList.find(
+                    (item) => item.value === currentAssessmentTab
+                  )
+                : null
+            }
+            onChange={(item) => {
+              setCurrentAssessmentTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
         </div>
       </div>
 
@@ -241,7 +293,7 @@ const StaffList = (props) => {
               <TableRowSkeleton columns={9} rows={10} />
             </Table>
           </>
-        ) : staffData && staffData?.length ? (
+        ) : resultData && resultData?.length ? (
           <>
             <Table>
               <THead>
@@ -252,21 +304,28 @@ const StaffList = (props) => {
                 </Tr>
               </THead>
               <TBody>
-                {staffData?.map((item, key) => {
+                {resultData?.map((item, key) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
-                      <Td>{item?.name}</Td>
-                      <Td className="lowercase">{item?.email.toLowerCase()}</Td>
-
-                      <Td>{item?.phone}</Td>
-                      <Td className="capitalize">
+                      <Td>{key + 1}</Td>
+                      <Td>{item?.userName}</Td>
+                      <Td className="lowercase">
+                        {item?.userEmail.toLowerCase()}
+                      </Td>
+                      <Td>{item?.quizTitle}</Td>
+                      <Td>{`${item?.correctAnswers} / ${item?.quizQuestionsLength}`}</Td>
+                      <Td>
                         {" "}
-                        {item?.permissions.toString()}
+                        {`${item?.wrongAnswers} / ${item?.quizQuestionsLength}`}
+                      </Td>
+                      <Td>{`${item?.totalMarks} / ${item?.quizTotalMarks}`}</Td>
+                      <Td>
+                        {Math.floor(item?.totalTime / 60)} / {item?.quizTime}
                       </Td>
 
                       <Td>
                         <div className="flex ">
-                          <Button
+                          {/* <Button
                             shape="circle"
                             variant="solid"
                             className="mr-2"
@@ -292,7 +351,8 @@ const StaffList = (props) => {
                                 setDeleteIsOpen(true);
                               }}
                             />
-                          )}
+                          )} */}
+                          --
                         </div>
                       </Td>
                     </Tr>
@@ -337,9 +397,9 @@ const StaffList = (props) => {
       >
         <div className="px-6 pb-6">
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-            Confirm Deactivation of Staff
+            Confirm Deactivation of Student
           </h5>
-          <p>Are you sure you want to deactivate this staff?</p>
+          <p>Are you sure you want to deactivate this student?</p>
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button
@@ -360,4 +420,4 @@ const StaffList = (props) => {
   );
 };
 
-export default StaffList;
+export default AssessmentResult;

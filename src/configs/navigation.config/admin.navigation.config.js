@@ -135,6 +135,15 @@ const adminNavigationConfig = [
     ]
   },
   {
+    key: "apps.assessmentResult",
+    path: `${ADMIN_PREFIX_PATH}/assessment-result`,
+    title: "Assessment Result",
+    icon: "result",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    subMenu: []
+  },
+  {
     key: "apps.instructors",
     path: `${ADMIN_PREFIX_PATH}/instructors`,
     title: "Instructors",

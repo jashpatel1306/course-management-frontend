@@ -1,20 +1,19 @@
-import { Close, Tick } from "assets/svg";
 import parse from "html-react-parser";
 
 // Create the badges as functional components for better readability
-const CorrectAnswerBadge = () => (
-  <div className="bg-[#56c490] text-white px-3 py-2 flex items-center justify-center space-x-2 rounded-[53px]">
-    <Tick />
-    <p className="text-xs font-jakarta font-medium">Correct answer</p>
-  </div>
-);
+// const CorrectAnswerBadge = () => (
+//   <div className="bg-[#56c490] text-white px-3 py-2 flex items-center justify-center space-x-2 rounded-[53px]">
+//     <Tick />
+//     <p className="text-xs font-jakarta font-medium">Correct answer</p>
+//   </div>
+// );
 
-const WrongAnswerBadge = () => (
-  <div className="bg-[#ff6a66] text-white px-3 py-2 flex items-center justify-center space-x-2 rounded-[53px]">
-    <Close />
-    <p className="text-xs font-jakarta font-medium">Your answer</p>
-  </div>
-);
+// const WrongAnswerBadge = () => (
+//   <div className="bg-[#ff6a66] text-white px-3 py-2 flex items-center justify-center space-x-2 rounded-[53px]">
+//     <Close />
+//     <p className="text-xs font-jakarta font-medium">Your answer</p>
+//   </div>
+// );
 
 export const OptionList = ({
   answers,

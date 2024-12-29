@@ -29,11 +29,12 @@ import {
   HiDatabase,
   HiPhone,
   HiDocumentText,
+  HiDocumentReport
 } from "react-icons/hi";
 import {
   MdQuiz,
   MdSubscriptions,
-  MdTransferWithinAStation,
+  MdTransferWithinAStation
 } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 import { AiTwotoneSetting } from "react-icons/ai";
@@ -41,7 +42,17 @@ import { PiStudentFill, PiFilesFill } from "react-icons/pi";
 import { FaRegQuestionCircle, FaSchool } from "react-icons/fa";
 import { RiGraduationCapFill } from "react-icons/ri";
 import Assessment from "assets/svg/assessment";
-import { Clients, ContentHub, Dashboard, DataNoFound, Instructors, Policy, Settings, Staff, Student } from "assets/svg";
+import {
+  Clients,
+  ContentHub,
+  Dashboard,
+  DataNoFound,
+  Instructors,
+  Policy,
+  Settings,
+  Staff,
+  Student
+} from "assets/svg";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 
 const navigationIcon = {
@@ -66,12 +77,11 @@ const navigationIcon = {
   policy: <Policy />,
   settings: <Settings />,
   staff: <Staff />,
-  student: <RiGraduationCapFill  />,
-  batches: <BiSolidCategoryAlt   />,
+  student: <RiGraduationCapFill />,
+  batches: <BiSolidCategoryAlt />,
   attempts: <FaRegQuestionCircle />,
-  quiz: <MdQuiz />
-
-  ,
+  quiz: <MdQuiz />,
+  result: <HiDocumentReport />,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,
@@ -96,11 +106,11 @@ const navigationIcon = {
   welcome: <HiOutlineHand />,
   accessDenied: <HiOutlineBan />,
   guide: <HiOutlineBookOpen />,
-  documentation: <HiDocumentText  />,
+  documentation: <HiDocumentText />,
   sharedComponentDoc: <HiOutlineShare />,
   utilsDoc: <HiOutlineVariable />,
   changeLog: <HiOutlineCode />,
-  contact: <HiPhone />,
+  contact: <HiPhone />
 };
 
 export default navigationIcon;

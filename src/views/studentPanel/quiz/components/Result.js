@@ -1,30 +1,35 @@
-
 import { motion } from "framer-motion";
 import DonutChart from "./DonutChart";
 import { Button } from "components/ui";
+import { BsPatchCheckFill } from "react-icons/bs";
 
 export const Result = (props) => {
   const { results, totalQuestions, quizData } = props;
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
-  const TIME_LIMIT = quizData.time * 60; // 1 minute per question
+  const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
 
   const handleRetry = () => {
     // Restart quiz
     window.location.reload();
   };
-
+  console.log(
+    "results, totalQuestions, quizData: ",
+    results,
+    totalQuestions,
+    quizData
+  );
   return (
     <motion.div
       key={"result"}
       variants={{
         initial: {
-          background: "#FF6A66",
-          clipPath: "circle(0% at 50% 50%)",
+          background: "#666769",
+          clipPath: "circle(0% at 50% 50%)"
         },
         animate: {
-          background: "#FF6A66",
-          clipPath: "circle(100% at 50% 50%)",
-        },
+          background: "#666769",
+          clipPath: "circle(100% at 50% 50%)"
+        }
       }}
       className="w-full h-full flex justify-center p-5"
       initial="initial"
@@ -32,12 +37,12 @@ export const Result = (props) => {
       exit="exit"
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col text-black font-bold  text-center w-full">
+      {/* <div className="flex flex-col text-black font-bold  text-center w-full">
         <h1 className="font-bold text-2xl text-white">{quizData.title}</h1>
 
-        {/* Result Box */}
-        <div className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2`}>
-         
+        <div
+          className={`mt-6 flex-1 bg-white border border-brand-light-gray rounded-2xl flex flex-col items-center py-7 px-2`}
+        >
           <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4">
             Congratulations!
           </h3>
@@ -51,7 +56,6 @@ export const Result = (props) => {
             correct answers
           </p>
 
-          {/* Charts */}
           <div className="flex items-center mt-4 space-x-4">
             <DonutChart
               className="w-36 h-36"
@@ -62,13 +66,13 @@ export const Result = (props) => {
                 {
                   label: "Time Used",
                   value: secondsUsed,
-                  color: "#374CB7",
+                  color: "#374CB7"
                 },
                 {
                   label: "Time Left",
                   value: TIME_LIMIT - secondsUsed,
-                  color: "#F0F0F0",
-                },
+                  color: "#F0F0F0"
+                }
               ]}
             />
 
@@ -81,19 +85,18 @@ export const Result = (props) => {
                 {
                   label: "Correct",
                   value: correctAnswers,
-                  color: "#56C490",
+                  color: "#56C490"
                 },
                 {
                   label: "Wrong",
                   value: wrongAnswers,
-                  color: "#FF6A66",
-                },
+                  color: "#FF6A66"
+                }
               ]}
             />
           </div>
         </div>
 
-        {/* Retry Button */}
         <div className="mt-auto hidden">
           <Button
             intent={"secondary"}
@@ -105,6 +108,19 @@ export const Result = (props) => {
             Try Again
           </Button>
         </div>
+      </div> */}
+      <div
+        className={`mt-6 flex-1 bg-white  rounded-2xl flex flex-col justify-center items-center my-7 mx-2 gap-y-6`}
+      >
+        <h3 className="text-brand-midnight text-[48px] font-medium leading-9 mt-4 text-green-700">
+          <BsPatchCheckFill size={100} />
+        </h3>
+        <h3 className="text-brand-midnight text-[48px] font-bold leading-9 mt-4 text-green-700">
+          Congratulations!
+        </h3>
+        <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4 text-gray-700 ">
+          Your <span className="font-bold">{quizData.title}</span> is submitted.
+        </h3>
       </div>
     </motion.div>
   );

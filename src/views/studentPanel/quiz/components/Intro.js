@@ -2,62 +2,91 @@ import React from "react";
 import { Button } from "components/ui";
 import { FaCheckCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import Logo from "components/template/Logo";
+import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 const Intro = ({ onGetStartedClick, quizData }) => {
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
+  const mode = useSelector((state) => state.theme.mode);
+  console.log("quizData: ", quizData);
   return (
-    <div
-      className={`px-5 py-8 flex-1 w-full lg:max-w-4xl mx-auto flex flex-col overflow-hidden `}
-    >
-      <img
-        src="/doodles.svg"
-        width={343}
-        height={413}
-        className="absolute -bottom-10 right-0 z-0 object-cover pointer-events-none w-[343px] h-[413px] lg:w-[500px] lg:h-[600px]"
-        alt="Doodles Illustration"
-      />
-
-      <div className="w-full flex flex-col flex-1 items-center z-10">
-        <h1
-          className={`text-brand-cerulean-blue font-bold text-[32px] sm:text-4xl capitalize text-${themeColor}-${primaryColorLevel}`}
-        >
-          {quizData.title}
-        </h1>
-
-        <h3 className={`text-white font-bold text-xl mt-[51.55px] bg-${themeColor}-${primaryColorLevel} p-1 px-4 rounded-lg`}>
-          Quiz Time : {quizData.time} Minute
-        </h3>
-        <h3 className="text-black font-bold text-2xl mt-[51.55px] sm:text-3xl">
-          Things to know before you start:
-        </h3>
-        <div
-          className={`flex flex-col items-start mt-5 sm:mt-10 max-h-[60vh] overflow-y-scroll hidden-scroll border-2 py-4 px-6 rounded-xl  border-${themeColor}-${primaryColorLevel}`}
-        >
-          {quizData?.description?.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-start gap-4  items-center mb-3"
-            >
-              <div className={`text-${themeColor}-${primaryColorLevel}`}>
-                <FaCheckCircle size={25} />
-              </div>
-              <div>
-                <p className="text-base font-normal sm:text-xl">{item}</p>
+    <div className="flex">
+      <div className={`w-[35%]  h-screen bg-white`}>
+        <section className="flex flex-col  h-full justify-around items-start text-start px-16  gap-y-8">
+          <Logo mode={mode} className="hidden md:block" />
+          <div>
+            <div className="gap-y-4">
+              <h1
+                className="text-4xl font-bold"
+                aria-label="Welcome to Lala Back-End Developer Hiring Test"
+              >
+                <span className="flex" aria-hidden="true">
+                  Welcome to
+                </span>
+                <span aria-hidden="true">{quizData?.title}</span>
+              </h1>
+              <div className="mt-8">
+                <div className="flex gap-8 ">
+                  <div>
+                    <span className="text-base font-semibold text-gray-500">
+                      Test duration
+                    </span>
+                    <span
+                      className="block text-gray-800 text-xl"
+                      data-automation="test-duration"
+                    >
+                      {quizData?.time} mins
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-base font-semibold text-gray-500">
+                      No. of questions
+                    </span>
+                    <span className="block text-gray-800 text-xl">
+                      {quizData?.totalQuestions} questions
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+          <div className=" flex items-center mt-8 text-black text-lg">
+            <div className="mt-8 hidden">
+              
+            </div>
+          </div>
+        </section>
       </div>
-
-      <Button
-        className="w-full z-10"
-        variant="solid"
-        onClick={onGetStartedClick}
+      <div
+        className={`w-[65%] h-screen bg-gray-200 overflow-y-scroll custom-scrollbar`}
       >
-        Let's Get Started
-      </Button>
+        <section className=" flex flex-col h-full justify-around items-center text-start pl-16 pr-32 p-6 gap-y-6 ">
+          <div></div>
+          <div>
+            <div className="flex flex-col gap-y-8 mb-8">
+              <h2 className="text-4xl font-semibold">Instructions</h2>
+              <div className="text-gray-700">
+                <ol className="flex flex-col  list-decimal list-inside gap-y-2 text-base pl-[30px]">
+                  {quizData?.instruction?.map((instruction, index) => {
+                    return (
+                      <li key={`${quizData?._id}-${index}`}>{instruction}</li>
+                    );
+                  })}
+                </ol>
+              </div>
+              <div className="flex gap-x-4">
+                <Button
+                  variant="solid"
+                  className="text-white py-2 px-4 rounded"
+                  color="gray-600"
+                  onClick={onGetStartedClick}
+                >
+                  Let's Get Started
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div></div>
+        </section>
+      </div>
     </div>
   );
 };

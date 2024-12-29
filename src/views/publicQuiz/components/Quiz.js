@@ -11,11 +11,12 @@ import { useParams } from "react-router-dom";
 import { MdTimer } from "react-icons/md";
 import { FaQuestionCircle } from "react-icons/fa";
 import Logo from "components/template/Logo";
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
+import { info } from "autoprefixer";
 
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView, results } = props;
-  const mode = useSelector(state => state.theme.mode)
+  const mode = useSelector((state) => state.theme.mode);
 
   const { quizId } = useParams();
   const TIME_LIMIT = quizData.totalTime * 60;
@@ -30,6 +31,7 @@ export const Quiz = (props) => {
   const [quizFinished, setQuizFinished] = useState(false);
   const [nextButton, setNextButton] = useState(false);
   const [fillAnswer, setFillAnswer] = useState("");
+  const [questionStatus, setQuestionStatus] = useState([]);
   const numberOfQuestions = questions.length;
   const setupTimer = () => {
     if (timerRef.current) {
@@ -50,6 +52,15 @@ export const Quiz = (props) => {
         `user/public-question/${questionId}`
       );
       if (response.success) {
+        const findStatus = questionStatus.find(
+          (info) => info.questionId === questionId
+        );
+        if (findStatus && findStatus?.questionId && findStatus?.fillAnswer) {
+          setFillAnswer(findStatus.fillAnswer);
+        }
+        if (findStatus && findStatus?.questionId && findStatus?.answerId) {
+          setSelectedAnswerIndex(findStatus?.answerId);
+        }
         setQuestionData(response.data);
         setIsQusLoading(false);
       } else {
@@ -65,14 +76,21 @@ export const Quiz = (props) => {
   const UpdateQuizQuestionData = async (questionId, answerId, questionType) => {
     try {
       setIsLoading(true);
+      console.log(
+        "Math.floor(TIME_LIMIT - timePassed / 60): ",
+        TIME_LIMIT,
+        timePassed,
+        Math.floor(TIME_LIMIT - timePassed / 60)
+      );
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
         {
           questionId,
           answerId,
-          time: timePassed,
+          time: TIME_LIMIT - timePassed,
           questionType: questionType,
           trackingId: results.trackingId
+          // trackingId: "67709b4f0e58c4db70cdb1bd"
         }
       );
       if (response.success) {
@@ -93,6 +111,7 @@ export const Quiz = (props) => {
           setQuizFinished(true);
           return;
         }
+        setQuestionStatus(response?.data?.result);
         // Set next question
         setActiveQuestion((prev) => prev + 1);
         setIsLoading(false);
@@ -100,6 +119,7 @@ export const Quiz = (props) => {
         openNotification("danger", response.message);
         setSelectedAnswerIndex(-1);
         setFillAnswer("");
+
         setIsLoading(false);
         setNextButton(false);
       }
@@ -178,18 +198,15 @@ export const Quiz = (props) => {
     }
   }, [fillAnswer, selectedAnswerIndex]);
 
-  const test = Array.from({ length: numberOfQuestions }, (_, i) => i + 1); // 1 to 30
-  const answered = [2]; // Example answered questions
- 
-  const answeredAndMarked = []; // Example answered and marked questions
+  // const answered = [2]; // Example answered questions
 
-  const getStatusClass = (number) => {
-    if (answeredAndMarked.includes(number)) return 'bg-orange-500';
-    if (answered.includes(number)) return 'bg-green-500';
-    return 'border-gray-300';
-  };
+  // const answeredAndMarked = []; // Example answered and marked questions
 
-  console.log("numberOfQuestions", numberOfQuestions)
+  // const getStatusClass = (number) => {
+  //   if (answeredAndMarked.includes(number)) return "bg-orange-500";
+  //   if (answered.includes(number)) return "bg-green-500";
+  //   return "border-gray-300";
+  // };
 
   return (
     <motion.div
@@ -215,9 +232,8 @@ export const Quiz = (props) => {
           {/* quiz hearder */}
           <div>
             <div className="flex justify-between items-center px-6 bg-gray-600 text-white p-2 py-3">
-              <div className="flex gap-4">
+              <div className="flex items-center gap-4">
                 <Logo mode={mode} className="hidden md:block" />
-                <div className="border-r-2"></div>
                 <div className="font-bold text-lg ">{quizData?.title}</div>
               </div>
 
@@ -243,21 +259,37 @@ export const Quiz = (props) => {
           {/* quiz main content */}
 
           <div className="flex">
-            <div className="w-[15%] overflow-y-scroll hidden-scroll my-8 border-r border-gray-500">
-              <div className="flex flex-col items-center p-4 space-y-4">
+            <div className="w-[15%] min-h-[100vh] overflow-y-scroll hidden-scroll py-8 border-r border-gray-500">
+              <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-lg font-bold">Quantitative Aptitude</h2>
                 <h3 className="text-sm font-medium">Analytical Ability</h3>
-                <div className="grid grid-cols-5 gap-2">
-                  {test.map((q) => (
-                    <div
-                      key={q}
-                      className={`w-8 h-8 flex items-center justify-center border rounded-full ${getStatusClass(q)}`}
-                    >
-                      {q}
-                    </div>
-                  ))}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                  {questions.map((item, index) => {
+                    const findStatus = questionStatus.some(
+                      (info) => info.questionId === item
+                    );
+                    return (
+                      <>
+                        <div
+                          key={item}
+                          className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${
+                            activeQuestion === index
+                              ? "bg-gray-500 text-white"
+                              : findStatus
+                              ? "bg-green-500 text-white"
+                              : "border-gray-300"
+                          }`}
+                          onClick={() => {
+                            setActiveQuestion(index);
+                          }}
+                        >
+                          {index + 1}
+                        </div>
+                      </>
+                    );
+                  })}
                 </div>
-                <div className="mt-4 space-y-2">
+                <div className="mt-4  gap-2">
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-white border border-gray-300 rounded-full"></div>
                     <span className="text-sm">Unanswered</span>
@@ -266,14 +298,14 @@ export const Quiz = (props) => {
                     <div className="w-4 h-4 bg-green-500 rounded-full"></div>
                     <span className="text-sm">Answered</span>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
                     <span className="text-sm">Answered & Marked</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
-            <div className="w-[70%] max-h-[80vh] overflow-y-scroll hidden-scroll mx-auto my-8">
+            <div className="w-[70%] max-h-[100vh] overflow-y-scroll hidden-scroll mx-auto py-8 ">
               {isQusLoading ? (
                 <>
                   <div className="flex justify-center items-center">
@@ -282,7 +314,6 @@ export const Quiz = (props) => {
                 </>
               ) : (
                 <>
-
                   {questionData?.questionType === "fill" ? (
                     <>
                       <div className="flex justify-between items-center">
@@ -362,7 +393,7 @@ export const Quiz = (props) => {
                     disabled={activeQuestion + 1 >= questions.length}
                     className="w-48"
                     onClick={handleSkipQuestion}
-                  // loading={isLoading}
+                    // loading={isLoading}
                   >
                     Skip
                   </Button>
@@ -378,7 +409,7 @@ export const Quiz = (props) => {
                     color="gray-600"
                     className="w-48"
                     onClick={handleBackQuestion}
-                  // loading={isLoading}
+                    // loading={isLoading}
                   >
                     Back
                   </Button>
@@ -389,7 +420,7 @@ export const Quiz = (props) => {
                   disabled={!nextButton}
                   className="w-48"
                   onClick={handleNextQuestion}
-                // loading={isLoading}
+                  // loading={isLoading}
                 >
                   {activeQuestion + 1 >= questions.length
                     ? "Submit Test"

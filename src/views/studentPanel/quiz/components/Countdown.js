@@ -9,13 +9,13 @@ export const Countdown = ({ onGoClick, quizName }) => {
       key={"countdown"}
       variants={{
         initial: {
-          background: "#f4918e",
-          clipPath: "circle(0% at 50% 50%)",
+          background: "#a8abb1",
+          clipPath: "circle(0% at 50% 50%)"
         },
         animate: {
-          background: "#FF6A66",
-          clipPath: "circle(100% at 50% 50%)",
-        },
+          background: "#666769",
+          clipPath: "circle(100% at 50% 50%)"
+        }
       }}
       className="w-full h-full flex justify-center items-center px-5 py-8"
       initial="initial"

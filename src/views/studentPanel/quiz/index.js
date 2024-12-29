@@ -16,13 +16,13 @@ const QuizMainContent = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [quizData, setQuizData] = useState([]);
+  const [quizData, setQuizData] = useState({});
   const [questions, setQuestions] = useState([]);
   const [apiFlag, setApiFlag] = useState(false);
   const [results, setResults] = useState({
     correctAnswers: 3,
     wrongAnswers: 4,
-    secondsUsed: 10,
+    secondsUsed: 10
   });
   const fetchData = async () => {
     try {
@@ -30,13 +30,14 @@ const QuizMainContent = () => {
 
       if (response?.success) {
         setQuizData({
-          _id: response.data._id,
-          title: response.data.title,
-          description: response.data.description,
-          totalMarks: response.data.totalMarks,
-          assessmentId: response.data.assessmentId,
-          time: response.data.time,
-          questions: response.data.questions.length,
+          _id: response.data?._id,
+          quizId: response.data?._id,
+          instruction: response.data?.description,
+          title: response.data?.title,
+          totalQuestions: response.data?.questions?.length,
+          questionIds: response.data?.questions,
+          totalTime: response.data?.time,
+          totalMarks: response.data?.totalMarks
         });
         setQuestions(response.data.questions);
 
@@ -59,6 +60,12 @@ const QuizMainContent = () => {
 
       if (response.success) {
         setDisplayView("quiz");
+        setQuizData({
+          ...quizData,
+          trackingId: response?.data?._id,
+          userId: response?.data?.userId,
+          quizId: response?.data?.quizId
+        });
         setIsLoading(false);
       } else {
         openNotification(
@@ -85,7 +92,7 @@ const QuizMainContent = () => {
   useEffect(() => {
     setApiFlag(true);
   }, []);
-  console.log("displayView: ",displayView)
+  console.log("displayView: ", displayView);
   return (
     <>
       <main
@@ -134,7 +141,7 @@ const QuizMainContent = () => {
                       totalQuestions={questions?.length}
                       results={results}
                     />
-                  ),
+                  )
                 }[displayView]
               }
             </AnimatePresence>
