@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Table, Card, Pagination, Button, Dialog, Badge } from "components/ui";
 import React, { useEffect, useState } from "react";
-import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
+import { HiOutlinePencil } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import axiosInstance from "apiServices/axiosInstance";
 import appConfig from "configs/app.config";
@@ -31,7 +31,7 @@ const QuizList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [quizzesData, setQuizzesData] = useState([]);
   const [page, setPage] = useState(1);
-  const [selectObject, setSelectObject] = useState();
+  const [selectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [apiFlag, setApiFlag] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
@@ -56,8 +56,6 @@ const QuizList = (props) => {
             ? Math.ceil(response.pagination.total / appConfig.pagePerData)
             : 0
         );
-        const start = appConfig.pagePerData * (page - 1);
-        const end = start + response.data?.length;
 
         setIsLoading(false);
       } else {

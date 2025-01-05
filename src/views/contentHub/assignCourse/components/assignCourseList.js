@@ -1,28 +1,19 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import {
   Table,
   Dialog,
   Button,
-  Pagination,
-  Input,
   Select,
-  Avatar
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
-import {
-  HiOutlinePencil,
-  HiOutlineSearch,
-  HiOutlineTrash
-} from "react-icons/hi";
+
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
-import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
 import { useDebounce } from "use-debounce";
-import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;

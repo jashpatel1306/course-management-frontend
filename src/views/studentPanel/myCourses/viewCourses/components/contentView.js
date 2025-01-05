@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/iframe-has-title */
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Spinner } from "components/ui";
@@ -107,9 +109,9 @@ const AssessmentView = ({ contentData }) => {
           <div>
             {assessmentData.content.map((info) => {
               const content = info.data;
-              const trackingData = assessmentData.trackingData?.filter(
-                (data) => data.quizId === content._id
-              );
+              // const trackingData = assessmentData.trackingData?.filter(
+              //   (data) => data.quizId === content._id
+              // );
               if (info.type === "quiz") {
                 return (
                   <div
@@ -211,9 +213,6 @@ const ContentView = (props) => {
   } = props;
   const { courseId } = useParams();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 

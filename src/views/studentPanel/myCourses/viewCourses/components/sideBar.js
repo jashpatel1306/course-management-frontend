@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React from "react";
 import SectionView from "./sectionview";
 import { useSelector } from "react-redux";

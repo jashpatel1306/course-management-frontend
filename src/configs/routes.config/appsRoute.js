@@ -2,7 +2,6 @@ import React from "react";
 import {
   ADMIN_PREFIX_PATH,
   INSTRUCTOR_PREFIX_PATH,
-  QUIZ_PREFIX_PATH,
   STUDENT_PREFIX_PATH
 } from "constants/route.constant";
 import {

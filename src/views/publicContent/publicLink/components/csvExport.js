@@ -1,17 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 import { CgExport } from "react-icons/cg";
 import { Button } from "components/ui";
-import { htmlToText } from "html-to-text";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-const convertToHHMM = (hours, minutes) => {
-  const HH = String(hours).padStart(2, "0");
-  const MM = String(minutes).padStart(2, "0");
-  return `${HH}:${MM}`;
-};
-export const CSVExport = ({ searchedData, exportLoading }) => {
+
+export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
   const [row, setRow] = useState([]);
   const dynamicHeaders = new Set(); // To store dynamic keys for headers
 
@@ -92,7 +86,7 @@ export const CSVExport = ({ searchedData, exportLoading }) => {
           size="sm"
           icon={<CgExport />}
           loading={exportLoading}
-          onClick={(e) => exportToCSV(row, "TrackHour")}
+          onClick={(e) => exportToCSV(row, fileName)}
         >
           Export
         </Button>

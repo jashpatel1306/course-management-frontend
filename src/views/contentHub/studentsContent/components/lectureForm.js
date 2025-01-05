@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axiosInstance from "apiServices/axiosInstance";
 import {
   Button,
@@ -113,7 +114,7 @@ const ReactTable = ({ columns, data, lectureId, setApiFlag, isPublish }) => {
 
   const table = useTable({ columns, data });
 
-  const { getTableProps, headerGroups, prepareRow, rows } = table;
+  const { getTableProps, prepareRow, rows } = table;
 
   const handleDragEnd = (result) => {
     const { source, destination } = result;
@@ -179,11 +180,9 @@ const LectureForm = (props) => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const navigate = useNavigate();
 
   const [lectureOpen, setLectureOpen] = useState(false);
   const [lectureData, setLectureData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [apiFlag, setApiFlag] = useState(false);
 
@@ -211,15 +210,12 @@ const LectureForm = (props) => {
       const response = await axiosInstance.get(`user/lecture/${lecture.id}`);
       if (response.success) {
         setLectureData(response.data);
-        setIsLoading(false);
       } else {
         openNotification("danger", response.message);
-        setIsLoading(false);
       }
     } catch (error) {
       console.log("get-all-course error:", error);
-      openNotification("danger", error.message);
-      setIsLoading(false);
+      openNotification("danger", error.message)
     }
   };
   const UpdateLecture = async () => {
@@ -268,7 +264,6 @@ const LectureForm = (props) => {
   };
   useEffect(() => {
     if (lectureOpen) {
-      setIsLoading(true);
       fetchLectureData();
       setLectureForm({
         type: "",
@@ -280,7 +275,6 @@ const LectureForm = (props) => {
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
-      setIsLoading(true);
 
       fetchLectureData();
     }

@@ -14,9 +14,7 @@ const Staffs = () => {
   );
   const [addFlag, setAddFlag] = useState(false);
   const [staffData, setStaffData] = useState();
-  const [IsOpen, setIsOpen] = useState(false);
-  const [batchList, setBatchList] = useState([]);
-  const [allCollegeList, setAllCollegeList] = useState([]);
+  const [IsOpen] = useState(false);
   const handleAddNewStaffClick = () => {
     setAddFlag(true);
   };
@@ -59,8 +57,6 @@ const Staffs = () => {
             parentCloseCallback={handleAddNewStaffCloseClick}
             parentCallback={handleAddNewStaffClick}
             setData={setStaffData}
-            setAllCollegeList={setAllCollegeList}
-            setAllBatchList={setBatchList}
             refreshFlag={!IsOpen}
           />
         </div>

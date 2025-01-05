@@ -12,7 +12,6 @@ import { MdTimer } from "react-icons/md";
 import { FaQuestionCircle } from "react-icons/fa";
 import Logo from "components/template/Logo";
 import { useSelector } from "react-redux";
-import { info } from "autoprefixer";
 
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView, results } = props;
@@ -23,7 +22,7 @@ export const Quiz = (props) => {
 
   const timerRef = useRef(null);
   const [questionData, setQuestionData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isQusLoading, setIsQusLoading] = useState(true);
   const [timePassed, setTimePassed] = useState(TIME_LIMIT);
   const [activeQuestion, setActiveQuestion] = useState(0);
@@ -76,7 +75,7 @@ export const Quiz = (props) => {
   };
   const UpdateQuizQuestionData = async (questionId, answerId, questionType) => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       console.log(
         "Math.floor(TIME_LIMIT - timePassed / 60): ",
         TIME_LIMIT,
@@ -115,19 +114,19 @@ export const Quiz = (props) => {
         setQuestionStatus(response?.data?.result);
         // Set next question
         setActiveQuestion((prev) => prev + 1);
-        setIsLoading(false);
+        // setIsLoading(false);
       } else {
         openNotification("danger", response.message);
         setSelectedAnswerIndex(-1);
         setFillAnswer("");
 
-        setIsLoading(false);
+        // setIsLoading(false);
         setNextButton(false);
       }
     } catch (error) {
       console.log("Update Quiz Question Data error:", error);
       openNotification("danger", error.message);
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
   const handleNextQuestion = async () => {
@@ -263,7 +262,7 @@ export const Quiz = (props) => {
             <div className="w-[15%] min-h-[100vh] overflow-y-scroll hidden-scroll py-8 border-r border-gray-500">
               <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-lg font-bold">{quizData?.title}</h2>
-                <h3 className="text-sm font-medium">Analytical Ability</h3>
+                {/* <h3 className="text-sm font-medium">Analytical Ability</h3> */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {questions.map((item, index) => {
                     const findStatus = questionStatus.some(

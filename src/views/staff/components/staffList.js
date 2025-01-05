@@ -35,7 +35,6 @@ const StaffList = (props) => {
     setAllCollegeList,
     setData,
     parentCloseCallback,
-    setAllBatchList,
     refreshFlag
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -71,7 +70,6 @@ const StaffList = (props) => {
       if (response.success) {
         setCollegeList([{ label: "All", value: "all" },{ label: "Own Staff", value: "own" }, ...response.data]);
         setAllCollegeList([{ label: "All", value: "all" }, ...response.data]);
-        setAllBatchList([]);
         setCurrentTab(response.data[0].value);
       } else {
         openNotification("danger", response.error);

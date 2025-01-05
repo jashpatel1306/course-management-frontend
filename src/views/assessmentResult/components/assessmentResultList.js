@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Dialog, Button, Pagination, Select } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
-import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
 import appConfig from "configs/app.config";
@@ -28,10 +27,6 @@ const columns = [
 const AssessmentResult = (props) => {
   const {
     flag,
-    parentCallback,
-
-    setData,
-    parentCloseCallback,
     refreshFlag
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -46,9 +41,9 @@ const AssessmentResult = (props) => {
   const [currentAssessmentTab, setCurrentAssessmentTab] = useState(collegeId);
   const [resultData, setResultData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectObject, setSelectObject] = useState();
+  const [selectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
   const [batchLoading, setBatchLoading] = useState(false);
 

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import LectureView from "./lectureView";

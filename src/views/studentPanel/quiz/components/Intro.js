@@ -1,9 +1,7 @@
 import React from "react";
 import { Button } from "components/ui";
-import { FaCheckCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import Logo from "components/template/Logo";
-import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 const Intro = ({ onGetStartedClick, quizData }) => {
   const mode = useSelector((state) => state.theme.mode);
   console.log("quizData: ", quizData);

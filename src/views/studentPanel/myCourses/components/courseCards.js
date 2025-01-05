@@ -1,8 +1,6 @@
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Progress, Tooltip } from "components/ui";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import openNotification from "views/common/notification";
 const getRandomBgColorClass = () => {
   // Define an array of possible Tailwind background color classes

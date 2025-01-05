@@ -153,6 +153,7 @@ const PublicResultList = () => {
             <CSVExport
               searchedData={exportData}
               exportLoading={exportLoading}
+              fileName = {location?.state?.quizName}
             />
           </div>
         </div>

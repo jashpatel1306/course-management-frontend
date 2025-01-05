@@ -1,22 +1,16 @@
 import { motion } from "framer-motion";
-import DonutChart from "./DonutChart";
-import { Button } from "components/ui";
 import { BsPatchCheckFill } from "react-icons/bs";
 
 export const Result = (props) => {
-  const { results, totalQuestions, quizData } = props;
+  // const { results, totalQuestions, quizData } = props;
+  const { results, quizData } = props;
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
   const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
 
-  const handleRetry = () => {
-    // Restart quiz
-    window.location.reload();
-  };
   console.log(
-    "results, totalQuestions, quizData: ",
-    results,
-    totalQuestions,
-    quizData
+    "results : ",
+    correctAnswers, wrongAnswers, secondsUsed,
+    TIME_LIMIT
   );
   return (
     <motion.div

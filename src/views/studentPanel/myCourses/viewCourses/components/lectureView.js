@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import {
   HiCheckCircle,
@@ -27,7 +29,7 @@ const LectureView = (props) => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const [currentContentIndex, setCurrentContentIndex] = useState(null);
+  // const [currentContentIndex, setCurrentContentIndex] = useState(null);
   useEffect(() => {
     if (activeContent?.contentId) {
       setLectureOpenFlag(
@@ -37,12 +39,12 @@ const LectureView = (props) => {
           ? true
           : false
       );
-      const contentIndex = contentData.findIndex(
-        (content) =>
-          // content.lectureId === activeContent?.lectureId &&
-          content.id === activeContent?.contentId
-      );
-      setCurrentContentIndex(contentIndex);
+      // const contentIndex = contentData.findIndex(
+      //   (content) =>
+      //     // content.lectureId === activeContent?.lectureId &&
+      //     content.id === activeContent?.contentId
+      // );
+      // setCurrentContentIndex(contentIndex);
     }
   }, [activeContent?.lectureId, activeContent?.contentId]);
   return (

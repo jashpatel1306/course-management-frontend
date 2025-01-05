@@ -3,11 +3,9 @@ import { useSelector } from "react-redux";
 import {
   FaQuestionCircle,
   FaRegClock,
-  FaUserFriends,
   FaCalendarAlt,
 } from "react-icons/fa";
 import { Button, Card } from "components/ui";
-import { useNavigate } from "react-router-dom";
 const formatDateRange = (startDate, endDate) => {
   // Create options for formatting
   const options = { day: "numeric", month: "short" };
@@ -20,8 +18,7 @@ const formatDateRange = (startDate, endDate) => {
   return `${start} - ${end}`;
 };
 const AssessmentCard = ({ variant = "full", assessmentData }) => {
-  const navigate = useNavigate();
-
+  
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel

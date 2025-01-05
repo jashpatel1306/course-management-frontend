@@ -1,4 +1,6 @@
-import { Card, Input, Pagination, Select } from "components/ui";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Card, Input, Pagination } from "components/ui";
 import React, { useEffect, useState } from "react";
 import AssessmentCard from "./assessmentCard";
 import { HiOutlineSearch } from "react-icons/hi";
@@ -15,7 +17,6 @@ const AssessmentList = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const { authority } = useSelector((state) => state.auth.user.userData);
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);

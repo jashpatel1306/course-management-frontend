@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { Button, Spinner } from "components/ui";
 import React, { useEffect, useState } from "react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
 const generateSecureUrl = (pptUrl) => {
   const token = generateRandomToken(16); // Generate a 16-byte token
   const expiryTime = Date.now() + 3600000; // Token valid for 1 hour
@@ -81,13 +81,9 @@ const ContentView = (props) => {
     setActiveContent,
     activeContent,
   } = props;
-  const { courseId } = useParams();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  
+  const [isLoading] = useState(false);
 
   const [currentContentIndex, setCurrentContentIndex] = useState(null);
   useEffect(() => {
@@ -153,7 +149,6 @@ const ContentView = (props) => {
             variant="solid"
             loading={isLoading}
             onClick={() => {
-              const currentContent = contentData[currentContentIndex];
               const nextContent = contentData[currentContentIndex + 1];
               if (nextContent?._id) {
                 setActiveContent(nextContent._id);

@@ -7,8 +7,6 @@ import {
   ADMIN,
   SUPERADMIN,
   STAFF,
-  STUDENT,
-  INSTRUCTOR
 } from "constants/roles.constant";
 
 const adminNavigationConfig = [
