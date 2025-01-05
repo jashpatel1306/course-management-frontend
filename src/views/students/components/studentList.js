@@ -6,13 +6,13 @@ import {
   Button,
   Pagination,
   Input,
-  Select,
+  Select
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
   HiOutlinePencil,
   HiOutlineSearch,
-  HiOutlineTrash,
+  HiOutlineTrash
 } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
@@ -36,7 +36,7 @@ const columns = [
   "Section",
   // "Gender",
   "Sem",
-  "Active",
+  "Active"
 ];
 
 const StudentList = (props) => {
@@ -47,7 +47,7 @@ const StudentList = (props) => {
     setData,
     parentCloseCallback,
     setAllBatchList,
-    refreshFlag,
+    refreshFlag
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -82,8 +82,13 @@ const StudentList = (props) => {
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList(response.data);
-        setAllCollegeList(response.data);
+        const tempList = response.data;
+        tempList.unshift({
+          label: "All Colleges",
+          value: "all"
+        });
+        setCollegeList(tempList);
+        setAllCollegeList(tempList.filter((e) => e.value !== "all"));
         setAllBatchList([]);
       } else {
         openNotification("danger", response.error);
@@ -104,7 +109,8 @@ const StudentList = (props) => {
           : await axiosInstance.get(`user/batches-option`);
 
       if (response.success) {
-        setBatchList(response.data.filter((e) => e.value !== "all"));
+        console.log("response.data: ", response.data);
+        setBatchList(response.data);
         setAllBatchList(response.data.filter((e) => e.value !== "all"));
       } else {
         openNotification("danger", response.error);
@@ -124,12 +130,12 @@ const StudentList = (props) => {
         search: removeSpecials(debouncedText),
         batchId: currentTab ? currentTab : "all",
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
       if (userData?.authority.toString() === SUPERADMIN) {
         formData = {
           ...formData,
-          collegeId: currentCollegeTab ? currentCollegeTab : "all",
+          collegeId: currentCollegeTab ? currentCollegeTab : "all"
         };
       }
 
@@ -171,7 +177,9 @@ const StudentList = (props) => {
       getBatchOptionData();
     } else {
       getCollegeOptionData();
-      getBatchOptionData(collegeId);
+      if (collegeId !== "all") {
+        getBatchOptionData(collegeId);
+      }
     }
   }, []);
   useEffect(() => {
@@ -226,7 +234,11 @@ const StudentList = (props) => {
               onChange={(item) => {
                 setCurrentCollegeTab(item.value);
                 setCurrentTab(null);
-                getBatchOptionData(item.value);
+                setBatchList([]);
+                if (item.value !== "all") {
+                  getBatchOptionData(item.value);
+                }
+
                 setApiFlag(true);
                 setPage(1);
               }}
@@ -383,8 +395,8 @@ const StudentList = (props) => {
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {

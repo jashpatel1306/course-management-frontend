@@ -46,12 +46,12 @@ const AssessmentList = () => {
         search: removeSpecials(debouncedText),
         batchId: currentTab ? currentTab : "all",
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
       if (userData?.authority.toString() === SUPERADMIN) {
         formData = {
           ...formData,
-          collegeId: currentCollegeTab ? currentCollegeTab : "all",
+          collegeId: currentCollegeTab ? currentCollegeTab : "all"
         };
       }
 
@@ -86,7 +86,12 @@ const AssessmentList = () => {
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList(response.data);
+        const tempList = response.data;
+        tempList.unshift({
+          label: "All Colleges",
+          value: "all"
+        });
+        setCollegeList(tempList);
         setBatchesList([]);
       } else {
         openNotification("danger", response.error);
@@ -107,7 +112,7 @@ const AssessmentList = () => {
           : await axiosInstance.get(`user/batches-option`);
 
       if (response.success) {
-        setBatchesList(response.data.filter((e) => e.value !== "all"));
+        setBatchesList(response.data);
       } else {
         openNotification("danger", response.error);
       }
@@ -133,7 +138,9 @@ const AssessmentList = () => {
       getBatchOptionData();
     } else {
       getCollegeOptionData();
-      getBatchOptionData(collegeId);
+      if (collegeId !== "all") {
+        getBatchOptionData(collegeId);
+      }
     }
   }, []);
 
@@ -159,7 +166,10 @@ const AssessmentList = () => {
                 onChange={(item) => {
                   setCurrentCollegeTab(item.value);
                   setCurrentTab(null);
-                  getBatchOptionData(item.value);
+                  setBatchesList([]);
+                  if (item.value !== "all") {
+                    getBatchOptionData(item.value);
+                  }
                   setApiFlag(true);
                   setPage(1);
                 }}
@@ -173,7 +183,7 @@ const AssessmentList = () => {
               loading={batchLoading}
               value={
                 currentTab
-                  ? batchesList.find((item) => item.value === currentTab)
+                  ? batchesList?.find((item) => item.value === currentTab)
                   : null
               }
               onChange={(item) => {

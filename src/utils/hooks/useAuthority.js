@@ -28,18 +28,17 @@ function useAuthority(
   ) {
     return !emptyCheck;
   }
-  console.log("permissions: ", permissions, userAuthority);
+
   if (userAuthority[0] === "staff" && key) {
+    console.log("permissions...");
     const staffPermissionStatus = hasPermission(permissions, key);
 
     return staffPermissionStatus;
-  } 
-  else if (userAuthority[0] === "superAdmin" && key) {
+  } else if (userAuthority[0] === "superAdmin" && key) {
     const superAdminPermissionStatus = hasPermission(permissions, key);
 
     return superAdminPermissionStatus;
-  }
-   else {
+  } else {
     return roleMatched;
   }
 }

@@ -35,7 +35,7 @@ const addvalidationSchema = Yup.object().shape({
     .matches(/[0-9]/, "Password requires a number")
     .matches(/[a-z]/, "Password requires a lowercase letter")
     .matches(/[A-Z]/, "Password requires an uppercase letter")
-    .matches(/[^\w]/, "Password requires a symbol"),
+    .matches(/[^\w]/, "Password requires a symbol")
 });
 function CollegeForm(props) {
   const { handleCloseClick, userData, isOpen } = props;
@@ -52,8 +52,8 @@ function CollegeForm(props) {
     contactPersonName: "",
     contactPersonNo: "",
     email: "",
-    password: "College@123",
-    active: true,
+    password: "",
+    active: true
   });
   const [errorData, setErrorData] = useState({
     collegeName: "",
@@ -63,7 +63,7 @@ function CollegeForm(props) {
     contactPersonNo: "",
     email: "",
     password: "",
-    active: true,
+    active: true
   });
   const resetErrorData = () => {
     setErrorData({
@@ -74,7 +74,7 @@ function CollegeForm(props) {
       contactPersonNo: "",
       email: "",
       password: "",
-      active: false,
+      active: false
     });
   };
   const resetFormData = () => {
@@ -86,7 +86,7 @@ function CollegeForm(props) {
       contactPersonNo: "",
       email: "",
       password: "",
-      active: false,
+      active: false
     });
   };
   useEffect(() => {
@@ -99,7 +99,7 @@ function CollegeForm(props) {
         contactPersonNo: userData ? userData.contactPersonNo : "",
         email: userData ? userData.email : "",
         password: userData ? userData.password : "",
-        active: userData ? userData.active : true,
+        active: userData ? userData.active : true
       });
     }
   }, [userData]);
@@ -131,7 +131,7 @@ function CollegeForm(props) {
         contactPersonNo: value?.contactPersonNo,
         email: value?.email,
         password: value?.password,
-        active: value?.active,
+        active: value?.active
       };
       const response = await axiosInstance.post(`admin/college`, formData);
       if (response.success) {
@@ -161,7 +161,7 @@ function CollegeForm(props) {
         contactPersonNo: value?.contactPersonNo,
         email: value?.email,
         password: value?.password,
-        active: value?.active,
+        active: value?.active
       };
       const response = await axiosInstance.post(`admin/college`, formData);
       if (response.success) {
@@ -198,7 +198,7 @@ function CollegeForm(props) {
         contactPersonNo: "",
         email: "",
         password: "",
-        active: false,
+        active: false
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -211,7 +211,7 @@ function CollegeForm(props) {
           contactPersonNo: "",
           email: "",
           password: "",
-          active: false,
+          active: false
         };
       } else {
         return {
@@ -227,7 +227,7 @@ function CollegeForm(props) {
             ? errorObject.contactPersonNo
             : "",
           email: errorObject.email ? errorObject.email : "",
-          password: errorObject.password ? errorObject.password : "",
+          password: errorObject.password ? errorObject.password : ""
         };
       }
     }
@@ -315,7 +315,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    email: e.target.value?.trim(),
+                    email: e.target.value?.trim()
                   });
                 }}
                 value={formData?.email}
@@ -342,7 +342,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    collegeName: e.target.value,
+                    collegeName: e.target.value
                   });
                 }}
                 value={formData?.collegeName}
@@ -367,7 +367,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    shortName: e.target.value,
+                    shortName: e.target.value
                   });
                 }}
                 value={formData?.shortName}
@@ -380,7 +380,7 @@ function CollegeForm(props) {
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-            College Phone Number
+              College Phone Number
             </div>
             <div className="col-span-2">
               <Input
@@ -392,7 +392,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    collegeNo: e.target.value,
+                    collegeNo: e.target.value
                   });
                 }}
                 value={formData?.collegeNo}
@@ -417,7 +417,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    password: e.target.value?.trim(),
+                    password: e.target.value?.trim()
                   });
                 }}
                 value={formData?.password}
@@ -444,7 +444,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    contactPersonName: e.target.value,
+                    contactPersonName: e.target.value
                   });
                 }}
                 value={formData?.contactPersonName}
@@ -471,7 +471,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    contactPersonNo: e.target.value,
+                    contactPersonNo: e.target.value
                   });
                 }}
                 value={formData?.contactPersonNo}
@@ -491,7 +491,7 @@ function CollegeForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    active: !e,
+                    active: !e
                   });
                 }}
                 checked={formData?.active}

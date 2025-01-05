@@ -137,7 +137,7 @@ const CourseCard = ({ index, item }) => {
               <p>
                 {item?.courseName
                   .split(" ") // Split the phrase by spaces
-                  .map((word) => word[0].toUpperCase()) // Get the first letter of each word and make it uppercase
+                  .map((word) => word[0]?.toUpperCase()) // Get the first letter of each word and make it uppercase
                   .slice(0, 4)
                   .join("")}
               </p>

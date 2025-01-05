@@ -4,7 +4,7 @@ export default function wildCardSearch(list, input, specifyKey) {
             if (item[specifyKey ? specifyKey : key] == null) {
                 continue
             }
-            if (item[specifyKey ? specifyKey : key].toString().toUpperCase().indexOf(input.toString().toUpperCase()) !== -1) {
+            if (item[specifyKey ? specifyKey : key].toString()?.toUpperCase().indexOf(input.toString()?.toUpperCase()) !== -1) {
                 return true
             }
         }

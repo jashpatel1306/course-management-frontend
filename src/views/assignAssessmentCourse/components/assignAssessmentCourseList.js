@@ -1,9 +1,6 @@
-import { Table, Card,  Pagination, Select, Button, Dialog } from "components/ui";
+import { Table, Card, Pagination, Select, Button, Dialog } from "components/ui";
 import React, { useEffect, useState } from "react";
-import {
-  HiOutlinePencil,
-  HiOutlineTrash,
-} from "react-icons/hi";
+import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import axiosInstance from "apiServices/axiosInstance";
 import appConfig from "configs/app.config";
@@ -20,12 +17,12 @@ const columns = [
   "course name",
   "postion Type",
   "date",
-  "Active",
+  "Active"
 ];
 const positionTypeOption = [
   { label: "Preliminary Assessment", value: "pre" },
   { label: "Section-Based Assessment", value: "section" },
-  { label: "Grand Test Assessment ", value: "grand" },
+  { label: "Grand Test Assessment ", value: "grand" }
 ];
 const getLabelByValue = (value) => {
   const option = positionTypeOption.find((option) => option.value === value);
@@ -75,12 +72,12 @@ const AssessmentList = (props) => {
       let formData = {
         batchId: currentTab ? currentTab : "all",
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
       if (userData?.authority.toString() === SUPERADMIN) {
         formData = {
           ...formData,
-          collegeId: currentCollegeTab ? currentCollegeTab : "all",
+          collegeId: currentCollegeTab ? currentCollegeTab : "all"
         };
       }
 
@@ -115,7 +112,12 @@ const AssessmentList = (props) => {
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList(response.data);
+        const tempList = response.data;
+        tempList.unshift({
+          label: "All Colleges",
+          value: "all"
+        });
+        setCollegeList(tempList);
         setBatchesList([]);
       } else {
         openNotification("danger", response.error);
@@ -326,14 +328,13 @@ const AssessmentList = (props) => {
             </>
           )}
         </div>
-
       </Card>
       <Dialog
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {

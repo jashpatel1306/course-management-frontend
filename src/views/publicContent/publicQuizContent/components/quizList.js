@@ -179,7 +179,7 @@ const QuizList = (props) => {
                                 );
                               }}
                             />
-                            {item?.active && (
+                            {/* {item?.active && (
                               <Button
                                 shape="circle"
                                 color="red-700"
@@ -191,7 +191,7 @@ const QuizList = (props) => {
                                   setDeleteIsOpen(true);
                                 }}
                               />
-                            )}
+                            )} */}
                           </div>
                         </Td>
                       

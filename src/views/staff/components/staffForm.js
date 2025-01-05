@@ -66,9 +66,9 @@ function StaffForm(props) {
   const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
     staffId: "",
-    name: "panthil",
-    email: "panthil@gmail.com",
-    phone: "8523697410",
+    name: "",
+    email: "",
+    phone: "",
     collegeUserId:
       userData?.authority.toString() === SUPERADMIN ? "" : userData.collegeId,
     permissions: [],

@@ -402,7 +402,7 @@ export const Quiz = (props) => {
               </div>
 
               <div className="flex gap-4 items-center text-lg">
-                {activeQuestion + 1 >= questions.length ? (
+                {activeQuestion >= questions.length ? (
                   <></>
                 ) : (
                   <Button

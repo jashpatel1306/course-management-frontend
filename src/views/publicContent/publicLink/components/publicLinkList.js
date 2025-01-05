@@ -19,13 +19,13 @@ const { Tr, Th, Td, THead, TBody } = Table;
 
 const columns = [
   "Name",
-  "hits to licenses",
+  "licenses",
   "start Date",
   "end Date",
   "like",
   "edit",
   "Results",
-  "delete",
+  "delete"
 ];
 
 const PublicLinkList = (props) => {
@@ -232,8 +232,6 @@ const PublicLinkList = (props) => {
                           />
                         )}
                       </Td>
-
-                 
                     </Tr>
                   );
                 })}

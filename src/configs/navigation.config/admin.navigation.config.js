@@ -158,7 +158,7 @@ const adminNavigationConfig = [
     title: "College/client",
     icon: "clients",
     type: NAV_ITEM_TYPE_ITEM,
-    authority: [SUPERADMIN],
+    authority: [SUPERADMIN, STAFF],
     subMenu: []
   },
   {
@@ -167,18 +167,18 @@ const adminNavigationConfig = [
     title: "Staff",
     icon: "staff",
     type: NAV_ITEM_TYPE_ITEM,
-    authority: [ADMIN, SUPERADMIN],
+    authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: []
   },
-  {
-    key: "apps.policy",
-    path: `${ADMIN_PREFIX_PATH}/policy`,
-    title: "Policy",
-    icon: "policy",
-    type: NAV_ITEM_TYPE_ITEM,
-    authority: [ADMIN, SUPERADMIN],
-    subMenu: []
-  },
+  // {
+  //   key: "apps.policy",
+  //   path: `${ADMIN_PREFIX_PATH}/policy`,
+  //   title: "Policy",
+  //   icon: "policy",
+  //   type: NAV_ITEM_TYPE_ITEM,
+  //   authority: [ADMIN, SUPERADMIN],
+  //   subMenu: []
+  // },
   {
     key: "apps.configuration",
     path: ``,

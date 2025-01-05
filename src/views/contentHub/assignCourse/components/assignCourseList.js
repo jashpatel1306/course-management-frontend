@@ -7,13 +7,13 @@ import {
   Pagination,
   Input,
   Select,
-  Avatar,
+  Avatar
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
   HiOutlinePencil,
   HiOutlineSearch,
-  HiOutlineTrash,
+  HiOutlineTrash
 } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
@@ -33,9 +33,9 @@ const columns = [
   "Batch Name",
   "Total Student",
   "Courses",
-  "Instructor Name",
+  "Instructor Name"
 ];
-const adminColumns =columns.slice(1);
+const adminColumns = columns.slice(1);
 const InstructorList = (props) => {
   const { flag, setAllCollegeList } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -44,10 +44,7 @@ const InstructorList = (props) => {
   );
   const { userData } = useSelector((state) => state.auth.user);
 
-  const { authority, collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
-  const [currentTab, setCurrentTab] = useState();
+  const { collegeId } = useSelector((state) => state.auth.user.userData);
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [instructorData, setInstructorData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,25 +52,24 @@ const InstructorList = (props) => {
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
-  const [batchLoading, setBatchLoading] = useState(false);
 
-  const [batchList, setBatchList] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
-  const onPaginationChange = (val) => {
-    setPage(val);
-    setApiFlag(true);
-  };
+
   const getCollegeOptionData = async () => {
     try {
       setCollegeLoading(true);
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList(response.data);
+        const tempList = response.data;
+        tempList.unshift({
+          label: "All Colleges",
+          value: "all"
+        });
+        setCollegeList(tempList);
         setAllCollegeList(response.data);
       } else {
         openNotification("danger", response.error);
@@ -263,8 +259,8 @@ const InstructorList = (props) => {
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {

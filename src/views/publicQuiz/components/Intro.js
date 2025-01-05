@@ -56,7 +56,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
     return () => clearInterval(timer);
   }, []);
   const [isLoading, setIsLoading] = useState(false);
-  const [password, setPassword] = useState("Admin@123");
+  const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [specificField, setSpecificField] = useState();
   const [errorData, setErrorData] = useState({ status: false });
@@ -402,7 +402,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                                             ? "select-error"
                                             : removeDefaultCss
                                         }
-                                        placeholder={`please enter ${field.label} value`}
+                                        placeholder={`please enter value`}
                                         onChange={(e) => {
                                           setSpecificField({
                                             ...specificField,
@@ -431,7 +431,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                                             ? "select-error"
                                             : removeDefaultCss
                                         }
-                                        placeholder={`please enter ${field.label} value`}
+                                        placeholder={`please enter value`}
                                         onChange={(e) => {
                                           setSpecificField({
                                             ...specificField,

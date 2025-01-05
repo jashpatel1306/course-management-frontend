@@ -21,12 +21,7 @@ export const CSVExport = ({ searchedData, exportLoading }) => {
       for (let index = 0; index < searchedData.length; index++) {
         const info = searchedData[index];
         const row = [
-          `${index + 1}`, // Serial Number
-          `${info?.createdAt}`, // Date
-          `${info?.correctAnswers}`, // Correct Answers
-          `${info?.wrongAnswers}`, // Wrong Answers
-          `${info?.totalMarks}`, // Total Marks
-          `${Math.ceil(info?.totalTime / 60)} Min` // Total Time
+          `${index + 1}` // Serial Number
         ];
         // csvData.push([
         //   `${index + 1}`,
@@ -42,17 +37,21 @@ export const CSVExport = ({ searchedData, exportLoading }) => {
             dynamicHeaders.add(key); // Collect header names dynamically
           });
         }
+        row.push(`${info?.createdAt}`); // Date
+        row.push(`${info?.correctAnswers}`); // Correct Answers
+        row.push(`${info?.wrongAnswers}`); // Wrong Answers
+        row.push(`${info?.totalMarks}`); // Total Marks
+        row.push(`${Math.ceil(info?.totalTime / 60)} Min`); // Total Time)
         csvData.push(row);
       }
       const staticHeaders = [
-        "No",
         "Date",
         "Correct Answers",
         "Wrong Answers",
         "Total Marks",
         "Total Time"
       ];
-      const headers = [...staticHeaders, ...dynamicHeaders];
+      const headers = ["No", ...dynamicHeaders, ...staticHeaders];
 
       setRow([headers, ...csvData]);
     }

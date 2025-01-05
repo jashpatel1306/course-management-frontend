@@ -259,7 +259,7 @@ export const Quiz = (props) => {
           {/* quiz main content */}
 
           <div className="flex">
-            <div className="w-[15%] min-h-[100vh] overflow-y-scroll hidden-scroll py-8 border-r border-gray-500">
+            <div className="max-h-[80vh] overflow-y-scroll hidden-scroll p-8 border-r border-gray-500">
               <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-lg font-bold">Quantitative Aptitude</h2>
                 <h3 className="text-sm font-medium">Analytical Ability</h3>
@@ -305,7 +305,7 @@ export const Quiz = (props) => {
                 </div>
               </div>
             </div>
-            <div className="w-[70%] max-h-[100vh] overflow-y-scroll hidden-scroll mx-auto py-8 ">
+            <div className="flex-1 max-h-[75vh] overflow-y-scroll hidden-scroll mx-auto p-8 ">
               {isQusLoading ? (
                 <>
                   <div className="flex justify-center items-center">
@@ -401,7 +401,7 @@ export const Quiz = (props) => {
               </div>
 
               <div className="flex gap-4 items-center text-lg">
-                {activeQuestion + 1 >= questions.length ? (
+                {activeQuestion >= questions.length ? (
                   <></>
                 ) : (
                   <Button
