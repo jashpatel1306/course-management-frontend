@@ -402,7 +402,6 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                                             ? "select-error"
                                             : removeDefaultCss
                                         }
-                                        placeholder={`please enter value`}
                                         onChange={(e) => {
                                           setSpecificField({
                                             ...specificField,
@@ -431,7 +430,6 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                                             ? "select-error"
                                             : removeDefaultCss
                                         }
-                                        placeholder={`please enter value`}
                                         onChange={(e) => {
                                           setSpecificField({
                                             ...specificField,

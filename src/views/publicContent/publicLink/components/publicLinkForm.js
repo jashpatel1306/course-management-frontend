@@ -36,7 +36,7 @@ function PublicLinkForm(props) {
       )
       .required("Instructions are required"),
     password: Yup.string().required("password is required"),
-    noofHits: Yup.string().required("noofHits is required"),
+    noofHits: Yup.string().required("licenses is required"),
     startDate: Yup.date().required("start Date is required"),
     endDate: Yup.date()
       .required("End Date is required")
@@ -470,16 +470,16 @@ function PublicLinkForm(props) {
             </div>
             {DisplayError(errorData.password)}
           </div>
-          {/* no of Hits */}
+          {/* licenses */}
           <div className="col-span-1 gap-4 mb-4">
             <div
               className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
             >
-              No Of Hits
+              Licenses
             </div>
             <div className="col-span-2">
               <FormNumericInput
-                placeholder="Enter No Of Hits"
+                placeholder="Enter Licenses"
                 onChange={(e) => {
                   setFormData({
                     ...formData,

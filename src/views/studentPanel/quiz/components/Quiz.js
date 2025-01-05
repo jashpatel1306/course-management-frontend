@@ -262,7 +262,7 @@ export const Quiz = (props) => {
           <div className="flex">
             <div className="w-[15%] min-h-[100vh] overflow-y-scroll hidden-scroll py-8 border-r border-gray-500">
               <div className="flex flex-col items-center space-y-4">
-                <h2 className="text-lg font-bold">Quantitative Aptitude</h2>
+                <h2 className="text-lg font-bold">{quizData?.title}</h2>
                 <h3 className="text-sm font-medium">Analytical Ability</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {questions.map((item, index) => {
