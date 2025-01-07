@@ -143,9 +143,9 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
     <>
       {!expired && (
         <>
-          <div className="flex">
-            <div className={`w-[35%]  h-screen bg-white`}>
-              <section className="flex flex-col  h-full justify-around items-start text-start px-16  gap-y-8">
+          <div className="flex flex-col lg:flex-row">
+            <div className={`w-full lg:w-[35%] h-[40vh] lg:h-screen bg-white`}>
+              <section className="flex flex-col h-full justify-around items-start text-start p-10 lg:py-0 md:px-16 gap-y-8">
                 <Logo mode={mode} className="hidden md:block" />
                 <div>
                   <div className="gap-y-4">
@@ -183,8 +183,8 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center mt-8 text-black text-lg">
-                  <div className="mt-8">
+                <div className="flex items-center lg:mt-8 text-black text-lg">
+                  <div className="lg:mt-8">
                     <div className="flex gap-8 ">
                       <div>
                         <span className="text-base font-semibold text-gray-500">
@@ -211,11 +211,11 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
               </section>
             </div>
             <div
-              className={`w-[65%] h-screen bg-gray-200 overflow-y-scroll custom-scrollbar`}
+              className={`w-full lg:w-[65%] h-[60vh] lg:h-screen bg-gray-200 overflow-y-scroll custom-scrollbar mobile-scrollbar`}
             >
               {/* awaiting activation */}
               {step === "timeLeft" ? (
-                <section className=" flex flex-col h-full justify-around items-start text-start pl-16 pr-32 p-6 gap-y-6">
+                <section className=" flex flex-col h-full justify-start md:justify-around items-start text-start pl-5 md:pl-16 pr-6 md:pr-32 p-6 gap-y-6">
                   <div></div>
                   <div>
                     <div className="flex flex-col gap-y-8 mb-8">
@@ -232,40 +232,40 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                         <div className="w-fit">
                           {timeLeft ? (
                             <div
-                              className={`flex justify-around gap-4 border-[2px] rounded-xl border-black p-1`}
+                              className={`flex justify-around gap-2 md:gap-4 border-[2px] rounded-xl border-black p-1`}
                             >
                               <div
-                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                                className={`bg-black items-center flex flex-col p-3 px-4 md:px-6 text-white border-4 border-double border-white rounded-lg `}
                               >
-                                <p className="text-center text-3xl mb-2">
+                                <p className="text-center text-lg md:text-3xl mb-2">
                                   {timeLeft?.days || "00"}
                                 </p>
-                                <p className="text-lg">Days</p>
+                                <p className="text-sm md:text-lg">Days</p>
                               </div>
 
                               <div
-                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                                className={`bg-black items-center flex flex-col p-3 px-4 md:px-6 text-white border-4 border-double border-white rounded-lg `}
                               >
-                                <p className="text-center text-3xl mb-2">
+                                <p className="text-center text-lg md:text-3xl mb-2">
                                   {timeLeft?.hours || "00"}
                                 </p>
-                                <p className="text-lg">Hours</p>
+                                <p className="text-sm md:text-lg">Hours</p>
                               </div>
                               <div
-                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                                className={`bg-black items-center flex flex-col p-3 px-4 md:px-6 text-white border-4 border-double border-white rounded-lg `}
                               >
-                                <p className="text-center text-3xl mb-2">
+                                <p className="text-center text-lg md:text-3xl mb-2">
                                   {timeLeft?.minutes || "00"}
                                 </p>
-                                <p className="text-lg">Minutes</p>
+                                <p className="text-sm md:text-lg">Minutes</p>
                               </div>
                               <div
-                                className={`bg-black items-center flex flex-col p-3 px-6 text-white border-4 border-double border-white rounded-lg `}
+                                className={`bg-black items-center flex flex-col p-3 px-4 md:px-6 text-white border-4 border-double border-white rounded-lg `}
                               >
-                                <p className="text-center text-3xl mb-2">
+                                <p className="text-center text-lg md:text-3xl mb-2">
                                   {timeLeft?.seconds || "00"}
                                 </p>
-                                <p className="text-lg">Seconds</p>
+                                <p className="text-sm md:text-lg">Seconds</p>
                               </div>
                             </div>
                           ) : (
@@ -282,7 +282,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
               )}
               {/* Password */}
               {step === "password" ? (
-                <section className=" flex flex-col  h-full justify-around items-start text-start pl-16 pr-32 p-6 gap-y-6">
+                <section className=" flex flex-col h-full justify-around items-start text-start pl-6 md:pl-16 pr-8 md:pr-32 p-6 gap-y-6">
                   <div></div>
                   <div>
                     <div className="flex flex-col gap-y-8 mb-8">
@@ -313,7 +313,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                           {DisplayError(errorPassword)}
                         </div>
                       </div>
-                      <div className="flex gap-x-4">
+                      <div className="flex justify-center md:justify-normal items-center gap-x-4">
                         <Button
                           variant="solid"
                           className="text-white py-2 px-4 rounded"
@@ -332,7 +332,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
               )}
               {/* Instructions */}
               {step === "instructions" ? (
-                <section className=" flex flex-col h-full justify-around items-center text-start pl-16 pr-32 p-6 gap-y-6 ">
+                <section className="flex flex-col h-full justify-around items-center text-start pl-6 md:pl-16 pr-8 md:pr-32 p-6 gap-y-6 ">
                   <div></div>
                   <div>
                     <div className="flex flex-col gap-y-8 mb-8">
@@ -348,7 +348,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                           })}
                         </ol>
                       </div>
-                      <div className="flex gap-x-4">
+                      <div className="sticky lg:static bottom-0 py-2 md:py-4 lg:py-0 bg-gray-200 lg:bg-transparent flex justify-center md:justify-normal items-center md:items-center gap-x-4">
                         <Button
                           variant="solid"
                           className="text-white py-2 px-4 rounded"
@@ -370,7 +370,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
 
               {/* Confirmation Form */}
               {step === "form" ? (
-                <section className=" flex flex-col  h-full justify-around items-start text-start pl-16 pr-32 p-6 gap-y-6">
+                <section className=" flex flex-col  h-full justify-around items-start text-start pl-6 md:pl-16 pr-8 md:pr-32 p-6 gap-y-6">
                   <div></div>
                   <div>
                     <div className="flex flex-col gap-y-8 mb-8">
@@ -384,7 +384,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                         </div>
                       </div>
                       <div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {quizData.specificField?.map((field, index) => {
                             return (
                               <>
@@ -446,7 +446,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                             );
                           })}
                         </div>
-                        <div className="flex gap-x-4 mt-4">
+                        <div className="flex justify-center md:justify-normal items-center gap-x-4 mt-4">
                           <Button
                             variant="solid"
                             className="text-white py-2 px-4 rounded mt-4"

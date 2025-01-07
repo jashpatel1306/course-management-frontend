@@ -94,11 +94,11 @@ export const Result = (props) => {
           <h3 className="text-brand-midnight text-[48px] font-medium leading-9 mt-4 text-green-700">
             <BsPatchCheckFill size={100} />
           </h3>
-          <h3 className="text-brand-midnight text-[48px] font-bold leading-9 mt-4 text-green-700">
+          <h3 className="text-brand-midnight text-2xl md:text-[48px] font-bold leading-9 mt-4 text-green-700">
             {/* Congratulations! */}
             You've completed the test
           </h3>
-          <h3 className="text-brand-midnight text-[32px] font-medium leading-9 mt-4 text-gray-700 ">
+          <h3 className="text-brand-midnight text-base md:text-[32px] font-medium leading-9 mt-4 text-gray-700 ">
             {/* Your <span className="font-bold">{quizData.title}</span> is submitted. */}
             Your results are being processed
           </h3>

@@ -231,24 +231,24 @@ export const Quiz = (props) => {
         <div className="w-full ">
           {/* quiz hearder */}
           <div>
-            <div className="flex justify-between items-center px-6 bg-gray-600 text-white p-2 py-3">
+            <div className="flex justify-between items-center px-4 md:px-6 bg-gray-600 text-white p-2 py-3">
               <div className="flex items-center gap-4">
                 <Logo mode={mode} className="hidden md:block" />
-                <div className="font-bold text-lg ">{quizData?.title}</div>
+                <div className="font-bold text-sm md:text-lg ">{quizData?.title}</div>
               </div>
 
-              <div className="flex gap-4 items-center">
-                <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
-                  <MdTimer size={25} />
-                  <span className="text-xl">{formatTime(timePassed)}</span>
+              <div className="flex gap-2 md:gap-4 items-center">
+                <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-3 md:px-4">
+                  <MdTimer size={20} />
+                  <span className="text-sm md:text-xl">{formatTime(timePassed)}</span>
                 </div>
-                <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
-                  <span className="text-lg">
+                <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-3 md:px-4">
+                  <span className="text-sm md:text-lg">
                     <FaQuestionCircle size={18} />
                   </span>
-                  <span className="text-lg">Question</span>
-                  <span className="text-lg">:</span>
-                  <span className="text-lg">
+                  <span className="text-sm md:text-lg">Question</span>
+                  <span className="text-sm md:text-lg">:</span>
+                  <span className="text-sm md:text-lg">
                     {" "}
                     {activeQuestion + 1} / {numberOfQuestions}
                   </span>
@@ -258,12 +258,13 @@ export const Quiz = (props) => {
           </div>
           {/* quiz main content */}
 
-          <div className="flex">
-            <div className="max-h-[80vh] overflow-y-scroll hidden-scroll p-8 border-r border-gray-500">
+          <div className="flex flex-col md:flex-row">
+            <div className="md:h-[calc(100vh_-_160px)] lg:max-h-[80vh] md:overflow-y-scroll hidden-scroll p-4 md:p-8 md:pb-0 border-r border-gray-500">
               <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-lg font-bold">{quizData?.title}</h2>
                 {/* <h3 className="text-sm font-medium">Analytical Ability</h3> */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                {/* Questions */}
+                <div className="grid grid-cols-10 md:grid-cols-3 lg:grid-cols-5 gap-2 max-h-[120px] md:max-h-none overflow-y-scroll md:overflow-hidden overflow-x-hidden mobile-scrollbar">
                   {questions.map((item, index) => {
                     const findStatus = questionStatus.some(
                       (info) => info.questionId === item
@@ -272,13 +273,12 @@ export const Quiz = (props) => {
                       <>
                         <div
                           key={item}
-                          className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${
-                            activeQuestion === index
-                              ? "bg-gray-500 text-white"
-                              : findStatus
+                          className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${activeQuestion === index
+                            ? "bg-gray-500 text-white"
+                            : findStatus
                               ? "bg-green-500 text-white"
                               : "border-gray-300"
-                          }`}
+                            }`}
                           onClick={() => {
                             setActiveQuestion(index);
                           }}
@@ -289,14 +289,14 @@ export const Quiz = (props) => {
                     );
                   })}
                 </div>
-                <div className="mt-4  gap-2">
+                <div className="md:sticky bg-white w-full p-4 bottom-0 mt-4 flex md:flex-col gap-5 md:gap-2">
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-white border border-gray-300 rounded-full"></div>
-                    <span className="text-sm">Unanswered</span>
+                    <span className="text-sm">Unanswered - {questions.length - questionStatus.length}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                    <span className="text-sm">Answered</span>
+                    <span className="text-sm">Answered - {questionStatus.length}</span>
                   </div>
                   {/* <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
@@ -305,7 +305,7 @@ export const Quiz = (props) => {
                 </div>
               </div>
             </div>
-            <div className="flex-1 max-h-[75vh] overflow-y-scroll hidden-scroll mx-auto p-8 ">
+            <div className="flex-1 max-h-[calc(70vh_-_80px)] md:h-screen lg:max-h-[75vh] overflow-y-scroll mobile-scrollbar mx-auto p-8 ">
               {isQusLoading ? (
                 <>
                   <div className="flex justify-center items-center">
@@ -349,16 +349,16 @@ export const Quiz = (props) => {
                   ) : (
                     <>
                       <div className="flex justify-between items-center">
-                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-sm md:text-base font-semibold">
                           Question : MCQ
                         </p>
-                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
+                        <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-sm md:text-base font-semibold">
                           2 Marks
                         </p>
                       </div>
                       <div className=" pt-2 pb-8">
-                        <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
-                          <h4 className="text-gray-700 font-semibold text-lg">
+                        <div className="mt-2 rounded-xl border-2 border-gray-600 px-5 md:px-7 py-4 w-full mb-8 ">
+                          <h4 className="text-gray-700 font-semibold text-base md:text-lg">
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: questionData?.question
@@ -391,9 +391,9 @@ export const Quiz = (props) => {
                     variant="solid"
                     color="gray-600"
                     disabled={activeQuestion + 1 >= questions.length}
-                    className="w-48"
+                    className="max-w-48 md:w-48"
                     onClick={handleSkipQuestion}
-                    // loading={isLoading}
+                  // loading={isLoading}
                   >
                     Skip
                   </Button>
@@ -407,9 +407,9 @@ export const Quiz = (props) => {
                   <Button
                     variant="solid"
                     color="gray-600"
-                    className="w-48"
+                    className="max-w-48 md:w-48"
                     onClick={handleBackQuestion}
-                    // loading={isLoading}
+                  // loading={isLoading}
                   >
                     Back
                   </Button>
@@ -418,9 +418,9 @@ export const Quiz = (props) => {
                   variant="solid"
                   color="gray-600"
                   disabled={!nextButton}
-                  className="w-48"
+                  className="max-w-48 md:w-48"
                   onClick={handleNextQuestion}
-                  // loading={isLoading}
+                // loading={isLoading}
                 >
                   {activeQuestion + 1 >= questions.length
                     ? "Submit Test"

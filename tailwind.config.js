@@ -77,15 +77,41 @@ module.exports = {
 
       const colorMap = Object.keys(colors)
         .map(color => ({
-          [`.border-t-${color}`]: {borderTopColor: colors[color]},
-          [`.border-r-${color}`]: {borderRightColor: colors[color]},
-          [`.border-b-${color}`]: {borderBottomColor: colors[color]},
-          [`.border-l-${color}`]: {borderLeftColor: colors[color]},
+          [`.border-t-${color}`]: { borderTopColor: colors[color] },
+          [`.border-r-${color}`]: { borderRightColor: colors[color] },
+          [`.border-b-${color}`]: { borderBottomColor: colors[color] },
+          [`.border-l-${color}`]: { borderLeftColor: colors[color] },
         }));
       const utilities = Object.assign({}, ...colorMap);
 
       addUtilities(utilities, variants('borderColor'));
     },
+
+    // To add scrollbar in mobile view 
+    ({ addUtilities, theme }) => {
+      const scrollbarUtilities = {
+        '@media (max-width: 768px)': {  // This targets screens up to md breakpoint
+          '.mobile-scrollbar': {
+            '&::-webkit-scrollbar': {
+              'height': '5px !important',
+              'width': '7px !important',
+              'background-color': `${theme('colors.transparent')} !important`,
+            },
+            '&::-webkit-scrollbar-thumb': {
+              'background-color': `${theme('colors.gray.400')} !important`,
+            },
+            '&::-webkit-scrollbar-thumb:vertical': {
+              'min-height': '30px !important',
+              'visibility': 'visible !important',
+              'display': 'block !important',
+            },
+          }
+        }
+      };
+      addUtilities(scrollbarUtilities);
+    },
+
+
     // If your application does not require multiple theme selection,
     // you can replace {color} to your theme color value
     // this can drastically reduces the size of the output css file
