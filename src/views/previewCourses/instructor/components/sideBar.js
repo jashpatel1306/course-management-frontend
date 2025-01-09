@@ -8,7 +8,6 @@ const SideBar = (props) => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  console.log("sidebarData :", sidebarData);
   return (
     <div
       className={`transition-all duration-100 z-10 ${

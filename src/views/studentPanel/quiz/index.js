@@ -12,8 +12,6 @@ import { Spinner } from "components/ui";
 import { Result } from "./components/Result";
 const QuizMainContent = () => {
   const { quizId, assessmentId } = useParams();
-  console.log("assessmentId : ", assessmentId);
-  // const [displayView, setDisplayView] = useState("quiz");
   const [displayView, setDisplayView] = useState("intro");
   const themeColor = useSelector((state) => state?.theme?.themeColor);
 
@@ -94,7 +92,6 @@ const QuizMainContent = () => {
   useEffect(() => {
     setApiFlag(true);
   }, []);
-  console.log("displayView: ", displayView);
   return (
     <>
       <main

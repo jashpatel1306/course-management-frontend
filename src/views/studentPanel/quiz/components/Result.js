@@ -7,11 +7,6 @@ export const Result = (props) => {
   const { correctAnswers, wrongAnswers, secondsUsed } = results;
   const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
 
-  console.log(
-    "results : ",
-    correctAnswers, wrongAnswers, secondsUsed,
-    TIME_LIMIT
-  );
   return (
     <motion.div
       key={"result"}

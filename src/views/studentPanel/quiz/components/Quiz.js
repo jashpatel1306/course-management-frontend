@@ -32,7 +32,6 @@ export const Quiz = (props) => {
   const [fillAnswer, setFillAnswer] = useState("");
   const [questionStatus, setQuestionStatus] = useState([]);
   const numberOfQuestions = questions.length;
-  console.log("quizData: ", quizData);
   const setupTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -75,13 +74,6 @@ export const Quiz = (props) => {
   };
   const UpdateQuizQuestionData = async (questionId, answerId, questionType) => {
     try {
-      // setIsLoading(true);
-      console.log(
-        "Math.floor(TIME_LIMIT - timePassed / 60): ",
-        TIME_LIMIT,
-        timePassed,
-        Math.floor(TIME_LIMIT - timePassed / 60)
-      );
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
         {
@@ -90,7 +82,6 @@ export const Quiz = (props) => {
           time: TIME_LIMIT - timePassed,
           questionType: questionType,
           trackingId: quizData.trackingId
-          // trackingId: "67709b4f0e58c4db70cdb1bd"
         }
       );
       if (response.success) {

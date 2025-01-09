@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import Logo from "components/template/Logo";
 const Intro = ({ onGetStartedClick, quizData }) => {
   const mode = useSelector((state) => state.theme.mode);
-  console.log("quizData: ", quizData);
   return (
     <div className="flex">
       <div className={`w-[35%]  h-screen bg-white`}>

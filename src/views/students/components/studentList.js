@@ -118,7 +118,6 @@ const StudentList = (props) => {
           : await axiosInstance.get(`user/batches-option`);
 
       if (response.success) {
-        console.log("response.data: ", response.data);
         setBatchList(response.data);
         setAllBatchList(response.data.filter((e) => e.value !== "all"));
       } else {
@@ -141,7 +140,6 @@ const StudentList = (props) => {
       if (response.success) {
         const departmentOption = response.data.filter((e) => e.value !== "all");
         setDepartmentList(departmentOption);
-        console.log("response.data department: ", departmentOption);
       } else {
         openNotification("danger", response.error);
       }

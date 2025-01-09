@@ -340,7 +340,6 @@ export const Quiz = (props) => {
                           value={fillAnswer}
                           className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
                           onChange={(e) => {
-                            console.log("e.target.valu: ", e.target.value);
                             setFillAnswer(e.target.value);
                           }}
                         />

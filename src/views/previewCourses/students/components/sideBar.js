@@ -3,7 +3,6 @@ import SectionView from "./sectionview";
 
 const SideBar = (props) => {
   const { isSidebarOpen, sidebarData, setActiveContent, activeContent } = props;
-  console.log("sidebarData: ", sidebarData);
   return (
     <div
       className={`transition-all duration-100 z-10 ${

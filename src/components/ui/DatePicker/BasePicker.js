@@ -113,9 +113,7 @@ const BasePicker = forwardRef((props, ref) => {
     disabled: !dropdownOpened,
     listenEscape: false
   });
-  console.log(" styles: ", styles);
-  console.log(" attributes: ", attributes);
-  console.log(" popperRef: ", popperRef);
+
   return (
     <>
       <Input

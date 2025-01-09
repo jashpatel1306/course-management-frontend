@@ -133,7 +133,6 @@ const PublicLinkList = (props) => {
     }
   };
   const handleCopyClick = (link = "") => {
-    console.log("link : ", link);
     window.open(link, "_blank");
     openNotification("success", "Copied");
   };
@@ -202,9 +201,7 @@ const PublicLinkList = (props) => {
                           size="sm"
                           icon={<FaLink />}
                           onClick={async () => {
-                            console.log(
-                              `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
-                            );
+                         
                             handleCopyClick(
                               `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
                             );

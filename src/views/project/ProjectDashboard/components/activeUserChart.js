@@ -11,7 +11,7 @@ const filterOptions = [
   { value: "1", label: "This Year" },
   { value: "2", label: "Previous Year" }
 ];
-const StudentRegistrations = (props) => {
+const ActiveUserAnalysis = (props) => {
   const { data, college = false } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -97,7 +97,7 @@ const StudentRegistrations = (props) => {
         }
       );
       if (response.success) {
-        const result = response.data?.studentRegistrationChart[0];
+        const result = response.data?.activeStudentsChart[0];
         setMonthsArray(result.monthsArray);
         setValuesArray(result.valuesArray);
       }
@@ -114,11 +114,11 @@ const StudentRegistrations = (props) => {
   return (
     <Card>
       <h4 className={`text-${themeColor}-${primaryColorLevel}`}>
-        Student Registrations
+        Active User Analysis
       </h4>
       <div className="grid grid-cols-2">
         <div className="">
-          <p>Users Vs Month</p>
+          <p>Active Users Vs Month</p>
         </div>
         <div className="col-start-2 ">
           <div className="grid grid-cols-2 ">
@@ -171,4 +171,4 @@ const StudentRegistrations = (props) => {
   );
 };
 
-export default StudentRegistrations;
+export default ActiveUserAnalysis;

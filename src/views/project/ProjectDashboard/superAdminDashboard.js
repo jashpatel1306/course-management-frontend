@@ -1,105 +1,149 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "components/ui";
-import { MediaSkeleton, Loading } from "components/shared";
 import {
   HiOutlineUserGroup,
   HiOutlineUserAdd,
   HiOutlineUsers
 } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import WeeklyActivity from "./components/weeklyActivity";
-import CourseStatistics from "./components/courseStatistics";
-import TopTrainer from "./components/toptrainers";
+import TopList from "./components/toplist";
 import StudentRegistrations from "./components/studentRegistrations";
+import axiosInstance from "apiServices/axiosInstance";
+import ActiveUserAnalysis from "./components/activeUserChart";
+import NumberFormat from "react-number-format";
+import { getCurrentToPreviousYearDateRange } from "views/common/commonFuntion";
+
 
 const StatisticCard = (props) => {
-  const { label, value, loading } = props;
-
-  const avatarSize = 55;
+  const { label, value } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
   return (
-    <Card
-      className={`bg-${themeColor}-${primaryColorLevel} rounded-lg items-center flex  text-white`}
-      style={{ width: "272px", height: "183px" }}
-    >
-      {/* <Card className={`bg-${themeColor}-${primaryColorLevel} w-64 h-25`}> */}
-      <Loading
-        loading={loading}
-        customLoader={
-          <MediaSkeleton
-            avatarProps={{
-              className: "rounded",
-              width: avatarSize,
-              height: avatarSize
-            }}
-          />
-        }
-      >
-        <div className="flex justify-start items-center text-white">
-          <div className="flex items-center gap-4 font-semibold">
-            {/* <Avatar className={avatarClass} size={avatarSize} icon={icon} /> */}
-            <div>
-              <span className="text-lg ">{label}</span>
-              <p className="text-white text-4xl">{value}</p>
-            </div>
+    <Card className={`mb-3`}>
+      <div className="flex justify-between items-center">
+        <div className={`flex items-center gap-2 cursor-pointer`}>
+          {/* <Avatar className={avatarClass} size={avatarSize} icon={icon} /> */}
+          <div>
+            <h6
+              className={`font-bold text-lg text-${themeColor}-${primaryColorLevel} capitalize`}
+            >
+              {label}
+            </h6>
+            <h3
+              className={`font-bold text-xl text-${themeColor}-${primaryColorLevel}`}
+            >
+              <NumberFormat
+                displayType="text"
+                value={value}
+                thousandSeparator
+              />
+            </h3>
           </div>
         </div>
-      </Loading>
+      </div>
     </Card>
   );
 };
 
-const weeklyReportData = [
-  {
-    name: "Active",
-    data: [500, 350, 350, 450, 175, 375, 356]
-  },
-  {
-    name: "Inactive",
-    data: [230, 100, 259, 350, 247, 215, 380]
-  }
-];
-const courseStatisticssData = [];
 const SuperAdminDashboard = () => {
+  const [apiFlag, setApiFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [countData, setCountData] = useState();
+  const [studentRegistrationsData, setStudentRegistrationsData] = useState();
+  const [activeStudentsChartsData, setActiveStudentsChartsData] = useState();
+  const [topCollegeData, setTopCollegeData] = useState();
+  const [topCoursesData, setTopCoursesData] = useState();
+  const fetchDashboard = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post(
+        `admin/dashboard`,
+        getCurrentToPreviousYearDateRange()
+      );
+      if (response.success) {
+        setCountData(response.data?.countData);
+        setStudentRegistrationsData(response.data?.studentRegistrationChart[0]);
+        setActiveStudentsChartsData(response.data?.activeStudentsChart[0]);
+        setTopCollegeData(
+          response.data?.colleges.map((item) => {
+            return {
+              name: item.collegeName,
+              avatar: item.avatar,
+              url: `/app/admin/college-details/${item._id}`
+            };
+          })
+        );
+        setTopCoursesData(
+          response.data?.courses.map((item) => {
+            return {
+              name: item.course,
+              avatar: item.avatar,
+              url: `/app/admin/content-hub/students/course-forms/${item._id}`
+            };
+          })
+        );
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log("fetch sprint error: " + error);
+    }
+  };
+  useEffect(() => {
+    if (apiFlag) {
+      setApiFlag(false);
+      fetchDashboard();
+    }
+  }, [apiFlag]);
+  useEffect(() => {
+    setApiFlag(true);
+  }, []);
   return (
     <div>
-      <div className="flex gap-4 mb-6 overflow-x-auto whitespace-nowrap">
+      <div className="flex gap-4">
         <StatisticCard
           icon={<HiOutlineUserGroup />}
           label="Number of Students"
-          value={5756}
+          value={countData?.students}
         />
         <StatisticCard
           icon={<HiOutlineUsers />}
           label="Number of Batches"
-          value={556}
+          value={countData?.batches}
         />
         <StatisticCard
           icon={<HiOutlineUserAdd />}
-          label="Number of Trainer"
-          value={56}
+          label="Number of Instructors"
+          value={countData?.instructors}
         />
         <StatisticCard
           icon={<HiOutlineUserGroup />}
           label="Number of Colleges"
-          value={55}
+          value={countData?.colleges}
+        />
+        <StatisticCard
+          icon={<HiOutlineUserGroup />}
+          label="Number of Courses"
+          value={countData?.courses}
         />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <WeeklyActivity data={weeklyReportData} className="col-span-3" />
-        <div className="col-span-2">
-          <CourseStatistics data={courseStatisticssData} />
+
+      <div className="grid grid-cols-1 md:grid-cols-4 mb-6 gap-4">
+        <div className="col-span-1 ">
+          {!loading && <TopList data={topCollegeData} title={"Top College"} />}
+        </div>
+        <div className="col-span-3  ">
+          {!loading && <ActiveUserAnalysis data={activeStudentsChartsData} />}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4  gap-4 mt-8">
-        <div className="col-span-1 ">
-          <TopTrainer />
+      <div className="grid grid-cols-1 md:grid-cols-4  gap-4">
+        <div className="col-span-3  ">
+          {!loading && <StudentRegistrations data={studentRegistrationsData} />}
         </div>
-        <div className="col-span-3 ">
-          <StudentRegistrations />
+        <div className="col-span-1 ">
+          {!loading && <TopList data={topCoursesData} title={"Top Courses"} />}
         </div>
       </div>
     </div>

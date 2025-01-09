@@ -114,7 +114,6 @@ const AssessmentView = ({ contentData }) => {
               const trackingQuizData = assessmentData.trackingQuizData?.filter(
                 (data) => data.quizId === content._id
               );
-              console.log("trackingQuizData: ", trackingQuizData);
               if (info.type === "quiz") {
                 return (
                   <div
