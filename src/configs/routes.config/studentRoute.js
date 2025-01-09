@@ -22,6 +22,12 @@ const studentRoute = [
     authority: [STUDENT],
   },
   {
+    key: "apps.student.assessment",
+    path: `${STUDENT_PREFIX_PATH}/assessment/:assessmentId`,
+    component: React.lazy(() => import("views/studentPanel/assessmentView")),
+    authority: [STUDENT],
+  },
+  {
     key: "apps.student.myquizattempts",
     path: `${STUDENT_PREFIX_PATH}/myquizattempts`,
     component: React.lazy(() => import("views/studentPanel/myquizattempts")),
@@ -31,6 +37,12 @@ const studentRoute = [
     key: "apps.certificate",
     path: `${STUDENT_PREFIX_PATH}/certificate`,
     component: React.lazy(() => import("views/studentPanel/certificate")),
+    authority: [STUDENT],
+  },
+  {
+    key: "apps.quizattempts",
+    path: `${STUDENT_PREFIX_PATH}/quiz-attempts`,
+    component: React.lazy(() => import("views/studentPanel/quizAttempts")),
     authority: [STUDENT],
   },
 ];

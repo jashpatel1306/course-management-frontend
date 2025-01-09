@@ -1,7 +1,6 @@
 import { Card } from "components/ui";
 import React from "react";
 import { useSelector } from "react-redux";
-
 import AssessmentResult from "./components/assessmentResultList";
 
 const Students = () => {
@@ -17,14 +16,14 @@ const Students = () => {
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
-            Assessment Result Details
+            Quiz Attempts
           </div>
           <div className="flex gap-x-4"></div>
         </div>
       </Card>
-      <Card  className="mt-6">
+      <div>
         <AssessmentResult />
-      </Card>
+      </div>
     </>
   );
 };

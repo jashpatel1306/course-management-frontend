@@ -97,9 +97,20 @@ const appsRoute = [
   },
   {
     key: "apps.viewquiz",
-    path: `${STUDENT_PREFIX_PATH}/quiz/:quizId`,
+    path: `${STUDENT_PREFIX_PATH}/:assessmentId/quiz/:quizId`,
     component: React.lazy(() => import("views/studentPanel/quiz")),
     authority: [STUDENT],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false
+    }
+  },
+  {
+    key: "apps.viewquizresult",
+    path: `${STUDENT_PREFIX_PATH}/quiz-result/:trackingId`,
+    component: React.lazy(() => import("views/studentPanel/quizResult")),
+    authority: [ADMIN, SUPERADMIN, STAFF, STUDENT],
     meta: {
       layout: "blank",
       pageContainerType: "gutterless",

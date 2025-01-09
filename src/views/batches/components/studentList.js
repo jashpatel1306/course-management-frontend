@@ -5,7 +5,7 @@ import { TableRowSkeleton } from "components/shared";
 import {
   HiOutlinePencil,
   HiOutlineSearch,
-  HiOutlineTrash,
+  HiOutlineTrash
 } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
@@ -27,7 +27,7 @@ const columns = [
   "Section",
   "Gender",
   "Sem",
-  "Active",
+  "Active"
 ];
 
 const StudentList = (props) => {
@@ -61,7 +61,7 @@ const StudentList = (props) => {
         search: removeSpecials(debouncedText),
         batchId: batchId,
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
 
       const response = await axiosInstance.post(
@@ -205,7 +205,12 @@ const StudentList = (props) => {
               <TBody>
                 {studentData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id} className="capitalize">
+                    <Tr
+                      key={item?._id}
+                      className={`capitalize ${
+                        item?.active ? "" : "bg-red-100"
+                      }`}
+                    >
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
                       <Td className="lowercase">{item?.email}</Td>
@@ -277,8 +282,8 @@ const StudentList = (props) => {
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {

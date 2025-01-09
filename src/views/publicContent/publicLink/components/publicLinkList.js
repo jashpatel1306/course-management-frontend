@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { Table, Dialog, Button, Pagination } from "components/ui";
+import { Table, Dialog, Button, Pagination, Select } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
@@ -27,7 +27,12 @@ const columns = [
   "Results",
   "delete"
 ];
-
+const activeFilter = [
+  { label: "All", value: "all" },
+  { label: "Upcoming", value: "upcoming" },
+  { label: "Ongoing", value: "active" },
+  { label: "Completed", value: "expired" }
+];
 const PublicLinkList = (props) => {
   const { flag, parentCallback, setData, parentCloseCallback, refreshFlag } =
     props;
@@ -42,6 +47,7 @@ const PublicLinkList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
 
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
@@ -59,7 +65,12 @@ const PublicLinkList = (props) => {
         pageNo: page,
         perPage: appConfig.pagePerData
       };
-
+      if (activeTab && activeTab !== "all") {
+        formData = {
+          ...formData,
+          status: activeTab
+        };
+      }
       const response = await axiosInstance.post(
         `admin/public-link/all`,
         formData
@@ -128,6 +139,27 @@ const PublicLinkList = (props) => {
   };
   return (
     <>
+      <div className="lg:flex items-center justify-between mt-2 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]"></div>
+        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+          <Select
+            isSearchable={true}
+            className=""
+            placeholder="Filter"
+            options={activeFilter}
+            value={
+              activeTab
+                ? activeFilter.find((item) => item.value === activeTab)
+                : null
+            }
+            onChange={(item) => {
+              setActiveTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
+        </div>
+      </div>
       <div className="mt-2">
         {isLoading ? (
           <>

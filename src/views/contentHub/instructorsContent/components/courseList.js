@@ -9,12 +9,20 @@ import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 
 import CourseCard from "./courseCards";
-import { Pagination } from "components/ui";
+import { Button, Card, Input, Pagination, Select } from "components/ui";
 import { DataNoFound } from "assets/svg";
-
+import { HiOutlineSearch, HiPlusCircle } from "react-icons/hi";
+import { AiOutlineClose } from "react-icons/ai";
+const activeFilter = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" }
+];
 const CourseList = (props) => {
-  const { flag } = props;
-
+  const { flag, parentCloseCallback, setData, parentCallback } = props;
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
   const { userData } = useSelector((state) => state.auth.user);
 
   const { collegeId } = useSelector((state) => state.auth.user.userData);
@@ -23,8 +31,12 @@ const CourseList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject] = useState();
   const [page, setPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedText] = useDebounce(searchText, 1000);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
+  const [activeTab, setActiveTab] = useState();
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -35,7 +47,7 @@ const CourseList = (props) => {
       // const bodyData =
       //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
       let formData = {
-        search: "",
+        search: removeSpecials(debouncedText),
         pageNo: page,
         perPage: appConfig.pagePerData
       };
@@ -43,6 +55,12 @@ const CourseList = (props) => {
         formData = {
           ...formData,
           collegeId: currentCollegeTab
+        };
+      }
+      if (activeTab) {
+        formData = {
+          ...formData,
+          activeFilter: activeTab
         };
       }
 
@@ -90,6 +108,78 @@ const CourseList = (props) => {
 
   return (
     <>
+      <Card className="mb-4">
+        <div className="flex items-center justify-between ">
+          <div
+            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+          >
+            Instructors Contents
+          </div>
+          <div>
+            <Button
+              size="sm"
+              variant="solid"
+              icon={<HiPlusCircle color={"#fff"} />}
+              onClick={async () => {
+                parentCloseCallback();
+                //setSelectObject(item)
+                setData();
+                setTimeout(() => {
+                  parentCallback();
+                }, 50);
+              }}
+            >
+              Add New Content
+            </Button>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 mt-4">
+          <Select
+            isSearchable={true}
+            className="col-span-1 md:mb-0 mb-4 sm:mb-0"
+            placeholder="Active Filter"
+            options={activeFilter}
+            value={
+              activeTab
+                ? activeFilter.find((item) => item.value === activeTab)
+                : null
+            }
+            onChange={(item) => {
+              setActiveTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
+          <div></div>
+          <div></div>
+          <Input
+            placeholder="Search By Name, Email"
+            className="w-[384px] input-wrapper md:mb-0 mb-4"
+            value={searchText}
+            prefix={
+              <HiOutlineSearch
+                className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+              />
+            }
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              setPage(1);
+              setApiFlag(true);
+            }}
+            suffix={
+              searchText && (
+                <AiOutlineClose
+                  className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                  onClick={() => {
+                    setSearchText("");
+                    setApiFlag(true);
+                  }}
+                />
+              )
+            }
+          />
+        </div>
+      </Card>
       <div>
         {isLoading ? (
           <>

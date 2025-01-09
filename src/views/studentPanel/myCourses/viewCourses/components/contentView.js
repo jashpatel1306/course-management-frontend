@@ -55,6 +55,7 @@ const AssessmentView = ({ contentData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [apiFlag, setApiFlag] = useState(false);
   const [assessmentData, setAssessmentData] = useState();
+  const [trackingData, setTrackingData] = useState();
   const fetchAssessmentData = async () => {
     try {
       const response = await axiosInstance.get(
@@ -62,6 +63,7 @@ const AssessmentView = ({ contentData }) => {
       );
       if (response.success) {
         setAssessmentData(response.data);
+        setTrackingData(response.data.trackingData);
 
         setIsLoading(false);
       } else {
@@ -109,34 +111,60 @@ const AssessmentView = ({ contentData }) => {
           <div>
             {assessmentData.content.map((info) => {
               const content = info.data;
-              // const trackingData = assessmentData.trackingData?.filter(
-              //   (data) => data.quizId === content._id
-              // );
+              const trackingQuizData = assessmentData.trackingQuizData?.filter(
+                (data) => data.quizId === content._id
+              );
+              console.log("trackingQuizData: ", trackingQuizData);
               if (info.type === "quiz") {
                 return (
                   <div
                     key={content?._id}
-                    className="text-base font-medium rounded-lg mt-2 bg-blue-200 flex p-4 px-6 items-center justify-between"
+                    className={`text-base font-medium rounded-lg mt-2 ${
+                      trackingQuizData?.length
+                        ? "bg-blue-100 border-2 border-blue-500"
+                        : "border-2 border-blue-500"
+                    } flex p-4 px-6 items-center justify-between`}
                   >
                     <div>
                       <h3>{content.title}</h3>
                       <div className="flex gap-4 mt-2 text-lg">
                         <p>TotalMarks : {content.totalMarks}</p>
-                        <p>TotalQuestions : {content.questions.length}</p>
+                        <p>TotalQuestions : {content.questionsLength}</p>
                       </div>
                     </div>
                     <div>
-                      <Button
-                        variant="solid"
-                        onClick={() => {
-                          const url = `${
-                            window.location.href.split("app")[0]
-                          }app/student/quiz/${content?._id}`;
-                          window.open(url, "_blank");
-                        }}
-                      >
-                        Quiz Start
-                      </Button>
+                      {trackingQuizData?.length ? (
+                        <>
+                          <Button
+                            variant="solid"
+                            onClick={() => {
+                              const url = `${
+                                window.location.href.split("app")[0]
+                              }app/student/quiz-result/${
+                                trackingQuizData[0]?._id
+                              }`;
+                              window.open(url, "_blank");
+                            }}
+                          >
+                            Result
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          variant="twoTone"
+                          onClick={() => {
+                            const url = `${
+                              window.location.href.split("app")[0]
+                            }app/student/${assessmentData?._id}/quiz/${
+                              content?._id
+                            }`;
+                            window.open(url, "_blank");
+                          }}
+                          className="border border-blue-500"
+                        >
+                          Quiz Start
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
@@ -209,7 +237,7 @@ const ContentView = (props) => {
     contentData,
     setActiveContent,
     activeContent,
-    setApiFlag,
+    setApiFlag
   } = props;
   const { courseId } = useParams();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -237,8 +265,8 @@ const ContentView = (props) => {
           contentId: activeContent?.contentId,
           lectureId: activeContent?.lectureId
             ? activeContent?.lectureId
-            : activeContent?.contentId,
-        },
+            : activeContent?.contentId
+        }
       };
       const response = await axiosInstance.put(
         `student/course/tracking/${courseId}`,
@@ -254,7 +282,7 @@ const ContentView = (props) => {
           const nextContent = contentData[currentContentIndex + 1];
           setActiveContent({
             lectureId: nextContent.lectureId,
-            contentId: nextContent.id,
+            contentId: nextContent.id
           });
         }
 
@@ -315,7 +343,7 @@ const ContentView = (props) => {
               const previousContent = contentData[currentContentIndex - 1];
               setActiveContent({
                 lectureId: previousContent.lectureId,
-                contentId: previousContent.id,
+                contentId: previousContent.id
               });
             }}
           >
@@ -333,7 +361,7 @@ const ContentView = (props) => {
                 if (nextContent?.id) {
                   setActiveContent({
                     lectureId: nextContent?.lectureId,
-                    contentId: nextContent?.id,
+                    contentId: nextContent?.id
                   });
                 } else {
                   navigate("app/student/courses");

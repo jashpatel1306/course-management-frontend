@@ -11,7 +11,8 @@ import axiosInstance from "apiServices/axiosInstance";
 import { Spinner } from "components/ui";
 import { Result } from "./components/Result";
 const QuizMainContent = () => {
-  const { quizId } = useParams();
+  const { quizId, assessmentId } = useParams();
+  console.log("assessmentId : ", assessmentId);
   // const [displayView, setDisplayView] = useState("quiz");
   const [displayView, setDisplayView] = useState("intro");
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -56,7 +57,7 @@ const QuizMainContent = () => {
   const ErollQuizData = async () => {
     try {
       const response = await axiosInstance.post(
-        `student/quiz/enroll/${quizId}`
+        `student/quiz/enroll/${assessmentId}/${quizId}`
       );
 
       if (response.success) {
@@ -65,7 +66,7 @@ const QuizMainContent = () => {
           ...quizData,
           trackingId: response?.data?._id,
           userId: response?.data?.userId,
-          quizId: response?.data?.quizId
+          quizId: response?.data?.quizId,
         });
         setIsLoading(false);
       } else {

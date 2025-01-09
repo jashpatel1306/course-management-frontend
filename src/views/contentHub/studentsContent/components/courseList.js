@@ -8,24 +8,38 @@ import { useDebounce } from "use-debounce";
 import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 import CourseCard from "./courseCards";
-import { Pagination } from "components/ui";
+import { Button, Card, Input, Pagination, Select } from "components/ui";
 import { DataNoFound } from "assets/svg";
-
+import { HiOutlineSearch, HiPlusCircle } from "react-icons/hi";
+import { AiOutlineClose } from "react-icons/ai";
+const activeFilter = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" }
+];
 const CourseList = (props) => {
-  const { flag } = props;
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
+  const {
+    flag,
+    handleAddNewCourseCloseClick,
+    setData,
+    handleAddNewCourseClick
+  } = props;
 
   const { userData } = useSelector((state) => state.auth.user);
 
-  const { collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
+  const { collegeId } = useSelector((state) => state.auth.user.userData);
   const [currentCollegeTab] = useState(collegeId);
   const [courseData, setCourseData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchText] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
+  const [activeTab, setActiveTab] = useState();
+
   const [apiFlag, setApiFlag] = useState(false);
   const onPaginationChange = (val) => {
     setPage(val);
@@ -39,12 +53,18 @@ const CourseList = (props) => {
       let formData = {
         search: removeSpecials(debouncedText),
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
+      if (activeTab) {
+        formData = {
+          ...formData,
+          activeFilter: activeTab
+        };
+      }
       if (userData?.authority.toString() !== SUPERADMIN && currentCollegeTab) {
         formData = {
           ...formData,
-          collegeId: currentCollegeTab,
+          collegeId: currentCollegeTab
         };
       }
 
@@ -96,11 +116,83 @@ const CourseList = (props) => {
 
   return (
     <>
+      <Card className="mb-4">
+        <div className="flex items-center justify-between ">
+          <div
+            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+          >
+            Student Content
+          </div>
+          <div>
+            <Button
+              size="sm"
+              variant="solid"
+              icon={<HiPlusCircle color={"#fff"} />}
+              onClick={async () => {
+                handleAddNewCourseCloseClick();
+                //setSelectObject(item)
+                setData();
+                setTimeout(() => {
+                  handleAddNewCourseClick();
+                }, 50);
+              }}
+            >
+              Add New Content
+            </Button>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 mt-4">
+          <Select
+            isSearchable={true}
+            className="col-span-1 md:mb-0 mb-4 sm:mb-0"
+            placeholder="Active Filter"
+            options={activeFilter}
+            value={
+              activeTab
+                ? activeFilter.find((item) => item.value === activeTab)
+                : null
+            }
+            onChange={(item) => {
+              setActiveTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
+          <div></div>
+          <div></div>
+          <Input
+            placeholder="Search By Name, Email"
+            className="w-[384px] input-wrapper md:mb-0 mb-4"
+            value={searchText}
+            prefix={
+              <HiOutlineSearch
+                className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+              />
+            }
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              setPage(1);
+              setApiFlag(true);
+            }}
+            suffix={
+              searchText && (
+                <AiOutlineClose
+                  className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                  onClick={() => {
+                    setSearchText("");
+                    setApiFlag(true);
+                  }}
+                />
+              )
+            }
+          />
+        </div>
+      </Card>
       <div>
         {isLoading ? (
           <>
-          <div className="flex justify-start">
-          <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
+            <div className="flex justify-start">
+              <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
                 {[...Array(18).keys()].map((item, index) => {
                   return (
                     <>

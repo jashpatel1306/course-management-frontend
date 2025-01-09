@@ -14,14 +14,14 @@ const positionTypeOption = [
   // { label: "Grand Test Assessment ", value: "grand" },
   { label: "Preliminary assessment", value: "pre" },
   { label: "Inside section", value: "section" },
-  { label: "Grand test ", value: "grand" },
+  { label: "Grand test ", value: "grand" }
 ];
 function AssignCourseForm(props) {
   const {
     handleCloseClick,
     assignCourseData,
     isOpen,
-    AssignType = "course",
+    AssignType = "course"
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -37,7 +37,7 @@ function AssignCourseForm(props) {
     startDate: Yup.date().required("Start Date is required"),
     endDate: Yup.date()
       .required("End Date is required")
-      .min(Yup.ref("startDate")),
+      .min(Yup.ref("startDate"))
   });
   const assignAssessmentBatchValidationSchema = Yup.object().shape({
     collegeId: Yup.string().required("College Id is required"),
@@ -46,7 +46,7 @@ function AssignCourseForm(props) {
     startDate: Yup.date().required("Start Date is required"),
     endDate: Yup.date()
       .required("End Date is required")
-      .min(Yup.ref("startDate")),
+      .min(Yup.ref("startDate"))
   });
 
   const [loading, setLoading] = useState(false);
@@ -78,7 +78,7 @@ function AssignCourseForm(props) {
     assessmentId: "",
     positionType: "",
     startDate: null,
-    endDate: null,
+    endDate: null
   });
   const [errorData, setErrorData] = useState({
     collegeId: "",
@@ -89,7 +89,7 @@ function AssignCourseForm(props) {
     assessmentId: "",
     positionType: "",
     startDate: null,
-    endDate: null,
+    endDate: null
   });
   const resetErrorData = () => {
     setErrorData({
@@ -101,7 +101,7 @@ function AssignCourseForm(props) {
       assessmentId: "",
       positionType: "",
       startDate: null,
-      endDate: null,
+      endDate: null
     });
   };
   const resetFormData = () => {
@@ -116,12 +116,11 @@ function AssignCourseForm(props) {
       assessmentId: "",
       positionType: "",
       startDate: null,
-      endDate: null,
+      endDate: null
     });
   };
   useEffect(() => {
     if (isOpen) {
-     
       if (userData.authority[0].toString() === SUPERADMIN) {
         getCollegeOptionData();
       }
@@ -165,7 +164,7 @@ function AssignCourseForm(props) {
             : null,
           endDate: assignCourseData?.endDate
             ? new Date(assignCourseData?.endDate)
-            : null,
+            : null
         });
       }
       if (assignCourseData?.collegeId) {
@@ -349,11 +348,11 @@ function AssignCourseForm(props) {
     try {
       if (assignCourseData?.type === "batch") {
         assignAssessmentBatchValidationSchema.validateSync(formData, {
-          abortEarly: false,
+          abortEarly: false
         });
       } else {
         assignAssessmentValidationSchema.validateSync(formData, {
-          abortEarly: false,
+          abortEarly: false
         });
       }
 
@@ -366,7 +365,7 @@ function AssignCourseForm(props) {
         assessmentId: "",
         positionType: "",
         startDate: null,
-        endDate: null,
+        endDate: null
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -374,7 +373,7 @@ function AssignCourseForm(props) {
         return {
           courseId: "",
           collegeId: "",
-          batchId: "",
+          batchId: ""
         };
       } else {
         return {
@@ -392,14 +391,14 @@ function AssignCourseForm(props) {
             ? errorObject?.positionType
             : "",
           startDate: errorObject?.startDate ? errorObject?.startDate : null,
-          endDate: errorObject?.endDate ? errorObject?.endDate : null,
+          endDate: errorObject?.endDate ? errorObject?.endDate : null
         };
       }
     }
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
-   
+
     if (!errorObject.status) {
       resetErrorData();
       if (assignCourseData?._id) {
@@ -494,7 +493,7 @@ function AssignCourseForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeId: e.value,
+                        collegeId: e.value
                       });
                       getBatchOptionData(e.value);
 
@@ -530,7 +529,7 @@ function AssignCourseForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    batchId: e.value,
+                    batchId: e.value
                   });
                   getCoursesOptionData(e.value);
                 }}
@@ -557,7 +556,7 @@ function AssignCourseForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    assessmentId: e.value,
+                    assessmentId: e.value
                   });
                 }}
                 value={assessmentList?.find(
@@ -587,7 +586,7 @@ function AssignCourseForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        courseId: e.value,
+                        courseId: e.value
                       });
                       getSectionOptionData(e.value);
                     }}
@@ -614,7 +613,7 @@ function AssignCourseForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        positionType: e.value,
+                        positionType: e.value
                       });
                     }}
                     value={positionTypeOption?.find(
@@ -646,7 +645,7 @@ function AssignCourseForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        sectionId: e.value,
+                        sectionId: e.value
                       });
                       getLectureOptionData(e.value);
                     }}
@@ -673,7 +672,7 @@ function AssignCourseForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        lectureId: e.value,
+                        lectureId: e.value
                       });
                     }}
                     value={lecturesList?.find(
@@ -697,12 +696,12 @@ function AssignCourseForm(props) {
             Select Start Date
           </div>
           <div className="col-span-2">
-            <DatePicker
+            <DatePicker.DateTimepicker
               placeholder="Please Select Start Date of the assessment"
               onChange={(e) => {
                 setFormData({
                   ...formData,
-                  startDate: new Date(e),
+                  startDate: new Date(e)
                 });
               }}
               value={formData?.startDate}
@@ -717,12 +716,12 @@ function AssignCourseForm(props) {
             Select End Date
           </div>
           <div className="col-span-2">
-            <DatePicker
+            <DatePicker.DateTimepicker
               placeholder="Please Select End Date of the assessment"
               onChange={(e) => {
                 setFormData({
                   ...formData,
-                  endDate: new Date(e),
+                  endDate: new Date(e)
                 });
               }}
               minDate={formData?.startDate}

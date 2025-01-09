@@ -4,7 +4,7 @@ import { MediaSkeleton, Loading } from "components/shared";
 import {
   HiOutlineUserGroup,
   HiOutlineUserAdd,
-  HiOutlineUsers,
+  HiOutlineUsers
 } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import WeeklyActivity from "./components/weeklyActivity";
@@ -33,7 +33,7 @@ const StatisticCard = (props) => {
             avatarProps={{
               className: "rounded",
               width: avatarSize,
-              height: avatarSize,
+              height: avatarSize
             }}
           />
         }
@@ -55,24 +55,17 @@ const StatisticCard = (props) => {
 const weeklyReportData = [
   {
     name: "Active",
-    data: [500, 350, 350, 450, 175, 375, 356],
+    data: [500, 350, 350, 450, 175, 375, 356]
   },
   {
     name: "Inactive",
-    data: [230, 100, 259, 350, 247, 215, 380],
-  },
+    data: [230, 100, 259, 350, 247, 215, 380]
+  }
 ];
 const courseStatisticssData = [];
 const SuperAdminDashboard = () => {
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
   return (
     <div>
-      <h4 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-        My Cards
-      </h4>
       <div className="flex gap-4 mb-6 overflow-x-auto whitespace-nowrap">
         <StatisticCard
           icon={<HiOutlineUserGroup />}

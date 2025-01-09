@@ -33,7 +33,7 @@ const AssessmentList = () => {
       let formData = {
         search: removeSpecials(debouncedText),
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
 
       const response = await axiosInstance.post(
@@ -78,7 +78,7 @@ const AssessmentList = () => {
   return (
     <>
       <Card>
-        <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
+        <div className="lg:flex items-center justify-between w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
           <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
             <div
               className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
@@ -89,7 +89,7 @@ const AssessmentList = () => {
           <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
             <Input
               placeholder="Search By Name, Email"
-              className=" input-wrapper md:mb-0 mb-4"
+              className=" input-wrapper"
               value={searchText}
               prefix={
                 <HiOutlineSearch
@@ -115,7 +115,9 @@ const AssessmentList = () => {
             />
           </div>
         </div>
-        <div className="flex flex-wrap gap-4  p-4">
+      </Card>
+      <Card className="mt-4">
+        <div className="flex flex-wrap gap-4">
           {assesssmentData.length > 0 ? (
             assesssmentData?.map((data, index) => {
               return (

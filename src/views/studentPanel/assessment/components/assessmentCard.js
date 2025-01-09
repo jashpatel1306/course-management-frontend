@@ -1,11 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import {
-  FaQuestionCircle,
-  FaRegClock,
-  FaCalendarAlt,
-} from "react-icons/fa";
+import { FaQuestionCircle, FaRegClock, FaCalendarAlt } from "react-icons/fa";
 import { Button, Card } from "components/ui";
+import { useNavigate } from "react-router-dom";
 const formatDateRange = (startDate, endDate) => {
   // Create options for formatting
   const options = { day: "numeric", month: "short" };
@@ -18,7 +15,7 @@ const formatDateRange = (startDate, endDate) => {
   return `${start} - ${end}`;
 };
 const AssessmentCard = ({ variant = "full", assessmentData }) => {
-  
+  const navigate = useNavigate();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -110,9 +107,9 @@ const AssessmentCard = ({ variant = "full", assessmentData }) => {
               variant="solid"
               className=" px-2 "
               onClick={() => {
-                // navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
-                //   state: assessmentData,
-                // });
+                navigate(
+                  `/app/student/assessment/${assessmentData.assessmentId._id}`
+                );
               }}
             >
               View

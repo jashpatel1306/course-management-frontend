@@ -10,7 +10,7 @@ const studentNavigationConfig = [
     icon: "dashboard",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [STUDENT],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.student.mycourses",
@@ -19,7 +19,7 @@ const studentNavigationConfig = [
     icon: "student",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [STUDENT],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.student.assessment",
@@ -28,7 +28,7 @@ const studentNavigationConfig = [
     icon: "assessment",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [STUDENT],
-    subMenu: [],
+    subMenu: []
   },
   // {
   //   key: "apps.student.myquizattempts",
@@ -39,15 +39,24 @@ const studentNavigationConfig = [
   //   authority: [STUDENT],
   //   subMenu: [],
   // },
+  // {
+  //   key: "apps.certificate",
+  //   path: `${STUDENT_PREFIX_PATH}/certificate`,
+  //   title: "Certificate",
+  //   icon: "documentation",
+  //   type: NAV_ITEM_TYPE_ITEM,
+  //   authority: [STUDENT],
+  //   subMenu: [],
+  // },
   {
-    key: "apps.certificate",
-    path: `${STUDENT_PREFIX_PATH}/certificate`,
-    title: "Certificate",
+    key: "apps.quizattempts",
+    path: `${STUDENT_PREFIX_PATH}/quiz-attempts`,
+    title: "Quiz Attempts",
     icon: "documentation",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [STUDENT],
-    subMenu: [],
-  },
+    subMenu: []
+  }
 ];
 
 export default studentNavigationConfig;

@@ -38,7 +38,10 @@ const columns = [
   "Sem",
   "Active"
 ];
-
+const activeFilter = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" }
+];
 const StudentList = (props) => {
   const {
     flag,
@@ -56,7 +59,9 @@ const StudentList = (props) => {
   const { userData } = useSelector((state) => state.auth.user);
 
   const { collegeId } = useSelector((state) => state.auth.user.userData);
-  const [currentTab, setCurrentTab] = useState();
+  const [batchTab, setBatchTab] = useState();
+  const [departmentTab, setDepartmentTab] = useState();
+  const [activeTab, setActiveTab] = useState();
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [studentData, setStudentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,6 +77,10 @@ const StudentList = (props) => {
   const [apiFlag, setApiFlag] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
+  const [departmentList, setDepartmentList] = useState([]);
+
+  const [departmentLoading, setDepartmentLoading] = useState(false);
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -122,13 +131,39 @@ const StudentList = (props) => {
       setBatchLoading(false);
     }
   };
+  const getDepartmentOptionData = async (collegeId) => {
+    try {
+      setDepartmentLoading(true);
+      const response = await axiosInstance.get(
+        `user/department-options/${collegeId}`
+      );
+
+      if (response.success) {
+        const departmentOption = response.data.filter((e) => e.value !== "all");
+        setDepartmentList(departmentOption);
+        console.log("response.data department: ", departmentOption);
+      } else {
+        openNotification("danger", response.error);
+      }
+    } catch (error) {
+      console.log("getDepartmentOptionData error :", error.message);
+      openNotification("danger", error.message);
+    } finally {
+      setDepartmentLoading(false);
+    }
+  };
   const fetchData = async () => {
     try {
       // const bodyData =
-      //   currentTab === "tab1" ? 0 : currentTab === "tab2" ? 1 : 2;
+      //   batchTab === "tab1" ? 0 : batchTab === "tab2" ? 1 : 2;
       let formData = {
         search: removeSpecials(debouncedText),
-        batchId: currentTab ? currentTab : "all",
+        batchId: batchTab ? batchTab : "all",
+        departmentId: departmentTab
+          ? departmentTab === "all"
+            ? ""
+            : departmentTab
+          : "",
         pageNo: page,
         perPage: appConfig.pagePerData
       };
@@ -138,7 +173,18 @@ const StudentList = (props) => {
           collegeId: currentCollegeTab ? currentCollegeTab : "all"
         };
       }
-
+      if (departmentTab) {
+        formData = {
+          ...formData,
+          departmentId: departmentTab === "all" ? "" : departmentTab
+        };
+      }
+      if (activeTab) {
+        formData = {
+          ...formData,
+          active: activeTab
+        };
+      }
       const response = await axiosInstance.post(
         `user/batch-wise-students`,
         formData
@@ -174,7 +220,8 @@ const StudentList = (props) => {
   useEffect(() => {
     setApiFlag(true);
     if (userData.authority.toString() !== SUPERADMIN) {
-      getBatchOptionData();
+      getBatchOptionData(userData.collegeId);
+      getDepartmentOptionData(userData.collegeId);
     } else {
       getCollegeOptionData();
       if (collegeId !== "all") {
@@ -220,11 +267,11 @@ const StudentList = (props) => {
   return (
     <>
       <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[40%] md:w-[50%]  sm:w-[50%] ">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
               isSearchable={true}
-              className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+              className="w-[684px] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
@@ -233,10 +280,14 @@ const StudentList = (props) => {
               )}
               onChange={(item) => {
                 setCurrentCollegeTab(item.value);
-                setCurrentTab(null);
+                setBatchTab(null);
+                setDepartmentTab(null);
+                setActiveTab(null);
                 setBatchList([]);
+                setDepartmentList([]);
                 if (item.value !== "all") {
                   getBatchOptionData(item.value);
+                  getDepartmentOptionData(item.value);
                 }
 
                 setApiFlag(true);
@@ -246,26 +297,61 @@ const StudentList = (props) => {
           )}
           <Select
             isSearchable={true}
-            className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+            className="w-[684px] md:mb-0 mb-4 sm:mb-0 capitalize"
             placeholder="Batches"
             options={batchList}
             loading={batchLoading}
             value={
-              currentTab
-                ? batchList.find((item) => item.value === currentTab)
+              batchTab
+                ? batchList.find((item) => item.value === batchTab)
                 : null
             }
             onChange={(item) => {
-              setCurrentTab(item.value);
+              setActiveTab(null);
+              setBatchTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
+          <Select
+            isSearchable={true}
+            className="w-[684px] md:mb-0 mb-4 sm:mb-0"
+            placeholder="Departments"
+            options={departmentList}
+            loading={departmentLoading}
+            value={
+              departmentTab
+                ? departmentList.find((item) => item.value === departmentTab)
+                : null
+            }
+            onChange={(item) => {
+              setActiveTab(null);
+              setDepartmentTab(item.value);
               setApiFlag(true);
               setPage(1);
             }}
           />
         </div>
-        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+        <div className="flex gap-2 w-[25%] md:w-[100%] p-1 lg:w-[40%] sm:w-[100%]">
+          <Select
+            isSearchable={true}
+            className="w-[284px] md:mb-0 mb-4 sm:mb-0"
+            placeholder="Active Filter"
+            options={activeFilter}
+            value={
+              activeTab
+                ? activeFilter.find((item) => item.value === activeTab)
+                : null
+            }
+            onChange={(item) => {
+              setActiveTab(item.value);
+              setApiFlag(true);
+              setPage(1);
+            }}
+          />
           <Input
             placeholder="Search By Name, Email"
-            className=" input-wrapper md:mb-0 mb-4"
+            className="w-[684px] input-wrapper md:mb-0 mb-4"
             value={searchText}
             prefix={
               <HiOutlineSearch
@@ -319,7 +405,12 @@ const StudentList = (props) => {
               <TBody>
                 {studentData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id} className="capitalize">
+                    <Tr
+                      key={item?._id}
+                      className={`capitalize ${
+                        item?.active ? "" : "bg-red-100"
+                      }`}
+                    >
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
                       <Td className="lowercase">{item?.email.toLowerCase()}</Td>

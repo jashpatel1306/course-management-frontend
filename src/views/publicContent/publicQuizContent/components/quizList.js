@@ -1,5 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Table, Card, Pagination, Button, Dialog, Badge } from "components/ui";
+import {
+  Table,
+  Card,
+  Pagination,
+  Button,
+  Dialog,
+  Badge,
+  Select
+} from "components/ui";
 import React, { useEffect, useState } from "react";
 import { HiOutlinePencil } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -19,6 +27,12 @@ const columns = [
   "publish",
   "Active"
 ];
+const activeFilter = [
+  { label: "All", value: "all" },
+
+  { label: "Published", value: "published" },
+  { label: "Unpublished", value: "unpublished" }
+];
 const QuizList = (props) => {
   const { flag } = props;
   const navigate = useNavigate();
@@ -35,6 +49,8 @@ const QuizList = (props) => {
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [apiFlag, setApiFlag] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
+  const [activeTab, setActiveTab] = useState("all");
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -45,6 +61,12 @@ const QuizList = (props) => {
         pageNo: page,
         perPage: appConfig.pagePerData
       };
+      if (activeTab && activeTab !== "all") {
+        formData = {
+          ...formData,
+          status: activeTab
+        };
+      }
       const response = await axiosInstance.post(
         `user/get-public-quizzes`,
         formData
@@ -105,9 +127,26 @@ const QuizList = (props) => {
   return (
     <>
       <Card className="mt-4">
-        <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
+        <div className="lg:flex items-center justify-between mt-2 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
           <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]"></div>
-          <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]"></div>
+          <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+            <Select
+              isSearchable={true}
+              className=""
+              placeholder="Filter"
+              options={activeFilter}
+              value={
+                activeTab
+                  ? activeFilter.find((item) => item.value === activeTab)
+                  : null
+              }
+              onChange={(item) => {
+                setActiveTab(item.value);
+                setApiFlag(true);
+                setPage(1);
+              }}
+            />
+          </div>
         </div>
         <div className="mt-4">
           {isLoading ? (
@@ -192,7 +231,6 @@ const QuizList = (props) => {
                             )} */}
                           </div>
                         </Td>
-                      
                       </Tr>
                     );
                   })}
@@ -215,7 +253,6 @@ const QuizList = (props) => {
             </>
           )}
         </div>
-      
       </Card>
       <Dialog
         isOpen={deleteIsOpen}

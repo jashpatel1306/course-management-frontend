@@ -29,14 +29,8 @@ const { Tr, Th, Td, THead, TBody } = Table;
 const columns = ["Name", "Email", "Phone No", "permissions", "Active"];
 
 const StaffList = (props) => {
-  const {
-    flag,
-    parentCallback,
-    setAllCollegeList,
-    setData,
-    parentCloseCallback,
-    refreshFlag
-  } = props;
+  const { flag, parentCallback, setData, parentCloseCallback, refreshFlag } =
+    props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -68,8 +62,11 @@ const StaffList = (props) => {
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList([{ label: "All", value: "all" },{ label: "Own Staff", value: "own" }, ...response.data]);
-        setAllCollegeList([{ label: "All", value: "all" }, ...response.data]);
+        setCollegeList([
+          { label: "All", value: "all" },
+          { label: "Own Staff", value: "own" },
+          ...response.data
+        ]);
         setCurrentTab(response.data[0].value);
       } else {
         openNotification("danger", response.error);

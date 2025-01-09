@@ -1,8 +1,8 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Card, Dialog, Input, Switcher } from "components/ui";
+import { Button, Card, Dialog, Input, Switcher, Upload } from "components/ui";
 import React, { useState } from "react";
-import { FaCheckCircle, FaFile, FaPlus } from "react-icons/fa";
-import { HiOutlinePencil } from "react-icons/hi";
+import { FaCheckCircle, FaFile, FaFileAlt, FaPlus } from "react-icons/fa";
+import { HiOutlineCloudUpload, HiOutlinePencil } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import openNotification from "views/common/notification";
 import DisplayError from "views/common/displayError";
@@ -10,6 +10,8 @@ import QuestionsList from "./questionList";
 import QuestionForm from "./questionForm";
 import { MdDelete } from "react-icons/md";
 import { FormNumericInput } from "components/shared";
+import { BiImport } from "react-icons/bi";
+import { IoMdCloseCircle } from "react-icons/io";
 
 const QuizCard = (props) => {
   const { assessmentId, quizData, quizIndex, setApiFlag } = props;
@@ -28,7 +30,12 @@ const QuizCard = (props) => {
   const [IsOpen, setIsOpen] = useState(false);
   const [addQuestion, setAddQuestion] = useState(false);
   const [questionData, setQuestionData] = useState();
+  const [importLoading, setImportLoading] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
+  const [selectImportData, setSelectImportData] = useState({
+    file: null
+  });
   const [error, setError] = useState("");
   const UpdateQuiz = async () => {
     try {
@@ -107,6 +114,66 @@ const QuizCard = (props) => {
       description: newDescriptions
     });
   };
+  const beforeUpload = (files) => {
+    let valid = true;
+
+    const allowedFileType = [
+      "text/csv",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ];
+    const maxFileSize = 5000000;
+    for (let file of files) {
+      if (!allowedFileType.includes(file.type)) {
+        valid = false;
+      }
+      if (file.size >= maxFileSize) {
+        valid = false;
+      }
+    }
+    if (valid) {
+    }
+    return valid;
+  };
+  const ImportQuizData = async () => {
+    try {
+      setImportLoading(true);
+      let apiData = {
+        quizId: quizData._id,
+        excelFile: selectImportData.file
+      };
+      const response = await axiosInstance.post(`user/question-bulk`, apiData);
+      if (response.success) {
+        openNotification("success", response.message);
+      } else {
+        openNotification("danger", response.message);
+      }
+      setSelectImportData({
+        file: null
+      });
+    } catch (error) {
+      console.log("onFormSubmit error: ", error);
+      openNotification("danger", error.message);
+    } finally {
+      setImportLoading(false);
+      setApiFlag(true);
+      setImportOpen(false);
+      setError("");
+    }
+  };
+  const onHandleBox = async () => {
+    try {
+      if (!selectImportData?.file?.name) {
+        setError("Please Select file.");
+      }
+      if (selectImportData?.file) {
+        setError("");
+        await ImportQuizData();
+      }
+    } catch (error) {
+      console.log("onHandleBox error :", error);
+    }
+  };
   return (
     <>
       <Card className="bg-gray-50 border-2 mb-3">
@@ -141,6 +208,17 @@ const QuizCard = (props) => {
             </div>
           </div>
           <div className="flex gap-2 ">
+            <Button
+              size="sm"
+              variant="twoTone"
+              className={`border border-${themeColor}-${primaryColorLevel}`}
+              icon={<BiImport />}
+              onClick={() => {
+                setImportOpen(true);
+              }}
+            >
+              Import Questions
+            </Button>
             <div
               className={`flex items-center text-base font-semibold text-${themeColor}-${primaryColorLevel} px-3 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
             >
@@ -188,11 +266,6 @@ const QuizCard = (props) => {
       </Card>
       <Dialog
         isOpen={IsOpen}
-        // style={{
-        //   content: {
-        //     marginTop: 250,
-        //   },
-        // }}
         contentClassName="pb-0 px-0"
         onClose={() => {
           setIsOpen(false);
@@ -338,6 +411,100 @@ const QuizCard = (props) => {
           </Button>
           <Button variant="solid" onClick={onHandleQuizBox} loading={isLoading}>
             Update
+          </Button>
+        </div>
+      </Dialog>
+      <Dialog
+        isOpen={importOpen}
+        style={{
+          content: {
+            marginTop: 250
+          }
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setImportOpen(false);
+          setError("");
+          setSelectImportData({
+            file: null
+          });
+        }}
+        onRequestClose={() => {
+          setImportOpen(false);
+          setError("");
+          setSelectImportData({
+            file: null
+          });
+        }}
+      >
+        <div className="px-6 pb-4">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Import Questions
+          </h5>
+
+          <div className="col-span-1 gap-4 mb-2">
+            <div className="col-span-2">
+              {selectImportData?.file ? (
+                <>
+                  <div
+                    className={`flex justify-between items-center text-base gap-2 p-3 bg-${themeColor}-100 rounded-lg font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+                  >
+                    <div className="flex gap-3 justify-between items-center">
+                      <FaFileAlt size={20} />
+
+                      {selectImportData?.file?.name}
+                    </div>
+                    <div
+                      onClick={() => {
+                        setSelectImportData({
+                          ...selectImportData,
+                          file: null
+                        });
+                      }}
+                    >
+                      <IoMdCloseCircle size={20} />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Upload
+                    showList={false}
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    beforeUpload={beforeUpload}
+                    onChange={async (file) => {
+                      setSelectImportData({
+                        ...selectImportData,
+                        file: file[0]
+                      });
+                    }}
+                  >
+                    <Button
+                      size="sm"
+                      variant="twoTone"
+                      icon={<HiOutlineCloudUpload size={20} />}
+                    >
+                      Upload Questions File
+                    </Button>
+                  </Upload>
+                </>
+              )}
+            </div>
+          </div>
+          {DisplayError(error)}
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setImportOpen(false);
+              setError("");
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onHandleBox} loading={importLoading}>
+            Submit
           </Button>
         </div>
       </Dialog>

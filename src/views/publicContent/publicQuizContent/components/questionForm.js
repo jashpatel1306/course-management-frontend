@@ -18,7 +18,7 @@ const questionModules = {
   }
 };
 const answerModules = {
-  toolbar: [["bold", "italic", "code"]]
+  toolbar: [["bold", "italic", "code", "image"]]
 };
 const typeOptions = [
   { value: "mcq", label: "MCQ Question" },
@@ -200,7 +200,6 @@ function QuestionForm(props) {
                     evt.preventDefault()
                   }
                   className={"w-16"}
-              
                   value={questionMark}
                   onChange={(e) => {
                     setQuestionMark(e.target.value);
@@ -235,7 +234,7 @@ function QuestionForm(props) {
                       type="radio"
                       name="correct"
                       className="mt-2"
-                      defaultChecked ={answer.correct}
+                      defaultChecked={answer.correct}
                       onChange={(value) =>
                         handleAnswerChange("correct", true, index)
                       }
