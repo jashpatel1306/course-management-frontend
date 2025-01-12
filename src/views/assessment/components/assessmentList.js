@@ -150,13 +150,14 @@ const AssessmentList = () => {
   }, [debouncedText]);
   return (
     <>
-      <Card className="mt-4">
+      <Card className="mt-4" bodyClass="p-3 sm:p-[1.25rem]">
         <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+          <div className="flex flex-col md:flex-row lg:items-center gap-x-4 lg:w-1/2 md:w-full sm:w-[50%]">
             {userData.authority.toString() === SUPERADMIN && (
               <Select
+                size="sm"
                 isSearchable={true}
-                className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+                className="w-full mb-4 lg:mb-0"
                 placeholder="College"
                 options={collegeList}
                 loading={collegeLoading}
@@ -176,8 +177,9 @@ const AssessmentList = () => {
               />
             )}
             <Select
+              size="sm"
               isSearchable={true}
-              className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+              className="w-full mb-4 lg:mb-0"
               placeholder="Batches"
               options={batchesList}
               loading={batchLoading}
@@ -193,8 +195,9 @@ const AssessmentList = () => {
               }}
             />
           </div>
-          <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+          <div className="w-full md:w-[100%] lg:w-[25%] sm:w-[100%]">
             <Input
+              size="sm"
               placeholder="Search By Name"
               className=" input-wrapper md:mb-0 mb-4"
               value={searchText}
@@ -222,7 +225,7 @@ const AssessmentList = () => {
             />
           </div>
         </div>
-        <div className="flex flex-wrap gap-4  p-4">
+        <div className="flex flex-wrap px-0 py-4 lg:p-4">
           {assesssmentData.length > 0 ? (
             assesssmentData?.map((data, index) => {
               return (

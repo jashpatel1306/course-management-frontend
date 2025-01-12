@@ -50,7 +50,7 @@ const PublicLinks = () => {
           </div>
         </div>
       </Card>
-      <Card className="mt-4">
+      <Card className="mt-4" bodyClass="p-3 sm:p-[1.25rem]">
         <PublicLinkList
           flag={addFlag}
           parentCloseCallback={handleAddNewPublicLinkCloseClick}

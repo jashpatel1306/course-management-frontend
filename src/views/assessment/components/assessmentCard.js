@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { FaQuestionCircle, FaRegClock, FaUserFriends } from "react-icons/fa";
+import { FaQuestion, FaQuestionCircle, FaRegClock, FaUserFriends } from "react-icons/fa";
 import { Button, Card, DatePicker, Dialog, Select } from "components/ui";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import DisplayError from "views/common/displayError";
+import { RiQuestionMark } from "react-icons/ri";
+import { BsQuestionLg } from "react-icons/bs";
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { FiFileText } from "react-icons/fi";
 
 const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
   const navigate = useNavigate();
@@ -25,7 +29,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
       .required("End Date is required")
       .min(Yup.ref("startDate"))
   });
-  const cardClasses = ` border-2 border-${themeColor}-${primaryColorLevel} text-${themeColor}-${primaryColorLevel} rounded-xl shadow-lg ${
+  const cardClasses = `text-${themeColor}-${primaryColorLevel} rounded-xl shadow-lg ${
     variant === "full" ? "w-full" : "w-56"
   }`;
   const { userData } = useSelector((state) => state.auth.user);
@@ -170,105 +174,98 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
   };
   return (
     <>
-      <Card className={cardClasses}>
+      {/* <Card className={cardClasses} bodyClass="p-3 sm:p-[1.25rem]"> */}
         <div
-          className={`flex flex-col ${
-            variant === "full" ? "md:flex-row md:justify-between" : ""
-          }`}
+          className={`w-full px-4 py-5 text-${themeColor}-${primaryColorLevel} border-b border-[#C6C7C8]`}
         >
-          <div className={`${variant === "full" ? "" : "mb-4"}`}>
-            <div className="text-lg font-extrabold mb-2">
+          <div className="w-full">
+            <div className="text-xl font-extrabold mb-4">
               {assessmentData?.title}
             </div>
             <div
-              className={`flex flex-col md:flex-row gap-3 justify-between items-center`}
+              className={`flex flex-col lg:flex-row gap-3 justify-between lg:items-center`}
             >
               <div
                 className={`${
                   variant === "full"
-                    ? "flex flex-row gap-6 items-center"
+                    ? "w-full flex flex-row gap-2 md:gap-6 items-center"
                     : "flex flex-col mb-4 gap-y-2 "
                 } `}
               >
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-1 lg:gap-2 items-center">
                   <div
-                    className={`bg-white p-2 rounded-full shadow-md border-2 border-${themeColor}-${primaryColorLevel}`}
+                    className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}
                   >
-                    <FaQuestionCircle
-                      className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                    <BsQuestionLg
+                      className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
                     />
                   </div>
-                  <span className="text-base font-semibold">
+                  <span className="text-sm lg:text-lg text-[#272727] font-normal">
                     {assessmentData?.totalQuestions} Questions
                   </span>
                 </div>
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-1 lg:gap-2 items-center">
                   <div
-                    className={`bg-white p-2 rounded-full shadow-md border-2 border-${themeColor}-${primaryColorLevel}`}
+                    className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}
                   >
-                    <FaRegClock
-                      className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                    <FiFileText
+                      className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
                     />
                   </div>
-                  <span className="text-base font-semibold">
+                  <span className="text-sm lg:text-lg text-[#272727] font-normal">
                     {assessmentData?.totalMarks} Marks
                   </span>
                 </div>
-
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-1 lg:gap-2 items-center">
                   <div
-                    className={`bg-white p-2 rounded-full shadow-md border-2 border-${themeColor}-${primaryColorLevel}`}
+                    className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}
                   >
-                    <FaUserFriends
-                      className={`text-xl text-${themeColor}-${primaryColorLevel}`}
+                    <MdOutlinePeopleAlt
+                      className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
                     />
                   </div>
-                  <span className="text-base font-semibold">
+                  <span className="text-sm lg:text-lg text-[#272727] font-normal">
                     {assessmentData?.batches?.length} Batches
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            className={`mt-4 md:mt-0 items-center gap-3  ${
-              variant === "full"
-                ? "flex flex-col justify-center"
-                : "flex justify-center md:justify-start"
-            }`}
-          >
-            <Button
-              size="sm"
-              block={variant !== "full"}
-              variant="solid"
-              className=" md:w-auto py-2 rounded-lg font-semibold shadow-md mb-2 md:mb-0"
-              onClick={() => {
-                setFormData({
-                  ...formData,
-                  collegeId: assessmentData?.collegeId,
-                  assessmentId: assessmentData?._id
-                });
-                getBatchOptionData(assessmentData.collegeId);
-                setIsOpen(true);
-              }}
-            >
-              Assign
-            </Button>
-            <Button
-              size="sm"
-              block={variant !== "full"}
-              className="md:w-auto py-2 rounded-lg font-semibold shadow-md"
-              onClick={() => {
-                navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
-                  state: assessmentData
-                });
-              }}
-            >
-              View
-            </Button>
+              <div
+                className="w-full lg:w-auto flex items-center lg:justify-center gap-3"
+              >
+                <Button
+                  size="sm"
+                  block={variant !== "full"}
+                  variant="solid"
+                  className="w-full lg:w-auto py-2 rounded-lg font-semibold shadow-md mb-2 md:mb-0"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      collegeId: assessmentData?.collegeId,
+                      assessmentId: assessmentData?._id
+                    });
+                    getBatchOptionData(assessmentData.collegeId);
+                    setIsOpen(true);
+                  }}
+                >
+                  Assign
+                </Button>
+                <Button
+                  size="sm"
+                  block={variant !== "full"}
+                  className="w-full lg:w-auto py-2 rounded-lg font-semibold shadow-md"
+                  onClick={() => {
+                    navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
+                      state: assessmentData
+                    });
+                  }}
+                >
+                  View
+                </Button>
+                </div>
+              </div>
           </div>
         </div>
-      </Card>
+      {/* </Card> */}
 
       <Dialog
         style={{

@@ -54,7 +54,7 @@ const AddnewDepartment = () => {
         handleCloseClick={handleAddnewDepartmentCloseClick}
         departmentData={departmentData}
       />
-      <Card>
+      <Card bodyClass="p-3 sm:p-[1.25rem]">
         <DepartmentList
           flag={addFlag}
           parentCloseCallback={handleAddnewDepartmentCloseClick}

@@ -13,59 +13,56 @@ const TopList = ({ data, title}) => {
   const [lists] = useState(data ? data : []);
 
   return (
-    <Card>
+    <Card className="h-full">
       <div className="mb-2">
         <h3 className={`text-${themeColor}-${primaryColorLevel}`}>{title}</h3>
       </div>
       {lists.map((info, index) => {
         return (
-          <>
-            <div
-              className={`p-2 hover:bg-${themeColor}-200 rounded-xl cursor-pointer`}
-              key={index}
-              onClick={() => {
-                if (info.url) {
-                  navigate(info.url);
-                }
-              }}
-            >
-              <div className=" flex items-center  overflow-hidden">
-                {/* */}
-                {info?.avatar ? (
-                  <Avatar
-                    className={`border-${themeColor}-${primaryColorLevel} mr-4 border-2 dark:bg-${themeColor}-${primaryColorLevel}`}
-                    size={50}
-                    src={
-                      info.avatar
-                        ? info.avatar
-                        : "https://static.vecteezy.com/system/resources/thumbnails/002/002/403/small/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
-                    }
-                    shape="circle"
-                  />
-                ) : (
-                  <Avatar
-                    className={`border-${themeColor}-${primaryColorLevel} font-semibold text-${themeColor}-${primaryColorLevel} mr-4 border-2 dark:bg-${themeColor}-${primaryColorLevel} bg-indigo-100`}
-                    size={50}
-                    shape="circle"
-                  >
-                    {info.name
-                      .split(" ") // Split the phrase by spaces
-                      .map((word) => word[0]?.toUpperCase()) // Get the first letter of each word and make it uppercase
-                      .slice(0, 4)
-                      .join("")}
-                  </Avatar>
-                )}
-                <div className="flex justify-between items-center">
-                  <h5
-                    className={`font-bold leading-none text-${themeColor}-${primaryColorLevel} mr-2 capitalize` }
-                  >
-                    {info.name}
-                  </h5>
-                </div>
-                <hr />
+          <div key={index} 
+            className={`p-2 hover:bg-${themeColor}-200 rounded-xl cursor-pointer`}
+            onClick={() => {
+              if (info.url) {
+                navigate(info.url);
+              }
+            }}
+          >
+            <div className=" flex items-center  overflow-hidden">
+              {/* */}
+              {info?.avatar ? (
+                <Avatar
+                  className={`border-${themeColor}-${primaryColorLevel} mr-4 border-2 dark:bg-${themeColor}-${primaryColorLevel}`}
+                  size={40}
+                  src={
+                    info.avatar
+                      ? info.avatar
+                      : "https://static.vecteezy.com/system/resources/thumbnails/002/002/403/small/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
+                  }
+                  shape="circle"
+                />
+              ) : (
+                <Avatar
+                  className={`border-${themeColor}-${primaryColorLevel} font-semibold text-${themeColor}-${primaryColorLevel} mr-4 border-2 dark:bg-${themeColor}-${primaryColorLevel} bg-indigo-100`}
+                  size={40}
+                  shape="circle"
+                >
+                  {info.name
+                    .split(" ") // Split the phrase by spaces
+                    .map((word) => word[0]?.toUpperCase()) // Get the first letter of each word and make it uppercase
+                    .slice(0, 4)
+                    .join("")}
+                </Avatar>
+              )}
+              <div className="flex justify-between items-center">
+                <h5
+                  className={`font-semibold leading-none text-${themeColor}-${primaryColorLevel} mr-2 capitalize` }
+                >
+                  {info.name}
+                </h5>
               </div>
+              <hr />
             </div>
-          </>
+          </div>
         );
       })}
     </Card>

@@ -39,7 +39,7 @@ import {
 import { CgGym } from "react-icons/cg";
 import { AiTwotoneSetting } from "react-icons/ai";
 import { PiStudentFill, PiFilesFill } from "react-icons/pi";
-import { FaRegQuestionCircle, FaSchool } from "react-icons/fa";
+import { FaRegQuestionCircle, FaSchool, FaUserTie } from "react-icons/fa";
 import { RiGraduationCapFill } from "react-icons/ri";
 import Assessment from "assets/svg/assessment";
 import {
@@ -51,7 +51,8 @@ import {
   Policy,
   Settings,
   Staff,
-  Student
+  Student,
+  Result
 } from "assets/svg";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 
@@ -77,11 +78,11 @@ const navigationIcon = {
   policy: <Policy />,
   settings: <Settings />,
   staff: <Staff />,
-  student: <RiGraduationCapFill />,
+  student: <Student />,
   batches: <BiSolidCategoryAlt />,
   attempts: <FaRegQuestionCircle />,
-  quiz: <MdQuiz />,
-  result: <HiDocumentReport />,
+  quiz: <img src='/img/others/publicContent.svg' alt="quiz" className="w-5 h-5 object-contain" />,
+  result: <Result />,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,

@@ -48,16 +48,16 @@ const CourseCard = ({ index, item, trackingRecode }) => {
   return (
     <>
       <div
-        className={`w-60 rounded-lg overflow-hidden shadow-lg bg-white `}
+        className={`w-full lg:w-60 rounded-lg overflow-hidden shadow-lg bg-white `}
         key={index}
       >
         {/* Header Section */}
         <div
-          className={`group relative w-60 h-40 flex justify-center items-center  ${getRandomBgColorClass()}`}
+          className={`group relative w-full lg:w-60 h-40 flex justify-center items-center  ${getRandomBgColorClass()}`}
         >
           {item?.coverImage ? (
             <img
-              className=" w-60 h-40 "
+              className=" w-full lg:w-60 h-40 "
               src={
                 item?.coverImage ||
                 "https://rainbowit.net/html/histudy/assets/images/course/course-online-01.jpg"

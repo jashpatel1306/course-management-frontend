@@ -21,7 +21,7 @@ const Colleges = () => {
   };
   return (
     <>
-      <Card className="mb-4">
+      <Card className="mb-4" bodyClass="p-3 sm:p-[1.25rem]">
         <div className="flex items-center justify-between">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
@@ -52,7 +52,7 @@ const Colleges = () => {
         handleCloseClick={handleAddNewCollegeCloseClick}
         userData={userData}
       />
-      <Card>
+      <Card bodyClass="p-3 sm:p-[1.25rem]">
         <CollegesList
           flag={addFlag}
           parentCloseCallback={handleAddNewCollegeCloseClick}

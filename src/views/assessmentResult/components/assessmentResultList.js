@@ -214,9 +214,10 @@ const AssessmentResult = (props) => {
   return (
     <>
       <div className="lg:flex items-center justify-between w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 ">
+        <div className="w-full lg:w-auto flex flex-col md:flex-row lg:items-center gap-x-4 ">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
+              size="sm"
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
@@ -234,8 +235,9 @@ const AssessmentResult = (props) => {
             />
           )}
           <Select
+            size="sm"
             isSearchable={true}
-            className="w-96 md:mb-0 mb-4 sm:mb-0"
+            className="w-full lg:w-96 md:mb-0 mb-4 sm:mb-0"
             placeholder="Batches"
             options={batchList}
             loading={batchLoading}
@@ -251,6 +253,7 @@ const AssessmentResult = (props) => {
             }}
           />
           <Select
+            size="sm"
             isSearchable={true}
             className="w-[100%] md:mb-0 mb-4 sm:mb-0"
             placeholder="Assessment"

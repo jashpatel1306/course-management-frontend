@@ -123,14 +123,14 @@ const SectionForm = (props) => {
 
   return (
     <>
-      <Card className="mt-4 bg-white">
+      <Card className="mt-4 bg-white" bodyClass="p-3 sm:p-[1.25rem]">
         <div
-          className={`flex justify-between items-center text-${themeColor}-${primaryColorLevel} text-lg font-semibold `}
+          className={`flex justify-between items-center text-${themeColor}-${primaryColorLevel} text-base sm:text-lg font-semibold `}
         >
           <div className="flex justify-start items-center gap-2 ">
             <div>
               <IoIosArrowDown
-                className={`${sectionOpenFlag ? "transform rotate-180" : ""}`}
+                className={`w-5 sm:w-6 h-5 sm:h-6 ${sectionOpenFlag ? "transform rotate-180" : ""}`}
                 size={25}
                 onClick={() => {
                   setSectionOpenFlag(!sectionOpenFlag);
@@ -154,7 +154,7 @@ const SectionForm = (props) => {
             </div>
           </div>
         </div>
-        <div className="px-10">
+        <div className="md:px-10">
           {sectionOpenFlag ? (
             <>
               <div>

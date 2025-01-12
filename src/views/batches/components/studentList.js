@@ -27,7 +27,7 @@ const columns = [
   "Section",
   "Gender",
   "Sem",
-  "Active"
+  "Action"
 ];
 
 const StudentList = (props) => {
@@ -139,19 +139,19 @@ const StudentList = (props) => {
   return (
     <>
       <div className="lg:flex items-center justify-between mb-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-        {" "}
         <div className="w-[50%] ">
           <div
-            className={`w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
+            className={`w-full md:w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
                 dark:bg-gray-700 dark:text-white dark:border-white px-4 border border-${themeColor}-${primaryColorLevel} py-2 px-2 md:w-[100%] lg:w-[50%] xl:w-[40%] sm:w-[100%]`}
           >
             {resultTitle}
           </div>
         </div>
-        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-0 sm:p-1 sm:w-[50%]">
           <Input
+            size="sm"
             placeholder="Search By Name, Email"
-            className=" input-wrapper md:mb-0 mb-4"
+            className=" input-wrapper md:my-0 my-4"
             value={searchText}
             prefix={
               <HiOutlineSearch

@@ -172,15 +172,15 @@ function QuestionForm(props) {
 
   return (
     <>
-      <Card className="mt-4 px-4 border">
+      <Card className="mt-4 md:px-4 border" bodyClass="p-3 sm:p-[1.25rem]">
         <div className="mb-6">
-          <div className="flex justify-between text-gray-700 items-center text-lg font-bold mb-5">
+          <div className="flex flex-col md:flex-row justify-between text-gray-700 items-start md:items-center text-lg font-bold mb-5">
             <div>
               {questionType === "mcq"
                 ? "MCQ Question"
                 : "Fill in the Blank Question"}{" "}
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Select
                 placeholder="Please Select"
                 defaultValue={
@@ -306,7 +306,7 @@ function QuestionForm(props) {
               )}
             </div>
           ))}
-        <div className="flex justify-start">
+        <div className="flex justify-center md:justify-start">
           <Button
             size="md"
             icon={<HiPlus />}
@@ -317,7 +317,7 @@ function QuestionForm(props) {
             <span>Answer</span>
           </Button>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-between md:justify-end gap-2 mt-4 md:mt-0">
           <Button
             variant="twoTone"
             className={`mr-2 border border-${themeColor}-${primaryColorLevel}`}

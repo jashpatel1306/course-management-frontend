@@ -85,7 +85,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build:css": "cross-env TAILWIND_MODE=build NODE_ENV=production postcss src/assets/styles/app.css -o src/index.css",
-    "watch:css": "cross-env  NODE_ENV=production postcss src/assets/styles/app.css -o src/index.css --watch",
+    "watch:css": "postcss src/assets/styles/app.css -o src/index.css --watch",
     "react-scripts:start": "react-scripts start",
     "react-scripts:build": "react-scripts build",
     "analyze": "source-map-explorer 'build/static/js/*.js'"

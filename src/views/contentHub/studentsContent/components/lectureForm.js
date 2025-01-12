@@ -554,7 +554,7 @@ const LectureForm = (props) => {
                       <FaFileAlt size={20} />
                     )}{" "}
                   </p>
-                  <p className="text-gray-500 text-base font-bold">
+                  <p className="text-gray-500 text-sm sm:text-base font-bold">
                     {props.value}
                   </p>
                 </div>
@@ -682,17 +682,17 @@ const LectureForm = (props) => {
         <div className="mt-4  bg-gray-100 border-2 border-gray-300 rounded-lg">
           <div className="bg-white w-full rounded-lg ">
             <div
-              className={`flex justify-between items-center text-lg font-semibold gap-2 px-3 p-3`}
+              className={`flex flex-col lg:flex-row justify-between items-center text-sm md:text-base md:text-lg font-semibold gap-2 px-3 p-2 md:p-3`}
             >
-              <div className="flex items-center gap-2">
+              <div className="w-full lg:w-auto flex items-center gap-2">
                 <FaCheckCircle />
 
                 <div>Unit {lectureIndex + 1} :</div>
 
                 <FaFile />
 
-                <div className="flex capitalize gap-4 items-center">
-                  <div className="flex items-center gap-4 ">
+                <div className="flex capitalize gap-2 md:gap-4 items-center">
+                  <div className="flex items-center gap-2 md:gap-4">
                     <div
                       className="flex items-center capitalize gap-4 cursor-pointer"
                       onClick={() => {
@@ -716,11 +716,11 @@ const LectureForm = (props) => {
                 </div>
               </div>
 
-              <div className="flex justify-center items-center gap-4 ">
+              <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center gap-4 ">
                 <Button
                   size="sm"
                   variant="plain"
-                  className={`text-base hover:bg-${themeColor}-100 bg-gray-50 border-2 border-gray-400 rounded-lg  `}
+                  className={`text-sm sm:text-base hover:bg-${themeColor}-100 bg-gray-50 border-2 border-gray-400 rounded-lg  `}
                   icon={<HiPlusCircle size={20} />}
                   onClick={() => {
                     setLectureForm({
@@ -752,12 +752,12 @@ const LectureForm = (props) => {
               <>
                 {lectureFormFlag ? (
                   <>
-                    <div className="flex justify-center bg-gray-100 rounded-b-lg p-4 w-full">
+                    <div className="flex justify-center bg-gray-100 rounded-b-lg p-2 md:p-4 w-full">
                       {lectureForm.type ? (
                         <>
                           {lectureForm.type === "text" && (
                             <>
-                              <div className="w-full  gap-y-4  items-center border-2 border-gray-300  py-4 px-4 bg-gray-200 rounded-lg">
+                              <div className="w-full gap-y-4 items-center border-2 border-gray-300 p-2 md:p-4 bg-gray-200 rounded-lg">
                                 <div className="col-span-1 gap-4 mb-4">
                                   <div
                                     className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
@@ -1060,8 +1060,8 @@ const LectureForm = (props) => {
                         </>
                       ) : (
                         <>
-                          <div className="w-2/3 flex flex-col justify-center gap-y-4  items-center border-2 border-dashed border-gray-500  py-4 px-4 bg-gray-200 rounded-lg">
-                            <p className="text-gray-500 text-lg">
+                          <div className="w-2/3 flex flex-col justify-center gap-y-4 items-center border-2 border-dashed border-gray-500  py-4 px-4 bg-gray-200 rounded-lg">
+                            <p className="text-gray-500 text-sm sm:text-lg">
                               Select the main type of content. Files and links
                               can be added as resources.
                             </p>
@@ -1129,14 +1129,14 @@ const LectureForm = (props) => {
                   </>
                 ) : (
                   <>
-                    <div className="flex flex-col justify-center bg-gray-100 rounded-b-lg p-4 w-full">
+                    <div className="flex flex-col justify-center bg-gray-100 rounded-b-lg p-2 md:p-4 w-full">
                       <div className="flex justify-end mb-4 items-center gap-3 ">
                         {lectureData?.lectureContent?.length > 0 && (
                           <div className="flex justify-center items-center gap-4 bg-gray-300 p-2 px-4  rounded-lg">
                             {lectureData.isPublish ? (
                               <>
                                 <div
-                                  className={`text-lg text-${themeColor}-${primaryColorLevel} font-semibold`}
+                                  className={`text-sm sm:text-lg text-${themeColor}-${primaryColorLevel} font-semibold`}
                                 >
                                   Publish
                                 </div>
@@ -1194,7 +1194,7 @@ const LectureForm = (props) => {
                       ) : (
                         <>
                           {" "}
-                          <p className="flex justify-center items-center font-semibold text-lg">
+                          <p className="flex justify-center items-center font-semibold text-base sm:text-lg">
                             No Content Available
                           </p>
                         </>

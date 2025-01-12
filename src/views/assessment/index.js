@@ -92,14 +92,14 @@ const Assessment = () => {
   }, []);
   return (
     <>
-      <Card>
-        <div className="flex items-center justify-between ">
+      <Card bodyClass="p-3 sm:p-[1.25rem]">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between ">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
             Assessments
           </div>
-          <div>
+          <div className="w-full md:w-auto">
             <Button
               size="sm"
               variant="solid"
@@ -107,6 +107,7 @@ const Assessment = () => {
               onClick={async () => {
                 setIsOpen(true);
               }}
+              className="w-full md:w-auto"
             >
               Add New Assessment
             </Button>
