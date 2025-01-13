@@ -109,7 +109,7 @@ const CourseList = (props) => {
           <>
             <div>
               <div className="flex justify-start">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
+                <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-gray-100 mt-4">
                   {courseData.map((item, index) => {
                     const trackingRecode = trackingData.find(
                       (info, index) => info.courseId === item._id

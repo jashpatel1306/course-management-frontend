@@ -116,16 +116,16 @@ const CourseCard = ({ index, item }) => {
   return (
     <>
       <div
-        className={`w-60 rounded-lg overflow-hidden shadow-lg bg-white `}
+        className={`w-full rounded-lg overflow-hidden shadow-lg bg-white `}
         key={index}
       >
         {/* Header Section */}
         <div
-          className={`group relative w-60 h-40 flex justify-center items-center  ${getRandomBgColorClass()}`}
+          className={`group relative w-full h-40 flex justify-center items-center  ${getRandomBgColorClass()}`}
         >
           {item?.coverImage ? (
             <img
-              className=" w-60 h-40 "
+              className="w-full h-40 "
               src={
                 item?.coverImage ||
                 "https://rainbowit.net/html/histudy/assets/images/course/course-online-01.jpg"
@@ -143,7 +143,7 @@ const CourseCard = ({ index, item }) => {
               </p>
             </div>
           )}
-          <div className="w-60 h-40  rounded absolute  bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
+          <div className="w-full h-40  rounded absolute  bg-gray-900/[.7] group-hover:flex hidden text-xl items-center justify-center">
             {((!item.collegeId &&
               userData?.authority.toString() === SUPERADMIN) ||
               userData.collegeId === item.collegeId) && (
@@ -199,17 +199,17 @@ const CourseCard = ({ index, item }) => {
         {/* Course Details */}
         <div className={`p-4 `}>
           <Tooltip title={item?.courseName} placement="bottom">
-            <h5 className="text-lg font-bold line-clamp-1 capitalize">
+            <h5 className="text-xl font-bold line-clamp-1 capitalize">
               {item?.courseName}
             </h5>
           </Tooltip>
           <div className="flex justify-start gap-2 py-2 font-semibold">
             {item.isPublish ? (
-              <p className="bg-green-500 text-white px-2 py-1 rounded">
+              <p className="text-[#25A716] text-base py-1 rounded">
                 Publish
               </p>
             ) : (
-              <p className="bg-red-500 text-white px-2 py-1 rounded">
+              <p className="text-[#E1574C] text-base py-1 rounded">
                 Unpublish
               </p>
             )}

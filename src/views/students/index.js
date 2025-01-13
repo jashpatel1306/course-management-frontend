@@ -145,13 +145,13 @@ const Students = () => {
     <>
    
       <Card className="mt-4">
-        <div className="flex items-center justify-between ">
-          <div
-            className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between ">
+          <h3
+            className={`font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
             Students Details
-          </div>
-          <div className="flex gap-x-4">
+          </h3>
+          <div className="w-full md:w-auto flex justify-between md:justify-end gap-x-4 mt-2 md:mt-0">
             <Button
               size="sm"
               variant="twoTone"

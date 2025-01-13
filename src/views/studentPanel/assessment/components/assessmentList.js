@@ -86,7 +86,7 @@ const AssessmentList = () => {
               My Assessments
             </div>
           </div>
-          <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+          <div className="w-full md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
             <Input
               placeholder="Search By Name, Email"
               className=" input-wrapper"

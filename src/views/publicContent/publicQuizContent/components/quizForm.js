@@ -223,9 +223,9 @@ const QuizCard = (props) => {
               Quiz Content Details
             </h4>
           </div>
-          <Card className="bg-gray-50 border-2 mb-3">
+          <Card className="bg-gray-50 border-2 mb-3" bodyClass="p-3 sm:p-[1.25rem]">
             <div
-              className={`flex justify-between items-center text-lg font-semibold gap-2 text-${themeColor}-${primaryColorLevel} ${
+              className={`flex flex-col md:flex-row justify-between items-start md:items-center text-lg font-semibold gap-2 text-${themeColor}-${primaryColorLevel} ${
                 quizData?.questions?.length ? "mb-2" : ""
               }`}
             >
@@ -255,7 +255,7 @@ const QuizCard = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2 ">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   size="sm"
                   variant="twoTone"

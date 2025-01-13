@@ -13,8 +13,8 @@ import { DataNoFound } from "assets/svg";
 import { HiOutlineSearch, HiPlusCircle } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
 const activeFilter = [
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" }
+  { label: "Published", value: "active" },
+  { label: "Unpublished", value: "inactive" }
 ];
 const CourseList = (props) => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -141,8 +141,9 @@ const CourseList = (props) => {
             </Button>
           </div>
         </div>
-        <div className="grid grid-cols-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4">
           <Select
+            size="sm"
             isSearchable={true}
             className="col-span-1 md:mb-0 mb-4 sm:mb-0"
             placeholder="Active Filter"
@@ -161,8 +162,9 @@ const CourseList = (props) => {
           <div></div>
           <div></div>
           <Input
+            size="sm"
             placeholder="Search By Name, Email"
-            className="w-[384px] input-wrapper md:mb-0 mb-4"
+            className="input-wrapper md:mb-0 mb-4"
             value={searchText}
             prefix={
               <HiOutlineSearch
@@ -230,8 +232,8 @@ const CourseList = (props) => {
         ) : courseData && courseData?.length ? (
           <>
             <div>
-              <div className="flex justify-start">
-                <div className="flex flex-wrap justify-start gap-6 bg-gray-100 mt-4">
+              <div className="w-full flex justify-start">
+                <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-gray-100 mt-4">
                   {courseData.map((item, index) => {
                     return <CourseCard item={item} index={index} />;
                   })}

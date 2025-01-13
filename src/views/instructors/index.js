@@ -26,8 +26,8 @@ const Instructors = () => {
 
   return (
     <>
-      <Card className="mt-4">
-        <div className="flex items-center justify-between ">
+      <Card className="mt-4" bodyClass="p-3 sm:p-[1.25rem]">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between ">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
@@ -52,7 +52,7 @@ const Instructors = () => {
           </div>
         </div>
       </Card>
-      <Card className="mt-4">
+      <Card className="mt-4" bodyClass="p-3 sm:p-[1.25rem]">
         <InstructorList
           flag={addFlag}
           parentCloseCallback={handleAddNewInstructorCloseClick}

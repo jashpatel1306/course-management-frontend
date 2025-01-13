@@ -86,8 +86,8 @@ const QuizContent = () => {
 
   return (
     <>
-      <Card>
-        <div className="flex items-center justify-between ">
+      <Card bodyClass="p-3 sm:p-[1.25rem]">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between ">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >

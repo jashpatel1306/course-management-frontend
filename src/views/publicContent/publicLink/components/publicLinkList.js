@@ -1,19 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { Table, Dialog, Button, Pagination, Select } from "components/ui";
-import { TableRowSkeleton } from "components/shared";
-import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
-import DataNoFound from "assets/svg/dataNoFound";
-import appConfig from "configs/app.config";
-import openNotification from "views/common/notification";
-import { formatTimestampToReadableDate } from "views/common/commonFuntion";
-import { useSelector } from "react-redux";
-import removeSpecials from "views/common/serachText";
-import { FaLink } from "react-icons/fa";
-import { RiFileChartFill } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
 import { FRONTEND_BASE_URL } from "apiServices/baseurl";
+import DataNoFound from "assets/svg/dataNoFound";
+import { TableRowSkeleton } from "components/shared";
+import { Button, Dialog, Pagination, Select, Table } from "components/ui";
+import appConfig from "configs/app.config";
+import { useEffect, useState } from "react";
+import { CgFileDocument } from "react-icons/cg";
+import { FaLink, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { formatTimestampToReadableDate } from "views/common/commonFuntion";
+import openNotification from "views/common/notification";
+import removeSpecials from "views/common/serachText";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -196,10 +195,10 @@ const PublicLinkList = (props) => {
                         {" "}
                         <Button
                           shape="circle"
-                          variant="solid"
-                          className="mr-2"
+                          variant="transparent"
+                          className="mr-2 border-none !bg-transparent"
                           size="sm"
-                          icon={<FaLink />}
+                          icon={<FaLink className="text-blue-700" />}
                           onClick={async () => {
                          
                             handleCopyClick(
@@ -211,10 +210,10 @@ const PublicLinkList = (props) => {
                       <Td>
                         <Button
                           shape="circle"
-                          variant="solid"
-                          className="mr-2"
+                          variant="transparent"
+                          className="mr-2 border-none !bg-transparent"
                           size="sm"
-                          icon={<HiOutlinePencil />}
+                          icon={<FaRegEdit size={20} className="text-blue-700" />}
                           onClick={async () => {
                             parentCloseCallback();
                             setData(item);
@@ -229,9 +228,9 @@ const PublicLinkList = (props) => {
                           <Button
                             shape="circle"
                             variant="solid"
-                            className="mr-2"
+                            className="mr-2 border-none !bg-transparent"
                             size="sm"
-                            icon={<RiFileChartFill />}
+                            icon={<CgFileDocument size={20} className="text-blue-700" />}
                             onClick={async () => {
                               navigate(
                                 `/app/admin/public-content/quiz-result/${item._id}`,
@@ -246,14 +245,13 @@ const PublicLinkList = (props) => {
                         </div>
                       </Td>
                       <Td>
-                        {" "}
                         {item?.active && (
                           <Button
                             shape="circle"
-                            color="red-700"
                             variant="solid"
                             size="sm"
-                            icon={<HiOutlineTrash />}
+                            className="mr-2 border-none !bg-transparent"
+                            icon={<FaRegTrashAlt size={20} className="text-red-700" />}
                             onClick={() => {
                               setSelectObject(item);
                               setDeleteIsOpen(true);

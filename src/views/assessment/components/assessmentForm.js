@@ -157,7 +157,7 @@ const AssessmentForm = () => {
       </div>
       {!sessionLoading && sectionData?._id ? (
         <>
-          <Card>
+          <Card bodyClass="p-3 sm:p-[1.25rem]">
             <div className="flex justify-between items-center ">
               <div
                 className={`text-xl mb-2 mx-2 font-semibold text-${themeColor}-${primaryColorLevel}`}
@@ -177,7 +177,7 @@ const AssessmentForm = () => {
                 </div>
               </div> */}
             </div>
-            <Card className="bg-gray-100 border-2 mt-4">
+            <Card className="bg-gray-100 border-2 mt-4" bodyClass="p-3 sm:p-[1.25rem]">
               <div>
                 {sectionData?.content?.map((info, index) => {
                   return (

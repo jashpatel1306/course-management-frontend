@@ -6,7 +6,9 @@ import {
   Button,
   Dialog,
   Badge,
-  Select
+  Select,
+  Dropdown,
+  MenuItem
 } from "components/ui";
 import React, { useEffect, useState } from "react";
 import { HiOutlinePencil } from "react-icons/hi";
@@ -17,6 +19,7 @@ import openNotification from "views/common/notification";
 import { TableRowSkeleton } from "components/shared";
 import { DataNoFound } from "assets/svg";
 import { useNavigate } from "react-router-dom";
+import { BsThreeDots } from "react-icons/bs";
 const { Tr, Th, Td, THead, TBody } = Table;
 
 const columns = [
@@ -126,10 +129,10 @@ const QuizList = (props) => {
   };
   return (
     <>
-      <Card className="mt-4">
+      <Card className="mt-4" bodyClass="p-3 sm:p-[1.25rem]">
         <div className="lg:flex items-center justify-between mt-2 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
           <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]"></div>
-          <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+          <div className="w-full md:w-56 p-1 lg:w-[25%]">
             <Select
               isSearchable={true}
               className=""
@@ -203,32 +206,37 @@ const QuizList = (props) => {
                         </Td>
 
                         <Td>
-                          <div className="flex ">
-                            <Button
-                              shape="circle"
-                              variant="solid"
-                              className="mr-2"
-                              size="sm"
-                              icon={<HiOutlinePencil />}
-                              onClick={async () => {
-                                navigate(
-                                  `/app/admin/public-content/quiz-form/${item._id}`
-                                );
-                              }}
-                            />
-                            {/* {item?.active && (
-                              <Button
-                                shape="circle"
-                                color="red-700"
-                                variant="solid"
-                                size="sm"
-                                icon={<HiOutlineTrash />}
-                                onClick={() => {
-                                  setSelectObject(item);
-                                  setDeleteIsOpen(true);
-                                }}
-                              />
-                            )} */}
+                          <div className="flex items-center">
+                          <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
+                            <MenuItem key='actions' eventKey='actions'>
+                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
+                            </MenuItem>}
+                            placement="middle-end-bottom">
+                               <Button
+                                  shape="circle"
+                                  variant="solid"
+                                  size="sm"
+                                  icon={<HiOutlinePencil />}
+                                  onClick={async () => {
+                                    navigate(
+                                      `/app/admin/public-content/quiz-form/${item._id}`
+                                    );
+                                  }}
+                                />
+                              {/* {item?.active && (
+                                <Button
+                                  shape="circle"
+                                  color="red-700"
+                                  variant="solid"
+                                  size="sm"
+                                  icon={<HiOutlineTrash />}
+                                  onClick={() => {
+                                    setSelectObject(item);
+                                    setDeleteIsOpen(true);
+                                  }}
+                                />
+                              )} */}
+                            </Dropdown>
                           </div>
                         </Td>
                       </Tr>

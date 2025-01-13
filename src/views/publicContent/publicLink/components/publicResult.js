@@ -158,10 +158,10 @@ const PublicResultList = () => {
           </div>
         </div>
       </Card>
-      <Card>
+      <Card bodyClass="p-3 sm:p-[1.25rem]">
         <div className="w-[50%] p-1">
           <div
-            className={`w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
+            className={`w-full lg:w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
                 dark:bg-gray-700 dark:text-white dark:border-white px-4 border border-${themeColor}-${primaryColorLevel} py-2 px-2 md:w-[100%] lg:w-[50%] xl:w-[40%] sm:w-[100%]`}
           >
             {resultTitle}
@@ -257,7 +257,7 @@ const PublicResultList = () => {
                 Student Details
               </h5>
 
-              <div className="border border-[#ccc] p-[20px] w-[300px] rounded-lg bg-[#f9f9f9]">
+              <div className="w-full border border-[#ccc] p-[20px] w-[300px] rounded-lg bg-[#f9f9f9]">
                 {Object.entries(selectObject?.specificField).map(
                   ([key, value], index) => (
                     <div className="mb-[10px] text-base" key={index}>

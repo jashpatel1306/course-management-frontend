@@ -1,5 +1,6 @@
 const flattenColorPalette = require('tailwindcss/lib/util/flattenColorPalette').default
 const safeListFile = 'safelist.txt'
+const colors = require('tailwindcss/colors')
 module.exports = {
   mode: 'jit',
   content: [
@@ -12,9 +13,16 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    colors: {
+      ...colors,
+      blue: {
+        ...colors.blue,
+        '700': '#0648BF',
+      }
+    },
     fontFamily: {
       sans: [
-        'Inter',
+        'DM Sans',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
@@ -41,6 +49,7 @@ module.exports = {
         '"Courier New"',
         'monospace',
       ],
+      dmSans: ['DM Sans', 'sans-serif'],
     },
     screens: {
       xs: '576',

@@ -8,6 +8,8 @@ import {
   Pagination,
   Input,
   Select,
+  Dropdown,
+  MenuItem,
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
@@ -28,6 +30,7 @@ import removeSpecials from "views/common/serachText";
 import { components } from "react-select";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { BsThreeDots } from "react-icons/bs";
 const { Tr, Th, Td, THead, TBody } = Table;
 const { Control } = components;
 const columns = [
@@ -198,7 +201,7 @@ const AdminList = (props) => {
       <div className="lg:flex items-center justify-between mb-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
         <div className="w-[50%] p-1">
           <div
-            className={`w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
+            className={`w-full lg:w-[35%]  text-center rounded-lg font-bold bg-${themeColor}-50 text-${themeColor}-${primaryColorLevel} text-base
                 dark:bg-gray-700 dark:text-white dark:border-white px-4 border border-${themeColor}-${primaryColorLevel} py-2 px-2 md:w-[100%] lg:w-[50%] xl:w-[40%] sm:w-[100%]`}
           >
             {resultTitle}
@@ -207,8 +210,9 @@ const AdminList = (props) => {
 
         <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]">
           <Select
+            size="sm"
             isSearchable={false}
-            className="w-[100%] md:mb-0 mb-4 sm:mb-0"
+            className="w-[100%] md:my-0 my-4 sm:my-0"
             placeholder="Status"
             options={statusOptions}
             defaultValue={statusOptions[0]}
@@ -223,8 +227,9 @@ const AdminList = (props) => {
             }}
           />
         </div>
-        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+        <div className="md:w-[100%] p-1 lg:w-[25%]">
           <Input
+            size="sm"
             placeholder="Search By Name, Email"
             className=" input-wrapper md:mb-0 mb-4"
             value={searchText}
@@ -306,40 +311,46 @@ const AdminList = (props) => {
                       <Td>{item?.contactPersonNo}</Td>
 
                       <Td>
-                        <div className="flex gap-2">
-                          <Button
-                            shape="circle"
-                            variant="solid"
-                            className=""
-                            size="sm"
-                            icon={<HiOutlinePencil />}
-                            onClick={async () => {
-                              item.email = item?.userId?.email;
-                              item.password = await useEncryption.decryptData(
-                                item?.userId?.password
-                              );
-                              item.userId = item?.userId?._id;
+                        <div className="flex items-center">
+                        <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
+                            <MenuItem key='actions' eventKey='actions'>
+                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
+                            </MenuItem>}
+                            placement="middle-end-top">
+                               <Button
+                                shape="circle"
+                                variant="solid"
+                                size="sm"
+                                icon={<HiOutlinePencil />}
+                                onClick={async () => {
+                                  item.email = item?.userId?.email;
+                                  item.password = await useEncryption.decryptData(
+                                    item?.userId?.password
+                                  );
+                                  item.userId = item?.userId?._id;
 
-                              parentCloseCallback();
-                              setUserData(item);
-                              setTimeout(() => {
-                                parentCallback();
-                              }, 50);
-                            }}
-                          />
-                          {item?.active && (
-                            <Button
-                              shape="circle"
-                              color="red-700"
-                              variant="solid"
-                              size="sm"
-                              icon={<HiOutlineTrash />}
-                              onClick={() => {
-                                setSelectObject(item);
-                                setDeleteIsOpen(true);
-                              }}
-                            />
-                          )}
+                                  parentCloseCallback();
+                                  setUserData(item);
+                                  setTimeout(() => {
+                                    parentCallback();
+                                  }, 50);
+                                }}
+                              />
+                              {item?.active && (
+                                <Button
+                                  shape="circle"
+                                  color="red-700"
+                                  variant="solid"
+                                  size="sm"
+                                  className="ml-2"
+                                  icon={<HiOutlineTrash />}
+                                  onClick={() => {
+                                    setSelectObject(item);
+                                    setDeleteIsOpen(true);
+                                  }}
+                                />
+                              )}
+                            </Dropdown>
                         </div>
                       </Td>
                       <Td>

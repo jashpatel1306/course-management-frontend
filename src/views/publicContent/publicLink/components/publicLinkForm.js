@@ -348,7 +348,7 @@ function PublicLinkForm(props) {
           </div>
         }
         isOpen={isOpen}
-        width={600}
+        // width={600}
         onClose={() => {
           resetErrorData();
           resetFormData();
@@ -388,6 +388,7 @@ function PublicLinkForm(props) {
         }
         headerClass="items-start bg-gray-100 dark:bg-gray-700"
         footerClass="border-t-2 p-3"
+        bodyClass="p-3 lg:p-[1.5rem]"
       >
         <div className="text-sm">
           {/* Name */}
@@ -546,8 +547,9 @@ function PublicLinkForm(props) {
             </div>
             <div className="col-span-2">
               {formData?.instruction?.map((instruction, index) => (
-                <div className="flex gap-4 col-span-2 mt-2" key={index}>
+                <div className="flex gap-2 md:gap-4 col-span-2 mt-2" key={index}>
                   <Input
+                    className="max-w-[calc(100%-50px)]"
                     type="text"
                     placeholder={`Enter Quiz Instruction ${index + 1}`}
                     value={instruction}
@@ -560,7 +562,8 @@ function PublicLinkForm(props) {
                       shape="circle"
                       icon={<MdDelete />}
                       onClick={() => removeInstruction(index)}
-                    />
+                      className="w-5 h-5"
+                      />
                   )}
                 </div>
               ))}
@@ -586,6 +589,7 @@ function PublicLinkForm(props) {
               {formData?.specificField?.map((specificField, index) => (
                 <div className="flex gap-4 col-span-2 mt-2" key={index}>
                   <Input
+                    // className="w-2/5"
                     type="text"
                     placeholder={`Enter Field Label`}
                     value={specificField.label}
@@ -603,10 +607,11 @@ function PublicLinkForm(props) {
                     onChange={(e) => {
                       handleSpecificFieldChange("type", index, e.value);
                     }}
-                    className="w-72 text-sm"
+                    className="w-2/5 md:w-72 text-sm"
                   ></Select>
                   {formData.specificField.length > 1 && (
                     <Button
+                      // className="w-5 h-5"
                       shape="circle"
                       icon={<MdDelete />}
                       onClick={() => removeSpecificField(index)}

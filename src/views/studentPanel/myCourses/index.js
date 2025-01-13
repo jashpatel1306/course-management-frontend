@@ -10,7 +10,7 @@ const StudentsContent = () => {
 
   return (
     <>
-      <Card>
+      <Card bodyClass="p-3 sm:p-[1.25rem]">
         <div className="flex items-center justify-between ">
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}

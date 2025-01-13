@@ -231,7 +231,7 @@ const DragAndDrop = (props) => {
     <>
       {!loading ? (
         data?.length > 0 ? (
-          <Card>
+          <Card bodyClass="p-3 sm:p-[1.25rem]">
             <div className="block text-gray-700 text-lg font-bold mb-3 ">
               Questions
             </div>

@@ -89,20 +89,20 @@ const CourseContentForm = () => {
             <Button
               className={`back-button px-1 font-bold text-${themeColor}-${primaryColorLevel} border-2 border-${themeColor}-${primaryColorLevel} dark:text-white`}
               size="sm"
-              icon={<HiArrowNarrowLeft size={30} />}
+              icon={<HiArrowNarrowLeft className="w-5 sm:w-8 h-5 sm:h-8" />}
               onClick={async () => {
                 navigate("/app/admin/content-hub/students");
               }}
             />
           </div>
           <h4
-            className={`text-2xl font-semibold text-${themeColor}-${primaryColorLevel} dark:text-white`}
+            className={`text-xl sm:text-2xl font-semibold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
             Course Content Details
           </h4>
         </div>
 
-        <Card>
+        <Card bodyClass="p-3 sm:p-[1.25rem]">
           <div className="flex justify-between items-center">
             <div
               className={`text-lg font-bold capitalize text-${themeColor}-${primaryColorLevel} dark:text-white`}
@@ -157,7 +157,7 @@ const CourseContentForm = () => {
                 size="md"
                 variant="plain"
                 block
-                className={`text-${themeColor}-${primaryColorLevel} text-lg hover:bg-${themeColor}-100`}
+                className={`text-${themeColor}-${primaryColorLevel} text-base sm:text-lg hover:bg-${themeColor}-100`}
                 icon={<HiPlusCircle size={20} />}
                 loading={sectionLoading}
                 onClick={createSection}

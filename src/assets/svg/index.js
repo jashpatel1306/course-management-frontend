@@ -12,6 +12,7 @@ export { default as Close } from "./Close";
 export { default as Tick } from "./Tick";
 export { default as CheckCircle } from "./CheckCircle";
 export { default as Doodles } from "./Doodles";
+export {default as Result} from "./result";
 
 
 

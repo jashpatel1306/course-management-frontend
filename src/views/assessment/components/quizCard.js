@@ -176,9 +176,9 @@ const QuizCard = (props) => {
   };
   return (
     <>
-      <Card className="bg-gray-50 border-2 mb-3">
+      <Card className="bg-gray-50 border-2 mb-3" bodyClass="p-3 sm:p-[1.25rem]">
         <div
-          className={`flex justify-between items-center text-lg font-semibold gap-2 text-${themeColor}-${primaryColorLevel} mb-2`}
+          className={`flex flex-col lg:flex-row justify-between items-center text-lg font-semibold gap-2 text-${themeColor}-${primaryColorLevel} mb-2`}
         >
           <div className="flex items-center gap-2">
             <FaCheckCircle />
@@ -207,7 +207,7 @@ const QuizCard = (props) => {
               </div>
             </div>
           </div>
-          <div className="flex gap-2 ">
+          <div className="flex gap-2 flex-wrap">
             <Button
               size="sm"
               variant="twoTone"

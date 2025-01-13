@@ -33,7 +33,7 @@ const ActiveUserAnalysis = (props) => {
     },
     colors: [RANDOM_COLOR],
     dataLabels: {
-      enabled: true
+      enabled: false
     },
     noData: {
       text: undefined,
@@ -53,7 +53,7 @@ const ActiveUserAnalysis = (props) => {
 
     series: [
       {
-        name: "Customer",
+        name: "Users",
         data: valuesArray
       }
     ],
@@ -113,31 +113,16 @@ const ActiveUserAnalysis = (props) => {
   }, [filterStatus]);
   return (
     <Card>
-      <h4 className={`text-${themeColor}-${primaryColorLevel}`}>
-        Active User Analysis
-      </h4>
-      <div className="grid grid-cols-2">
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center justify-between">
         <div className="">
+          <h3 className={`text-${themeColor}-${primaryColorLevel}`}>
+            Active User Analysis
+          </h3>
           <p>Active Users Vs Month</p>
         </div>
-        <div className="col-start-2 ">
-          <div className="grid grid-cols-2 ">
-            <div className="mr-4">
-              {/* <Select
-                  size="sm"
-                  placeholder="Please Select Gym"
-                  options={gymOption}
-                  value={selectfilter.gym}
-                  defaultValue={gymOption[0]}
-                  onChange={(e) => {
-                    console.group("Value Changed", e);
-                    setSelectfilter({ ...selectfilter, gym: e });
-                    setApiFlag(true);
-                  }}
-                /> */}
-            </div>
-            <div>
+        <div className="w-full md:w-1/3 mt-4 md:mt-0">
               <Select
+                className="w-full"
                 size="sm"
                 placeholder="Please Select"
                 options={filterOptions}
@@ -149,8 +134,6 @@ const ActiveUserAnalysis = (props) => {
                 }}
               />
             </div>
-          </div>
-        </div>
       </div>
       <div className="mt-6">
         {monthsArray?.length && valuesArray?.length ? (
