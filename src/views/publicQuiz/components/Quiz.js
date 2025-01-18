@@ -361,7 +361,7 @@ export const Quiz = (props) => {
                           Question : MCQ
                         </p>
                         <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-sm md:text-base font-semibold">
-                          2 Marks
+                          {questionData?.marks || "0"} Marks
                         </p>
                       </div>
                       <div className=" pt-2 pb-8">
@@ -417,6 +417,7 @@ export const Quiz = (props) => {
                     color="gray-600"
                     className="max-w-48 md:w-48"
                     onClick={handleBackQuestion}
+                    disabled={activeQuestion <= 0}
                     // loading={isLoading}
                   >
                     Back

@@ -99,7 +99,8 @@ export const Result = (props) => {
           </h3>
           <h3 className="text-brand-midnight text-base md:text-[32px] font-medium leading-9 mt-4 text-gray-700 ">
             {/* Your <span className="font-bold">{quizData.title}</span> is submitted. */}
-            Your results are being processed
+            Your results are being processed...<br />
+            <span className="text-brand-midnight text-sm font-medium leading-9 mt-4 text-gray-700">You can now close this window</span>
           </h3>
         </div>
       </div>

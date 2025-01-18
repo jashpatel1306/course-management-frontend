@@ -21,7 +21,7 @@ const columns = [
   "licenses",
   "start Date",
   "end Date",
-  "like",
+  "link",
   "edit",
   "Results",
   "delete"
@@ -139,7 +139,7 @@ const PublicLinkList = (props) => {
     <>
       <div className="lg:flex items-center justify-between mt-2 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
         <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]"></div>
-        <div className="w-[25%] md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+        <div className="w-full md:w-56 p-1 lg:w-[25%]">
           <Select
             isSearchable={true}
             className=""
