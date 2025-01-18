@@ -7,7 +7,6 @@ const appConfig = {
   unAuthenticatedEntryPath: "/sign-in",
   enableMock: true,
   pagePerData: 10,
-  pagePerData: 10,
   configurationPagePerData: 8,
 };
 

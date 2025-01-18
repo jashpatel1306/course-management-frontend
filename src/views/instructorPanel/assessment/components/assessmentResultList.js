@@ -8,7 +8,6 @@ import appConfig from "configs/app.config";
 import openNotification from "views/common/notification";
 import { useDebounce } from "use-debounce";
 import { useSelector } from "react-redux";
-import { SUPERADMIN } from "constants/roles.constant";
 import { FaEye } from "react-icons/fa";
 
 const { Tr, Th, Td, THead, TBody } = Table;
@@ -32,9 +31,9 @@ const AssessmentResult = (props) => {
     (state) => state?.theme?.primaryColorLevel
   );
   const { userData } = useSelector((state) => state.auth.user);
-
+  console.log("userData: ", userData);
   const { collegeId } = useSelector((state) => state.auth.user.userData);
-  const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
+  const [currentCollegeTab] = useState(collegeId);
   const [currentBatchTab, setCurrentBatchTab] = useState(null);
   const [currentAssessmentTab, setCurrentAssessmentTab] = useState(null);
   const [resultData, setResultData] = useState([]);
@@ -49,8 +48,6 @@ const AssessmentResult = (props) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
-  const [collegeLoading, setCollegeLoading] = useState(false);
-  const [collegeList, setCollegeList] = useState([]);
   const [assessmentLoading, setAssessmentsLoading] = useState(false);
   const [assessmentList, setAssessmentsList] = useState([]);
 
@@ -58,33 +55,17 @@ const AssessmentResult = (props) => {
     setPage(val);
     setApiFlag(true);
   };
-  const getCollegeOptionData = async () => {
-    try {
-      setCollegeLoading(true);
-      const response = await axiosInstance.get(`admin/college-option`);
 
-      if (response.success) {
-        setCollegeList(response.data);
-      } else {
-        openNotification("danger", response.error);
-      }
-    } catch (error) {
-      console.log("getCollegeOptionData error :", error.message);
-      openNotification("danger", error.message);
-    } finally {
-      setCollegeLoading(false);
-    }
-  };
-  const getBatchOptionData = async (collegeId = "") => {
+  const getBatchOptionData = async () => {
     try {
       setBatchLoading(true);
-      const response =
-        userData.authority.toString() === SUPERADMIN && collegeId
-          ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
-          : await axiosInstance.get(`user/batches-option`);
+      const response = await axiosInstance.get(
+        `admin/batches-option/${collegeId}`
+      );
 
       if (response.success) {
         setBatchList(response.data.filter((e) => e.value !== "all"));
+        // setBatchList(response.data);
       } else {
         openNotification("danger", response.error);
       }
@@ -95,7 +76,7 @@ const AssessmentResult = (props) => {
       setBatchLoading(false);
     }
   };
-  const getAssessmentOptionData = async (collegeId = "") => {
+  const getAssessmentOptionData = async () => {
     try {
       setAssessmentsLoading(true);
       const response = await axiosInstance.get(
@@ -103,6 +84,7 @@ const AssessmentResult = (props) => {
       );
       if (response.success) {
         setAssessmentsList(response.data.filter((e) => e.value !== "all"));
+        // setAssessmentsList(response.data);
       } else {
         openNotification("danger", response.error);
       }
@@ -163,12 +145,7 @@ const AssessmentResult = (props) => {
 
   useEffect(() => {
     setApiFlag(true);
-    if (userData.authority.toString() !== SUPERADMIN) {
-      getBatchOptionData();
-    } else {
-      getCollegeOptionData();
-      getBatchOptionData(collegeId);
-    }
+    getBatchOptionData();
   }, []);
   useEffect(() => {
     if (!flag) {
@@ -215,25 +192,6 @@ const AssessmentResult = (props) => {
     <>
       <div className="lg:flex items-center justify-between w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
         <div className="w-full lg:w-auto flex flex-col md:flex-row lg:items-center gap-x-4 ">
-          {userData.authority.toString() === SUPERADMIN && (
-            <Select
-              size="sm"
-              isSearchable={true}
-              className="w-[100%] md:mb-0 mb-4 sm:mb-0"
-              placeholder="College"
-              options={collegeList}
-              loading={collegeLoading}
-              value={collegeList.find(
-                (item) => item.value === currentCollegeTab
-              )}
-              onChange={(item) => {
-                setCurrentCollegeTab(item.value);
-                getBatchOptionData(item.value);
-                setApiFlag(true);
-                setPage(1);
-              }}
-            />
-          )}
           <Select
             size="sm"
             isSearchable={true}
@@ -247,9 +205,11 @@ const AssessmentResult = (props) => {
                 : null
             }
             onChange={(item) => {
-              setCurrentBatchTab(item.value);
-              setApiFlag(true);
-              setPage(1);
+              if (item.value !== "all") {
+                setCurrentBatchTab(item.value);
+                setApiFlag(true);
+                setPage(1);
+              }
             }}
           />
           <Select
@@ -267,9 +227,11 @@ const AssessmentResult = (props) => {
                 : null
             }
             onChange={(item) => {
-              setCurrentAssessmentTab(item.value);
-              setApiFlag(true);
-              setPage(1);
+              if (item.value !== "all") {
+                setCurrentAssessmentTab(item.value);
+                setApiFlag(true);
+                setPage(1);
+              }
             }}
           />
         </div>

@@ -1,7 +1,3 @@
-import {
-  QUIZ_PREFIX_PATH,
-  STUDENT_PREFIX_PATH
-} from "constants/route.constant";
 import React from "react";
 
 const authRoute = [

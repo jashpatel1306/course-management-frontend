@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Button, Card } from "components/ui";
 import React, { useState } from "react";
 import { HiPlusCircle } from "react-icons/hi";

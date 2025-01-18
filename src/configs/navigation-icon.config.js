@@ -29,18 +29,15 @@ import {
   HiDatabase,
   HiPhone,
   HiDocumentText,
-  HiDocumentReport
 } from "react-icons/hi";
 import {
-  MdQuiz,
   MdSubscriptions,
   MdTransferWithinAStation
 } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 import { AiTwotoneSetting } from "react-icons/ai";
 import { PiStudentFill, PiFilesFill } from "react-icons/pi";
-import { FaRegQuestionCircle, FaSchool, FaUserTie } from "react-icons/fa";
-import { RiGraduationCapFill } from "react-icons/ri";
+import { FaRegQuestionCircle, FaSchool } from "react-icons/fa";
 import Assessment from "assets/svg/assessment";
 import {
   Clients,

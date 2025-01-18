@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import axiosInstance from "apiServices/axiosInstance";
-import { useSelector } from "react-redux";
 import openNotification from "views/common/notification";
-import { useDebounce } from "use-debounce";
-
 import CourseCard from "./courseCards";
 import { Pagination } from "components/ui";
 import { DataNoFound } from "assets/svg";

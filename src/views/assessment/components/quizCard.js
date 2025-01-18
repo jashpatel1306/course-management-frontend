@@ -66,7 +66,7 @@ const QuizCard = (props) => {
   };
   const onHandleQuizBox = async () => {
     try {
-      if (!formData?.description.length) {
+      if (!formData?.description?.length) {
         setError("Please Enter At Least One Instruction");
       }
       if (!formData?.time) {
@@ -75,7 +75,7 @@ const QuizCard = (props) => {
       if (!formData?.title) {
         setError("Please Enter Quiz Title.");
       }
-      if (formData?.title && formData?.time && formData?.description.length) {
+      if (formData?.title && formData?.time && formData?.description?.length) {
         UpdateQuiz();
         setApiFlag(true);
         setError("");
@@ -174,6 +174,7 @@ const QuizCard = (props) => {
       console.log("onHandleBox error :", error);
     }
   };
+  console.log("quizData: ",quizData)
   return (
     <>
       <Card className="bg-gray-50 border-2 mb-3" bodyClass="p-3 sm:p-[1.25rem]">

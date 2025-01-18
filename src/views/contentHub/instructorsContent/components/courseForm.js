@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Input, Button, Switcher, Drawer, Select, Upload } from "components/ui";
+import { Input, Button, Switcher, Drawer, Upload } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
 import * as Yup from "yup";
 import openNotification from "views/common/notification";

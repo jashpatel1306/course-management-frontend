@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import SideBar from "./components/sideBar";
 import ContentView from "./components/contentView";
@@ -29,7 +31,11 @@ const ViewCourses = () => {
         setCourseData(response.data);
         setSidebarData(response.data?.content);
         setContentData(response.data?.content);
-        setActiveContent(response.data?.content[0]._id);
+        setActiveContent(
+          response?.data?.content?.length > 0
+            ? response?.data?.content[0]?._id
+            : null
+        );
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);

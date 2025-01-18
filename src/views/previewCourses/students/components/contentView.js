@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Spinner } from "components/ui";
 import React, { useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
@@ -37,6 +38,7 @@ const CommonViewer = ({ url }) => {
             secureUrl
           )}&embedded=true`}
           width="100%"
+          title="CommonViewer"
           height="700px"
           style={{ border: "none", backgroundColor: "white" }}
           onLoad={() => setIsLoading(false)}
@@ -99,12 +101,10 @@ const ContentView = (props) => {
     courseName,
     contentData,
     setActiveContent,
-    activeContent,
+    activeContent
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
+
   const [currentContentIndex, setCurrentContentIndex] = useState(null);
   useEffect(() => {
     if (activeContent?.lectureId && activeContent?.contentId) {
@@ -169,7 +169,7 @@ const ContentView = (props) => {
               const previousContent = contentData[currentContentIndex - 1];
               setActiveContent({
                 lectureId: previousContent.lectureId,
-                contentId: previousContent.id,
+                contentId: previousContent.id
               });
             }}
           >
@@ -181,7 +181,7 @@ const ContentView = (props) => {
               const nextContent = contentData[currentContentIndex + 1];
               setActiveContent({
                 lectureId: nextContent.lectureId,
-                contentId: nextContent.id,
+                contentId: nextContent.id
               });
             }}
           >

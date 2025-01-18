@@ -37,7 +37,6 @@ import { FcImageFile } from "react-icons/fc";
 import FileUpload from "views/common/fileUpload";
 import { useTable } from "react-table";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useNavigate } from "react-router-dom";
 const { Tr, Td, TBody } = Table;
 Quill.register("modules/imageResize", ImageResize);
 const modules = {

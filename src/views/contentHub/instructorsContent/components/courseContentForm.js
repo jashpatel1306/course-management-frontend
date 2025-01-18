@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Card, Input, Upload, Table } from "components/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -29,7 +30,7 @@ const ReactTable = ({ columns, data }) => {
 
   const table = useTable({ columns, data });
 
-  const { getTableProps, headerGroups, prepareRow, rows } = table;
+  const { getTableProps, prepareRow, rows } = table;
 
   const handleDragEnd = (result) => {
     const { source, destination } = result;
@@ -115,7 +116,6 @@ const CourseContentForm = () => {
     setAddCourseFlag(false);
   };
   const [isLoading, setIsLoading] = useState(false);
-  const [sectionLoading, setSectionLoading] = useState(false);
   const [apiFlag, setApiFlag] = useState(false);
 
   const fetchCourseData = async () => {

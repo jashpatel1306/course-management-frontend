@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 
 import { Button, Dialog, Input, Select, Switcher } from "components/ui";
@@ -8,7 +9,7 @@ import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 
 function DepartmentForm(props) {
-  const { handleCloseClick, departmentData, IsOpen, setIsOpen } = props;
+  const {  departmentData, IsOpen, setIsOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel

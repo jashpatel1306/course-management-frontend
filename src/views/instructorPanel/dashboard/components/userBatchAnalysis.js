@@ -1,16 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { Card, Select } from "components/ui";
+import { Card } from "components/ui";
 import { Chart } from "components/shared";
 import { useSelector } from "react-redux";
-import { getDateRange } from "views/common/commonFuntion";
 import axiosInstance from "apiServices/axiosInstance";
 import { RANDOM_COLOR } from "constants/chart.constant";
-const filterOptions = [
-  { value: "0", label: "Last 6 Months" },
-  { value: "1", label: "This Year" },
-  { value: "2", label: "Previous Year" }
-];
+
 const UserBatchAnalysis = (props) => {
   const { data, college = false } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -19,7 +14,7 @@ const UserBatchAnalysis = (props) => {
   );
   const [monthsArray, setMonthsArray] = useState(data?.monthsArray);
   const [valuesArray, setValuesArray] = useState(data?.valuesArray);
-  const [filter, setFilter] = useState({});
+  const [filter] = useState({});
   const [filterStatus, setFilterStatus] = useState(false);
   const signupUserChartoptions = {
     chart: {
@@ -114,42 +109,11 @@ const UserBatchAnalysis = (props) => {
   return (
     <Card>
       <h4 className={`text-${themeColor}-${primaryColorLevel}`}>
-        Active User Analysis
+        Batches User Analysis
       </h4>
       <div className="grid grid-cols-2">
         <div className="">
-          <p>Active Users Vs Month</p>
-        </div>
-        <div className="col-start-2 ">
-          <div className="grid grid-cols-2 ">
-            <div className="mr-4">
-              {/* <Select
-                  size="sm"
-                  placeholder="Please Select Gym"
-                  options={gymOption}
-                  value={selectfilter.gym}
-                  defaultValue={gymOption[0]}
-                  onChange={(e) => {
-                    console.group("Value Changed", e);
-                    setSelectfilter({ ...selectfilter, gym: e });
-                    setApiFlag(true);
-                  }}
-                /> */}
-            </div>
-            <div>
-              <Select
-                size="sm"
-                placeholder="Please Select"
-                options={filterOptions}
-                // value={selectfilter.filter}
-                onChange={(e) => {
-                  console.group("Value Changed", e);
-                  setFilter(getDateRange(e.value));
-                  setFilterStatus(true);
-                }}
-              />
-            </div>
-          </div>
+          <p>Users Vs Batches</p>
         </div>
       </div>
       <div className="mt-6">

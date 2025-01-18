@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Table } from "components/ui";
 import React, { useRef, useState, useEffect } from "react";

@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import DonutChart from "./DonutChart";
-import { Button } from "components/ui";
 import { BsPatchCheckFill } from "react-icons/bs";
 
 export const Result = (props) => {

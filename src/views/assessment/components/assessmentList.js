@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Card, Input, Pagination, Select } from "components/ui";
 import React, { useEffect, useState } from "react";
 import AssessmentCard from "./assessmentCard";

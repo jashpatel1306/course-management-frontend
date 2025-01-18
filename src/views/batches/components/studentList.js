@@ -15,7 +15,6 @@ import { useDebounce } from "use-debounce";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import removeSpecials from "views/common/serachText";
-import { SUPERADMIN } from "constants/roles.constant";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -36,8 +35,6 @@ const StudentList = (props) => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const { authority } = useSelector((state) => state.auth.user.userData);
-
   const [studentData, setStudentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectObject, setSelectObject] = useState();

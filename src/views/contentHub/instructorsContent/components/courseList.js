@@ -29,7 +29,6 @@ const CourseList = (props) => {
   const [currentCollegeTab] = useState(collegeId);
   const [courseData, setCourseData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectObject] = useState();
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [debouncedText] = useDebounce(searchText, 1000);

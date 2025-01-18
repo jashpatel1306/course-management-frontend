@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
@@ -12,7 +13,6 @@ import { MdTimer } from "react-icons/md";
 import { FaQuestionCircle } from "react-icons/fa";
 import Logo from "components/template/Logo";
 import { useSelector } from "react-redux";
-import { info } from "autoprefixer";
 
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView, results } = props;
@@ -234,13 +234,17 @@ export const Quiz = (props) => {
             <div className="flex justify-between items-center px-4 md:px-6 bg-gray-600 text-white p-2 py-3">
               <div className="flex items-center gap-4">
                 <Logo mode={mode} className="hidden md:block" />
-                <div className="font-bold text-sm md:text-lg ">{quizData?.title}</div>
+                <div className="font-bold text-sm md:text-lg ">
+                  {quizData?.title}
+                </div>
               </div>
 
               <div className="flex gap-2 md:gap-4 items-center">
                 <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-3 md:px-4">
                   <MdTimer size={20} />
-                  <span className="text-sm md:text-xl">{formatTime(timePassed)}</span>
+                  <span className="text-sm md:text-xl">
+                    {formatTime(timePassed)}
+                  </span>
                 </div>
                 <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-3 md:px-4">
                   <span className="text-sm md:text-lg">
@@ -273,12 +277,13 @@ export const Quiz = (props) => {
                       <>
                         <div
                           key={item}
-                          className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${activeQuestion === index
-                            ? "bg-gray-500 text-white"
-                            : findStatus
+                          className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${
+                            activeQuestion === index
+                              ? "bg-gray-500 text-white"
+                              : findStatus
                               ? "bg-green-500 text-white"
                               : "border-gray-300"
-                            }`}
+                          }`}
                           onClick={() => {
                             setActiveQuestion(index);
                           }}
@@ -292,11 +297,15 @@ export const Quiz = (props) => {
                 <div className="md:sticky bg-white w-full p-4 bottom-0 mt-4 flex md:flex-col gap-5 md:gap-2">
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-white border border-gray-300 rounded-full"></div>
-                    <span className="text-sm">Unanswered - {questions.length - questionStatus.length}</span>
+                    <span className="text-sm">
+                      Unanswered - {questions.length - questionStatus.length}
+                    </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                    <span className="text-sm">Answered - {questionStatus.length}</span>
+                    <span className="text-sm">
+                      Answered - {questionStatus.length}
+                    </span>
                   </div>
                   {/* <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
@@ -392,7 +401,7 @@ export const Quiz = (props) => {
                     disabled={activeQuestion + 1 >= questions.length}
                     className="max-w-48 md:w-48"
                     onClick={handleSkipQuestion}
-                  // loading={isLoading}
+                    // loading={isLoading}
                   >
                     Skip
                   </Button>
@@ -400,7 +409,7 @@ export const Quiz = (props) => {
               </div>
 
               <div className="flex gap-4 items-center text-lg">
-                {activeQuestion >= questions.length ? (
+                {activeQuestion === 0 ? (
                   <></>
                 ) : (
                   <Button
@@ -408,7 +417,7 @@ export const Quiz = (props) => {
                     color="gray-600"
                     className="max-w-48 md:w-48"
                     onClick={handleBackQuestion}
-                  // loading={isLoading}
+                    // loading={isLoading}
                   >
                     Back
                   </Button>
@@ -419,7 +428,7 @@ export const Quiz = (props) => {
                   disabled={!nextButton}
                   className="max-w-48 md:w-48"
                   onClick={handleNextQuestion}
-                // loading={isLoading}
+                  // loading={isLoading}
                 >
                   {activeQuestion + 1 >= questions.length
                     ? "Submit Test"

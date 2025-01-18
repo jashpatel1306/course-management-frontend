@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Input, Button, Switcher, Drawer, Select } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";

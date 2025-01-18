@@ -1,11 +1,10 @@
-import axiosInstance from "apiServices/axiosInstance";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import { Button, Spinner } from "components/ui";
 import React, { useEffect, useState } from "react";
-import ReactHtmlParser from "react-html-parser";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import openNotification from "views/common/notification";
 const generateSecureUrl = (pptUrl) => {
   const token = generateRandomToken(16); // Generate a 16-byte token
   const expiryTime = Date.now() + 3600000; // Token valid for 1 hour
@@ -41,6 +40,7 @@ const CommonViewer = ({ url }) => {
           )}&embedded=true`}
           width="100%"
           height="700px"
+          title="CommonViewer"
           style={{ border: "none", backgroundColor: "white" }}
           onLoad={() => setIsLoading(false)}
         />
@@ -81,15 +81,11 @@ const ContentView = (props) => {
     courseName,
     contentData,
     setActiveContent,
-    activeContent,
+    activeContent
   } = props;
-  const { courseId } = useParams();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
+
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const [currentContentIndex, setCurrentContentIndex] = useState(null);
   useEffect(() => {

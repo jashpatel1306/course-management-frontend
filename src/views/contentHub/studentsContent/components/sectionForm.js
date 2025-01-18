@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Dialog, Input } from "components/ui";
 import React, { useEffect, useState } from "react";

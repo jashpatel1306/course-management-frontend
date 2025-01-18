@@ -3,9 +3,9 @@ import { BsPatchCheckFill } from "react-icons/bs";
 
 export const Result = (props) => {
   // const { results, totalQuestions, quizData } = props;
-  const { results, quizData } = props;
-  const { correctAnswers, wrongAnswers, secondsUsed } = results;
-  const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
+  // const { results, quizData } = props;
+  // const { correctAnswers, wrongAnswers, secondsUsed } = results;
+  // const TIME_LIMIT = quizData.totalTime * 60; // 1 minute per question
 
   return (
     <motion.div

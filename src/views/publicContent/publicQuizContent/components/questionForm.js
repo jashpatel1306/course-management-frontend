@@ -2,7 +2,7 @@ import axiosInstance from "apiServices/axiosInstance";
 import { FormNumericInput } from "components/shared";
 import { Button, Card, InputGroup, Radio, Select } from "components/ui";
 import Addon from "components/ui/InputGroup/Addon";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { HiOutlineTrash, HiPlus } from "react-icons/hi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";

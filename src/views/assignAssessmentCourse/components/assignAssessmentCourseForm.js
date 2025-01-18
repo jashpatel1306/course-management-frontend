@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Button, DatePicker, Drawer, Select } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
@@ -6,12 +7,7 @@ import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
-import dayjs from "dayjs";
-import DatePickerRange from "components/ui/DatePicker/DatePickerRange";
 const positionTypeOption = [
-  // { label: "Preliminary Assessment", value: "pre" },
-  // { label: "Section-Based Assessment", value: "section" },
-  // { label: "Grand Test Assessment ", value: "grand" },
   { label: "Preliminary assessment", value: "pre" },
   { label: "Inside section", value: "section" },
   { label: "Grand test ", value: "grand" }
@@ -21,7 +17,6 @@ function AssignCourseForm(props) {
     handleCloseClick,
     assignCourseData,
     isOpen,
-    AssignType = "course"
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -108,7 +103,6 @@ function AssignCourseForm(props) {
     setFormData({
       collegeId:
         userData?.authority.toString() === SUPERADMIN ? "" : userData.collegeId,
-      collegeId: "",
       batchId: "",
       courseId: "",
       sectionId: "",

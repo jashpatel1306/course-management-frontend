@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { FaQuestion, FaQuestionCircle, FaRegClock, FaUserFriends } from "react-icons/fa";
-import { Button, Card, DatePicker, Dialog, Select } from "components/ui";
+import { Button, DatePicker, Dialog, Select } from "components/ui";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import DisplayError from "views/common/displayError";
-import { RiQuestionMark } from "react-icons/ri";
 import { BsQuestionLg } from "react-icons/bs";
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
@@ -29,10 +27,6 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
       .required("End Date is required")
       .min(Yup.ref("startDate"))
   });
-  const cardClasses = `text-${themeColor}-${primaryColorLevel} rounded-xl shadow-lg ${
-    variant === "full" ? "w-full" : "w-56"
-  }`;
-  const { userData } = useSelector((state) => state.auth.user);
 
   const [batchLoading, setBatchLoading] = useState(false);
   const [batchList, setBatchList] = useState([]);
@@ -175,96 +169,88 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
   return (
     <>
       {/* <Card className={cardClasses} bodyClass="p-3 sm:p-[1.25rem]"> */}
-        <div
-          className={`w-full px-4 py-5 text-${themeColor}-${primaryColorLevel} border-b border-[#C6C7C8]`}
-        >
-          <div className="w-full">
-            <div className="text-xl font-extrabold mb-4">
-              {assessmentData?.title}
-            </div>
+      <div
+        className={`w-full px-4 py-5 text-${themeColor}-${primaryColorLevel} border-b border-[#C6C7C8]`}
+      >
+        <div className="w-full">
+          <div className="text-xl font-extrabold mb-4">
+            {assessmentData?.title}
+          </div>
+          <div
+            className={`flex flex-col lg:flex-row gap-3 justify-between lg:items-center`}
+          >
             <div
-              className={`flex flex-col lg:flex-row gap-3 justify-between lg:items-center`}
+              className={`${
+                variant === "full"
+                  ? "w-full flex flex-row gap-2 md:gap-6 items-center"
+                  : "flex flex-col mb-4 gap-y-2 "
+              } `}
             >
-              <div
-                className={`${
-                  variant === "full"
-                    ? "w-full flex flex-row gap-2 md:gap-6 items-center"
-                    : "flex flex-col mb-4 gap-y-2 "
-                } `}
-              >
-                <div className="flex gap-1 lg:gap-2 items-center">
-                  <div
-                    className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}
-                  >
-                    <BsQuestionLg
-                      className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
-                    />
-                  </div>
-                  <span className="text-sm lg:text-lg text-[#272727] font-normal">
-                    {assessmentData?.totalQuestions} Questions
-                  </span>
+              <div className="flex gap-1 lg:gap-2 items-center">
+                <div className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}>
+                  <BsQuestionLg
+                    className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
+                  />
                 </div>
-                <div className="flex gap-1 lg:gap-2 items-center">
-                  <div
-                    className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}
-                  >
-                    <FiFileText
-                      className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
-                    />
-                  </div>
-                  <span className="text-sm lg:text-lg text-[#272727] font-normal">
-                    {assessmentData?.totalMarks} Marks
-                  </span>
-                </div>
-                <div className="flex gap-1 lg:gap-2 items-center">
-                  <div
-                    className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}
-                  >
-                    <MdOutlinePeopleAlt
-                      className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
-                    />
-                  </div>
-                  <span className="text-sm lg:text-lg text-[#272727] font-normal">
-                    {assessmentData?.batches?.length} Batches
-                  </span>
-                </div>
+                <span className="text-sm lg:text-lg text-[#272727] font-normal">
+                  {assessmentData?.totalQuestions} Questions
+                </span>
               </div>
-              <div
-                className="w-full lg:w-auto flex items-center lg:justify-center gap-3"
-              >
-                <Button
-                  size="sm"
-                  block={variant !== "full"}
-                  variant="solid"
-                  className="w-full lg:w-auto py-2 rounded-lg font-semibold shadow-md mb-2 md:mb-0"
-                  onClick={() => {
-                    setFormData({
-                      ...formData,
-                      collegeId: assessmentData?.collegeId,
-                      assessmentId: assessmentData?._id
-                    });
-                    getBatchOptionData(assessmentData.collegeId);
-                    setIsOpen(true);
-                  }}
-                >
-                  Assign
-                </Button>
-                <Button
-                  size="sm"
-                  block={variant !== "full"}
-                  className="w-full lg:w-auto py-2 rounded-lg font-semibold shadow-md"
-                  onClick={() => {
-                    navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
-                      state: assessmentData
-                    });
-                  }}
-                >
-                  View
-                </Button>
+              <div className="flex gap-1 lg:gap-2 items-center">
+                <div className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}>
+                  <FiFileText
+                    className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
+                  />
                 </div>
+                <span className="text-sm lg:text-lg text-[#272727] font-normal">
+                  {assessmentData?.totalMarks} Marks
+                </span>
               </div>
+              <div className="flex gap-1 lg:gap-2 items-center">
+                <div className={`bg-[#F1F6FF] p-1 lg:p-2 rounded-full`}>
+                  <MdOutlinePeopleAlt
+                    className={`text-sm lg:text-xl text-${themeColor}-${primaryColorLevel}`}
+                  />
+                </div>
+                <span className="text-sm lg:text-lg text-[#272727] font-normal">
+                  {assessmentData?.batches?.length} Batches
+                </span>
+              </div>
+            </div>
+            <div className="w-full lg:w-auto flex items-center lg:justify-center gap-3">
+              <Button
+                size="sm"
+                block={variant !== "full"}
+                variant="solid"
+                className="w-full lg:w-auto py-2 rounded-lg font-semibold shadow-md mb-2 md:mb-0"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    collegeId: assessmentData?.collegeId,
+                    assessmentId: assessmentData?._id
+                  });
+                  getBatchOptionData(assessmentData.collegeId);
+                  setIsOpen(true);
+                }}
+              >
+                Assign
+              </Button>
+              <Button
+                size="sm"
+                block={variant !== "full"}
+                className="w-full lg:w-auto py-2 rounded-lg font-semibold shadow-md"
+                onClick={() => {
+                  navigate(`/app/admin/assessment/form/${assessmentData._id}`, {
+                    state: assessmentData
+                  });
+                }}
+              >
+                View
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
       {/* </Card> */}
 
       <Dialog

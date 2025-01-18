@@ -4,7 +4,7 @@ import { SUPERADMIN } from "constants/roles.constant";
 import React, { useEffect, useState } from "react";
 import { CgAssign } from "react-icons/cg";
 import { FaRegEye } from "react-icons/fa";
-import { HiEye, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
+import { HiOutlinePencil } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DisplayError from "views/common/displayError";
@@ -21,7 +21,7 @@ const getRandomBgColorClass = () => {
     "bg-indigo-500",
     "bg-teal-500",
     "bg-orange-500",
-    "bg-sky-500",
+    "bg-sky-500"
   ];
 
   // Generate a random index
@@ -41,7 +41,7 @@ const CourseCard = ({ index, item }) => {
   const [allCollegeList, setAllCollegeList] = useState([]);
   const [selectAssignData, setSelectAssignData] = useState({
     collegeId: null,
-    courseId: null,
+    courseId: null
   });
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [error, setError] = useState("");
@@ -69,7 +69,7 @@ const CourseCard = ({ index, item }) => {
       setAssignLoading(true);
       let apiData = {
         collegeId: selectAssignData.collegeId.value,
-        courseId: selectAssignData.courseId,
+        courseId: selectAssignData.courseId
       };
 
       const response = await axiosInstance.post(
@@ -85,7 +85,7 @@ const CourseCard = ({ index, item }) => {
       }
       setSelectAssignData({
         collegeId: null,
-        courseId: null,
+        courseId: null
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -184,7 +184,7 @@ const CourseCard = ({ index, item }) => {
                     if (item.isPublish) {
                       setSelectAssignData({
                         collegeId: null,
-                        courseId: item._id,
+                        courseId: item._id
                       });
                       setIsOpen(true);
                     } else {
@@ -205,13 +205,9 @@ const CourseCard = ({ index, item }) => {
           </Tooltip>
           <div className="flex justify-start gap-2 py-2 font-semibold">
             {item.isPublish ? (
-              <p className="text-[#25A716] text-base py-1 rounded">
-                Publish
-              </p>
+              <p className="text-[#25A716] text-base py-1 rounded">Publish</p>
             ) : (
-              <p className="text-[#E1574C] text-base py-1 rounded">
-                Unpublish
-              </p>
+              <p className="text-[#E1574C] text-base py-1 rounded">Unpublish</p>
             )}
           </div>
 
@@ -239,8 +235,8 @@ const CourseCard = ({ index, item }) => {
         isOpen={IsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -248,7 +244,7 @@ const CourseCard = ({ index, item }) => {
           setError("");
           setSelectAssignData({
             collegeId: null,
-            courseId: null,
+            courseId: null
           });
         }}
         onRequestClose={() => {
@@ -256,7 +252,7 @@ const CourseCard = ({ index, item }) => {
           setError("");
           setSelectAssignData({
             collegeId: null,
-            courseId: null,
+            courseId: null
           });
         }}
       >
@@ -283,7 +279,7 @@ const CourseCard = ({ index, item }) => {
                     onChange={(item) => {
                       setSelectAssignData({
                         ...selectAssignData,
-                        collegeId: item,
+                        collegeId: item
                       });
                     }}
                   />

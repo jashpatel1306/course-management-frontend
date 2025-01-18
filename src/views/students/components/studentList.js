@@ -41,10 +41,7 @@ const columns = [
   "Sem",
   "Actions"
 ];
-const activeFilter = [
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" }
-];
+
 const StudentList = (props) => {
   const {
     flag,
@@ -82,8 +79,8 @@ const StudentList = (props) => {
   const [collegeList, setCollegeList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
   const [departmentLoading, setDepartmentLoading] = useState(false);
-  const [semesterList, setSemesterList] = useState([]);
-  const [semesterLoading, setSemesterLoading] = useState(false);
+  const [semesterList] = useState([]);
+  const [semesterLoading] = useState(false);
 
   const onPaginationChange = (val) => {
     setPage(val);
@@ -154,26 +151,7 @@ const StudentList = (props) => {
       setDepartmentLoading(false);
     }
   };
-  const getSemesterOptionData = async (collegeId) => {
-    try {
-      setDepartmentLoading(true);
-      const response = await axiosInstance.get(
-        `user/semester-options/${collegeId}`
-      );
 
-      if (response.success) {
-        const semesterOption = response.data.filter((e) => e.value !== "all");
-        setSemesterList(semesterOption);
-      } else {
-        openNotification("danger", response.error);
-      }
-    } catch (error) {
-      console.log("getSemesterOptionData error :", error.message);
-      openNotification("danger", error.message);
-    } finally {
-      setSemesterLoading(false);
-    }
-  };
   const fetchData = async () => {
     try {
       // const bodyData =
@@ -289,8 +267,8 @@ const StudentList = (props) => {
   return (
     <>
       <div className="lg:flex flex-col items-start justify-center gap-y-3 gap-x-4 my-5 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-5">
-        {userData.authority.toString() === SUPERADMIN && (
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-5">
+          {userData.authority.toString() === SUPERADMIN && (
             <Select
               size="small"
               isSearchable={true}
@@ -318,7 +296,7 @@ const StudentList = (props) => {
               }}
             />
           )}
-            <Select
+          <Select
             size="small"
             isSearchable={true}
             className="w-full md:mb-0 mb-4 sm:mb-0 capitalize"
@@ -356,7 +334,7 @@ const StudentList = (props) => {
               setPage(1);
             }}
           />
-           <Select
+          <Select
             size="small"
             isSearchable={true}
             className="w-full md:mb-0 mb-4 sm:mb-0"
@@ -369,7 +347,7 @@ const StudentList = (props) => {
               setPage(1);
             }}
           />
-          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-0 md:gap-y-3 gap-x-5 w-full">
           <Input
             size="small"
@@ -453,42 +431,46 @@ const StudentList = (props) => {
 
                       <Td>
                         <div className="flex items-center">
-                          
-                          
-
-                          <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
-                            <MenuItem key='actions' eventKey='actions'>
-                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
-                            </MenuItem>}
-                            placement="middle-end-bottom">
-                                <Button
+                          <Dropdown
+                            trigger="click"
+                            menuClass="min-w-0 flex justify-center items-center"
+                            renderTitle={
+                              <MenuItem key="actions" eventKey="actions">
+                                <BsThreeDots
+                                  className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`}
+                                />
+                              </MenuItem>
+                            }
+                            placement="middle-end-bottom"
+                          >
+                            <Button
+                              shape="circle"
+                              variant="solid"
+                              className="mr-2"
+                              size="sm"
+                              icon={<HiOutlinePencil />}
+                              onClick={async () => {
+                                parentCloseCallback();
+                                setData(item);
+                                setTimeout(() => {
+                                  parentCallback();
+                                }, 50);
+                              }}
+                            />
+                            {item?.active && (
+                              <Button
                                 shape="circle"
+                                color="red-700"
                                 variant="solid"
-                                className="mr-2"
                                 size="sm"
-                                icon={<HiOutlinePencil />}
-                                onClick={async () => {
-                                  parentCloseCallback();
-                                  setData(item);
-                                  setTimeout(() => {
-                                    parentCallback();
-                                  }, 50);
+                                icon={<HiOutlineTrash />}
+                                onClick={() => {
+                                  setSelectObject(item);
+                                  setDeleteIsOpen(true);
                                 }}
                               />
-                              {item?.active && (
-                                <Button
-                                  shape="circle"
-                                  color="red-700"
-                                  variant="solid"
-                                  size="sm"
-                                  icon={<HiOutlineTrash />}
-                                  onClick={() => {
-                                    setSelectObject(item);
-                                    setDeleteIsOpen(true);
-                                  }}
-                                />
-                              )}
-                            </Dropdown>
+                            )}
+                          </Dropdown>
                         </div>
                       </Td>
                     </Tr>

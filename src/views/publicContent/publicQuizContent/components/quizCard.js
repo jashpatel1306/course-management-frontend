@@ -59,7 +59,7 @@ const QuizCard = (props) => {
   };
   const onHandleQuizBox = async () => {
     try {
-      if (!formData?.description.length) {
+      if (!formData?.description?.length) {
         setError("Please Enter At Least One Instruction");
       }
       if (!formData?.time) {
@@ -68,7 +68,7 @@ const QuizCard = (props) => {
       if (!formData?.title) {
         setError("Please Enter Quiz Title.");
       }
-      if (formData?.title && formData?.time && formData?.description.length) {
+      if (formData?.title && formData?.time && formData?.description?.length) {
         UpdateQuiz();
         setApiFlag(true);
         setError("");
@@ -86,27 +86,7 @@ const QuizCard = (props) => {
       console.log("onHandleQuizBox error :", error);
     }
   };
-  const handleDescriptionChange = (index, value) => {
-    const newDescriptions = [...formData.description];
-    newDescriptions[index] = value;
-    setFormData({
-      ...formData,
-      description: newDescriptions
-    });
-  };
-  const addDescription = () => {
-    setFormData({
-      ...formData,
-      description: [...formData.description, ""] // Add new empty description
-    });
-  };
-  const removeDescription = (index) => {
-    const newDescriptions = formData.description.filter((_, i) => i !== index);
-    setFormData({
-      ...formData,
-      description: newDescriptions
-    });
-  };
+
   return (
     <>
       <Card className="bg-gray-50 border-2 mb-3">
@@ -266,7 +246,7 @@ const QuizCard = (props) => {
                 />
               </div>
             </div>
-          
+
             {/* Quiz Publish Status */}
             <div className="col-span-1 gap-4 mb-4">
               <div

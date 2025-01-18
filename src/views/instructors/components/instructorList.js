@@ -9,13 +9,13 @@ import {
   Select,
   Avatar,
   Dropdown,
-  MenuItem,
+  MenuItem
 } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import {
   HiOutlinePencil,
   HiOutlineSearch,
-  HiOutlineTrash,
+  HiOutlineTrash
 } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
 import DataNoFound from "assets/svg/dataNoFound";
@@ -37,7 +37,7 @@ const columns = [
   "Phone No",
   "Courses",
   "Location",
-  "Active",
+  "Active"
 ];
 
 const InstructorList = (props) => {
@@ -46,8 +46,7 @@ const InstructorList = (props) => {
     parentCallback,
     setAllCollegeList,
     setData,
-    parentCloseCallback,
-    setAllBatchList,
+    parentCloseCallback
   } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -55,9 +54,7 @@ const InstructorList = (props) => {
   );
   const { userData } = useSelector((state) => state.auth.user);
 
-  const { authority, collegeId } = useSelector(
-    (state) => state.auth.user.userData
-  );
+  const { collegeId } = useSelector((state) => state.auth.user.userData);
   const [currentCollegeTab, setCurrentCollegeTab] = useState(collegeId);
   const [instructorData, setInstructorData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,11 +97,11 @@ const InstructorList = (props) => {
       let formData = {
         search: removeSpecials(debouncedText),
         pageNo: page,
-        perPage: appConfig.pagePerData,
+        perPage: appConfig.pagePerData
       };
       formData = {
         ...formData,
-        collegeId: currentCollegeTab ? currentCollegeTab : "all",
+        collegeId: currentCollegeTab ? currentCollegeTab : "all"
       };
       // if (userData?.authority.toString() === SUPERADMIN) {
       //   formData = {
@@ -296,45 +293,52 @@ const InstructorList = (props) => {
 
                       <Td>
                         <div className="flex items-center">
-                        <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
-                            <MenuItem key='actions' eventKey='actions'>
-                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
-                            </MenuItem>}
-                            placement="middle-end-bottom">
+                          <Dropdown
+                            trigger="click"
+                            menuClass="min-w-0 flex justify-center items-center"
+                            renderTitle={
+                              <MenuItem key="actions" eventKey="actions">
+                                <BsThreeDots
+                                  className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`}
+                                />
+                              </MenuItem>
+                            }
+                            placement="middle-end-bottom"
+                          >
+                            <Button
+                              shape="circle"
+                              variant="solid"
+                              className="mr-2"
+                              size="sm"
+                              icon={<HiOutlinePencil />}
+                              onClick={async () => {
+                                parentCloseCallback();
+                                const infoData = {
+                                  ...item,
+                                  courses: item.courses.map(
+                                    (course) => course._id
+                                  )
+                                };
+                                setData(infoData);
+                                setTimeout(() => {
+                                  parentCallback();
+                                }, 50);
+                              }}
+                            />
+                            {item?.active && (
                               <Button
                                 shape="circle"
+                                color="red-700"
                                 variant="solid"
-                                className="mr-2"
                                 size="sm"
-                                icon={<HiOutlinePencil />}
-                                onClick={async () => {
-                                  parentCloseCallback();
-                                  const infoData = {
-                                    ...item,
-                                    courses: item.courses.map(
-                                      (course) => course._id
-                                    ),
-                                  };
-                                  setData(infoData);
-                                  setTimeout(() => {
-                                    parentCallback();
-                                  }, 50);
+                                icon={<HiOutlineTrash />}
+                                onClick={() => {
+                                  setSelectObject(item);
+                                  setDeleteIsOpen(true);
                                 }}
                               />
-                              {item?.active && (
-                                <Button
-                                  shape="circle"
-                                  color="red-700"
-                                  variant="solid"
-                                  size="sm"
-                                  icon={<HiOutlineTrash />}
-                                  onClick={() => {
-                                    setSelectObject(item);
-                                    setDeleteIsOpen(true);
-                                  }}
-                                />
-                              )}
-                            </Dropdown>
+                            )}
+                          </Dropdown>
                         </div>
                       </Td>
                     </Tr>
@@ -364,8 +368,8 @@ const InstructorList = (props) => {
         isOpen={deleteIsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {

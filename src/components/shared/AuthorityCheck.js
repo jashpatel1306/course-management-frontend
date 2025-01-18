@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import useAuthority from "utils/hooks/useAuthority";
 
 const AuthorityCheck = (props) => {
-  const { userAuthority = [], authority = [], children, key } = props;
+  const { userAuthority = [], authority = [], children } = props;
 
   const roleMatched = useAuthority(userAuthority, authority, false, children.key);
 

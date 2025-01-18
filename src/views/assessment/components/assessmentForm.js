@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Card, Dialog, Input, Switcher } from "components/ui";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiArrowNarrowLeft, HiPlusCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,7 +29,7 @@ const AssessmentForm = () => {
     description: [],
     assessmentId: assessmentId,
     time: null,
-    isPublish: false,
+    isPublish: false
   });
   const [error, setError] = useState("");
   const CreateQuiz = async () => {
@@ -49,7 +50,7 @@ const AssessmentForm = () => {
         title: "",
         description: [],
         time: null,
-        isPublish: false,
+        isPublish: false
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -60,7 +61,7 @@ const AssessmentForm = () => {
   };
   const onHandleQuizBox = async () => {
     try {
-      if (!formData?.description.length) {
+      if (!formData?.description?.length) {
         setError("Please Enter At Least One Instruction");
       }
       if (!formData?.time) {
@@ -69,7 +70,7 @@ const AssessmentForm = () => {
       if (!formData?.title) {
         setError("Please Enter Quiz Title.");
       }
-      if (formData?.title && formData?.time && formData?.description.length) {
+      if (formData?.title && formData?.time && formData?.description?.length) {
         CreateQuiz();
         setError("");
         // setIsOpen(false);
@@ -79,7 +80,7 @@ const AssessmentForm = () => {
           description: [],
           quizId: null,
           time: null,
-          isPublish: false,
+          isPublish: false
         });
       }
     } catch (error) {
@@ -120,20 +121,20 @@ const AssessmentForm = () => {
     newDescriptions[index] = value;
     setFormData({
       ...formData,
-      description: newDescriptions,
+      description: newDescriptions
     });
   };
   const addDescription = () => {
     setFormData({
       ...formData,
-      description: [...formData.description, ""], // Add new empty description
+      description: [...formData.description, ""] // Add new empty description
     });
   };
   const removeDescription = (index) => {
     const newDescriptions = formData.description.filter((_, i) => i !== index);
     setFormData({
       ...formData,
-      description: newDescriptions,
+      description: newDescriptions
     });
   };
   return (
@@ -177,7 +178,10 @@ const AssessmentForm = () => {
                 </div>
               </div> */}
             </div>
-            <Card className="bg-gray-100 border-2 mt-4" bodyClass="p-3 sm:p-[1.25rem]">
+            <Card
+              className="bg-gray-100 border-2 mt-4"
+              bodyClass="p-3 sm:p-[1.25rem]"
+            >
               <div>
                 {sectionData?.content?.map((info, index) => {
                   return (
@@ -249,7 +253,7 @@ const AssessmentForm = () => {
           setFormData({
             ...formData,
             title: "",
-            description: [],
+            description: []
           });
         }}
         onRequestClose={() => {
@@ -258,7 +262,7 @@ const AssessmentForm = () => {
           setFormData({
             ...formData,
             title: "",
-            description:[],
+            description: []
           });
         }}
       >
@@ -281,7 +285,7 @@ const AssessmentForm = () => {
                   onChange={(e) => {
                     setFormData({
                       ...formData,
-                      title: e.target.value,
+                      title: e.target.value
                     });
                   }}
                   value={formData?.title}
@@ -306,7 +310,7 @@ const AssessmentForm = () => {
                   onChange={(e) => {
                     setFormData({
                       ...formData,
-                      time: e.target.value,
+                      time: e.target.value
                     });
                   }}
                   value={formData?.time}
@@ -357,7 +361,7 @@ const AssessmentForm = () => {
                   onChange={(e) => {
                     setFormData({
                       ...formData,
-                      isPublish: !e,
+                      isPublish: !e
                     });
                   }}
                   checked={formData?.isPublish}
@@ -376,7 +380,7 @@ const AssessmentForm = () => {
               setFormData({
                 ...formData,
                 title: "",
-                description: "",
+                description: ""
               });
             }}
           >

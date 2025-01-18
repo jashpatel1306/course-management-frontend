@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Table } from "components/ui";
 import React, { useRef, useState, useEffect } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import {
   HiArrowNarrowLeft,
-  HiOutlinePencil,
   HiPlusCircle,
 } from "react-icons/hi";
 import { useSelector } from "react-redux";

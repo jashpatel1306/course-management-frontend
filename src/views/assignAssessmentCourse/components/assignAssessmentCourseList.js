@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Table, Card, Pagination, Select, Button, Dialog, Dropdown, MenuItem } from "components/ui";
 import React, { useEffect, useState } from "react";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
@@ -93,8 +94,8 @@ const AssessmentList = (props) => {
             ? Math.ceil(response.pagination.total / appConfig.pagePerData)
             : 0
         );
-        const start = appConfig.pagePerData * (page - 1);
-        const end = start + response.data?.length;
+        // const start = appConfig.pagePerData * (page - 1);
+        // const end = start + response.data?.length;
 
         setIsLoading(false);
       } else {

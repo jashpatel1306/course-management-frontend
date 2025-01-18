@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Button, DatePicker, Drawer, Select } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
@@ -8,7 +9,7 @@ import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 
 function AssignCourseForm(props) {
-  const { handleCloseClick, assignCourseData, isOpen, courseId } = props;
+  const { handleCloseClick, assignCourseData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -229,7 +230,7 @@ function AssignCourseForm(props) {
     if (!errorObject.status) {
       resetErrorData();
       if (assignCourseData?._id) {
-        const newFormData = { ...formData };
+        // const newFormData = { ...formData };
         // await editAssignCourseMethod(newFormData, assignCourseData?._id);
       } else {
         await addNewAssignCourseMethod(formData);

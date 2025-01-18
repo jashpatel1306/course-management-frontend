@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Card, Dialog, Input, Select } from "components/ui";
 import React, { useEffect, useState } from "react";
 

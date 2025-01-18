@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Button, Card, Dialog, Input, Switcher } from "components/ui";
 import React, { useState } from "react";
 
@@ -57,7 +58,7 @@ const QuizContent = () => {
   };
   const onHandleQuizBox = async () => {
     try {
-      if (!formData?.description.length) {
+      if (!formData?.description?.length) {
         setError("Please Enter At Least One Instruction");
       }
       if (!formData?.time) {
@@ -66,7 +67,7 @@ const QuizContent = () => {
       if (!formData?.title) {
         setError("Please Enter Quiz Title.");
       }
-      if (formData?.title && formData?.time && formData?.description.length) {
+      if (formData?.title && formData?.time && formData?.description?.length) {
         CreateQuiz();
         setError("");
         // setIsOpen(false);

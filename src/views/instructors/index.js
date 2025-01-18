@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Button, Card } from "components/ui";
 import React, { useState } from "react";
 import { HiPlusCircle } from "react-icons/hi";
@@ -9,12 +10,8 @@ const Instructors = () => {
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const { userData } = useSelector((state) => state.auth.user);
-
   const [addFlag, setAddFlag] = useState(false);
   const [instructorData, setInstructorData] = useState();
-  const [IsOpen, setIsOpen] = useState(false);
-  const [batchList, setBatchList] = useState([]);
   const [allCollegeList, setAllCollegeList] = useState([]);
 
   const handleAddNewInstructorClick = () => {

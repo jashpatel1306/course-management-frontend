@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import axiosInstance from "apiServices/axiosInstance";
 import { Button, Card, Spinner } from "components/ui";
