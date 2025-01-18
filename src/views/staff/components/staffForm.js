@@ -46,17 +46,17 @@ function StaffForm(props) {
       .email("Invalid email address")
       .required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
-    // collegeUserId: Yup.string().when([], {
-    //   is: (userData) =>
-    //     userData?.authority.toString() === SUPERADMIN.toString(),
-    //   then: Yup.string().required("College Name is required"),
-    //   otherwise: Yup.string().notRequired()
-    // }),
-    collegeUserId: Yup.string().when("isSuperAdmin", {
-      is: false, // When isSuperAdmin is false
-      then: Yup.string().required("College Name is required"), // Make it required
-      otherwise: Yup.string().notRequired() // Otherwise not required
+    collegeUserId: Yup.string().when([], {
+      is: (userData) =>
+        userData?.authority.toString() === SUPERADMIN.toString(),
+      then: Yup.string().required("College Name is required"),
+      otherwise: Yup.string().notRequired()
     }),
+    // collegeUserId: Yup.string().when("isSuperAdmin", {
+    //   is: false, // When isSuperAdmin is false
+    //   then: Yup.string().required("College Name is required"), // Make it required
+    //   otherwise: Yup.string().notRequired() // Otherwise not required
+    // }),
     permissions: Yup.array().required("permissions is required"),
     isSuperAdmin: Yup.boolean(),
     active: Yup.boolean()
@@ -183,6 +183,9 @@ function StaffForm(props) {
   const editStaffMethod = async (value, staffId) => {
     try {
       setLoading(true);
+      value.permissions = value.permissions.map(
+        (permissions) => permissions.value
+      );
       const response = await axiosInstance.put(`user/staff/${staffId}`, value);
       if (response.success) {
         setLoading(false);

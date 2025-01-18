@@ -48,13 +48,6 @@ const StudentDashboard = () => {
   return (
     <>
       <div>
-        <iframe
-          src="https://stackblitz.com/edit/vitejs-vite-wvkngk2z?file=index.html,src%2FApp.jsx&terminal=dev"
-          title="W3Schools Free Online Web Tutorials"
-          width="100%"
-          height="900px"
-        ></iframe>
-
         <div className="grid grid-cols-1 md:grid-cols-4 mb-6 gap-4">
           <div className="col-span-1 ">
             {!loading && <TopList data={coursesData} title={"Courses"} />}
