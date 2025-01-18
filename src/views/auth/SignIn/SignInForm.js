@@ -66,7 +66,7 @@ const SignInForm = (props) => {
             <Form>
               <FormContainer>
                 <FormItem
-                  label="Username"
+                  // label="Username"
                   invalid={errors.email && touched.email}
                   errorMessage={errors.email}
                 >
@@ -74,21 +74,23 @@ const SignInForm = (props) => {
                     type="text"
                     autoComplete="off"
                     name="email"
-                    placeholder="Enter the Username"
+                    placeholder="Username"
                     component={Input}
+                    className="!bg-transparent border-[#A1A1A1]"
                   />
                 </FormItem>
 
                 <FormItem
-                  label="Password"
+                  // label="Password"
                   invalid={errors.password && touched.password}
                   errorMessage={errors.password}
                 >
                   <Field
                     autoComplete="off"
                     name="password"
-                    placeholder="Enter the Password"
+                    placeholder="Password"
                     component={PasswordInput}
+                    className="[&_input]:!bg-transparent [&_input]:border-[#A1A1A1]"
                   />
                 </FormItem>
                 <div className="flex justify-between mb-6">
@@ -107,6 +109,7 @@ const SignInForm = (props) => {
                   loading={isSubmitting}
                   variant="solid"
                   type="submit"
+                  className="!bg-[#4D4D29] active:!bg-[#4D4D29] hover:!bg-[#4D4D29]"
                 >
                   {isSubmitting ? "Signing in..." : "Sign In"}
                 </Button>

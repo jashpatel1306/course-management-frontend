@@ -37,6 +37,7 @@ const columns = [
   "Phone No",
   "Batch Name",
   "Section",
+  "Passout Year",
   // "Gender",
   "Sem",
   "Actions"
@@ -426,6 +427,7 @@ const StudentList = (props) => {
                         {item?.batchId?.batchName}
                       </Td>
                       <Td>{item?.section}</Td>
+                      <Td>{item?.passoutYear || ""}</Td>
                       {/* <Td className="capitalize">{item?.gender}</Td> */}
                       <Td>{item?.semester}</Td>
 
