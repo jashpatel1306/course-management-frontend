@@ -415,7 +415,7 @@ const StudentList = (props) => {
                     >
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
-                      <Td className="lowercase">{item?.email.toLowerCase()}</Td>
+                      <Td className="lowercase">{item?.email?.toLowerCase()}</Td>
                       <Td>
                         {item?.department?._id
                           ? item?.department?.department

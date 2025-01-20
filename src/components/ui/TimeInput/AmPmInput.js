@@ -35,7 +35,7 @@ const AmPmInput = forwardRef((props, ref) => {
 	}
 
 	const handleChange = (event) => {
-		const lastInputVal = event.target.value.slice(-1).toLowerCase()
+		const lastInputVal = event.target.value.slice(-1)?.toLowerCase()
 
 		if (lastInputVal === 'p') {
 			event.preventDefault()

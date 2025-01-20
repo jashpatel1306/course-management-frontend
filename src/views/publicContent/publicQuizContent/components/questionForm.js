@@ -52,7 +52,7 @@ function QuestionForm(props) {
       : [
           {
             content: "",
-            correct: questionType === "mcq" ? false : true,
+            correct: questionType?.toLowerCase() === "mcq" ? false : true,
             reason: ""
           }
         ]
@@ -64,7 +64,7 @@ function QuestionForm(props) {
     setAnswers([
       {
         content: "",
-        correct: questionType === "mcq" ? false : true,
+        correct: questionType?.toLowerCase() === "mcq" ? false : true,
         reason: ""
       }
     ]);
@@ -85,7 +85,7 @@ function QuestionForm(props) {
     setAnswers(updatedAnswers);
   };
   const addAnswer = () => {
-    if (questionType === "mcq") {
+    if (questionType?.toLowerCase() === "mcq") {
       setAnswers([...answers, { content: "", correct: false, reason: "" }]);
     } else {
       setAnswers([...answers, { content: "", correct: true, reason: "" }]);
@@ -153,7 +153,10 @@ function QuestionForm(props) {
         return;
       }
 
-      if (questionType === "mcq" && !answers.some((answer) => answer.correct)) {
+      if (
+        questionType?.toLowerCase() === "mcq" &&
+        !answers.some((answer) => answer.correct)
+      ) {
         openNotification("danger", "Please select a correct answer.");
         return;
       }
@@ -176,7 +179,7 @@ function QuestionForm(props) {
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between text-gray-700 items-start md:items-center text-lg font-bold mb-5">
             <div>
-              {questionType === "mcq"
+              {questionType?.toLowerCase() === "mcq"
                 ? "MCQ Question"
                 : "Fill in the Blank Question"}
             </div>
@@ -184,7 +187,9 @@ function QuestionForm(props) {
               <Select
                 placeholder="Please Select"
                 defaultValue={
-                  questionType === "mcq" ? typeOptions[0] : typeOptions[1]
+                  questionType?.toLowerCase() === "mcq"
+                    ? typeOptions[0]
+                    : typeOptions[1]
                 }
                 options={typeOptions}
                 onChange={(e) => {
@@ -221,14 +226,14 @@ function QuestionForm(props) {
         </div>
         <div>
           <div className="block text-gray-700 text-lg font-bold mb-3">
-            {questionType === "mcq" ? "Options" : "Answer"}
+            {questionType?.toLowerCase() === "mcq" ? "Options" : "Answer"}
           </div>
         </div>
         {answers?.length &&
           answers?.map((answer, index) => (
             <div key={index} className="mb-6">
               <div className="flex gap-2 items-start mb-2">
-                {questionType === "mcq" ? (
+                {questionType?.toLowerCase() === "mcq" ? (
                   <>
                     <Radio
                       type="radio"
@@ -287,7 +292,7 @@ function QuestionForm(props) {
                 />
               </div>
 
-              {questionType === "mcq" ? (
+              {questionType?.toLowerCase() === "mcq" ? (
                 <div className="flex justify-end w-full">
                   <div className="w-11/12">
                     <textarea

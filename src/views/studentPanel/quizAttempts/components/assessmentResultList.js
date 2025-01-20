@@ -140,7 +140,7 @@ const AssessmentResult = (props) => {
                       <Td>{key + 1}</Td>
                       {/* <Td>{item?.userName}</Td>
                       <Td className="lowercase">
-                        {item?.userEmail.toLowerCase()}
+                        {item?.userEmail?.toLowerCase()}
                       </Td> */}
                       <Td>{item?.quizTitle}</Td>
                       <Td>{`${item?.correctAnswers} / ${item?.quizQuestionsLength}`}</Td>

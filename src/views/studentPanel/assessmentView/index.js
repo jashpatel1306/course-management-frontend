@@ -18,6 +18,7 @@ const AssessmentView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [apiFlag, setApiFlag] = useState(false);
   const [assessmentData, setAssessmentData] = useState();
+  const [totalTime, setTotalTime] = useState(0);
   const fetchAssessmentData = async () => {
     try {
       const response = await axiosInstance.get(
@@ -25,7 +26,8 @@ const AssessmentView = () => {
       );
       if (response.success) {
         setAssessmentData(response.data);
-
+        const timeArr = response.data?.content?.map((info) => info.data.time);
+        setTotalTime(timeArr.reduce((a, b) => a + b, 0));
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -49,6 +51,7 @@ const AssessmentView = () => {
   useEffect(() => {
     setApiFlag(true);
   }, []);
+  console.log("assessmentData: ");
   return (
     <>
       {isLoading ? (
@@ -84,11 +87,18 @@ const AssessmentView = () => {
               >
                 Total Questions : {assessmentData?.totalQuestions}
               </p>
-              <p
-                className={`text-${themeColor}-${primaryColorLevel} bg-${themeColor}-50 p-2 px-4 rounded-md`}
-              >
-                Total Marks : {assessmentData?.totalMarks}
-              </p>
+              <div className="flex gap-4">
+                <p
+                  className={`text-${themeColor}-${primaryColorLevel} bg-${themeColor}-50 p-2 px-4 rounded-md`}
+                >
+                  Total Marks : {assessmentData?.totalMarks}
+                </p>
+                <p
+                  className={`text-${themeColor}-${primaryColorLevel} bg-${themeColor}-50 p-2 px-4 rounded-md`}
+                >
+                  Total Time : {totalTime} min
+                </p>
+              </div>
             </div>
             <div>
               {assessmentData?.content.map((info) => {
@@ -112,6 +122,7 @@ const AssessmentView = () => {
                         <div className="flex gap-4 mt-2 text-lg">
                           <p>TotalMarks : {content.totalMarks}</p>
                           <p>TotalQuestions : {content.questionsLength}</p>
+                          <p>TotalTime : {content.time} min</p>
                         </div>
                       </div>
                       <div>

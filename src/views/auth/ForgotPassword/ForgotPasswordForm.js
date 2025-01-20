@@ -26,7 +26,7 @@ const ForgotPasswordForm = (props) => {
   const [message, setMessage] = useTimeOutMessage();
 
   const onSendMail = async (values, setSubmitting) => {
-    setEmail(values?.email.toLowerCase().trim());
+    setEmail(values?.email?.toLowerCase().trim());
     setSubmitting(true);
 
     try {

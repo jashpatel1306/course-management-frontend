@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useSelector } from "react-redux";
 function toCamelCase(str) {
-  return str.charAt(0).toLowerCase() + str.slice(1);
+  return str.charAt(0)?.toLowerCase() + str.slice(1);
 }
 function hasPermission(permissions, key) {
   return permissions.some(

@@ -121,14 +121,14 @@ export const Quiz = (props) => {
     }
   };
   const handleNextQuestion = async () => {
-    if (questionData.questionType === "fill" && fillAnswer) {
+    if (questionData.questionType?.toLowerCase() === "fill" && fillAnswer) {
       await UpdateQuizQuestionData(
         questionData._id,
         fillAnswer,
         questionData.questionType
       );
     }
-    if (questionData.questionType === "mcq" && selectedAnswerIndex) {
+    if (questionData.questionType?.toLowerCase() === "mcq" && selectedAnswerIndex) {
       await UpdateQuizQuestionData(
         questionData._id,
         selectedAnswerIndex,
@@ -305,7 +305,7 @@ export const Quiz = (props) => {
                 </>
               ) : (
                 <>
-                  {questionData?.questionType === "fill" ? (
+                  {questionData?.questionType?.toLowerCase() === "fill" ? (
                     <>
                       <div className="flex justify-between items-center">
                         <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
