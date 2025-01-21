@@ -10,6 +10,8 @@ import { useDebounce } from "use-debounce";
 import { useSelector } from "react-redux";
 import { SUPERADMIN } from "constants/roles.constant";
 import { FaEye } from "react-icons/fa";
+import { CgExport } from "react-icons/cg";
+import { CSVExport } from "./exportTasks";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -21,6 +23,7 @@ const columns = [
   "correct Answers	",
   "wrong Answers	",
   "total Marks	",
+  "accuracy",
   "total Time	",
   "Active"
 ];
@@ -53,6 +56,7 @@ const AssessmentResult = (props) => {
   const [collegeList, setCollegeList] = useState([]);
   const [assessmentLoading, setAssessmentsLoading] = useState(false);
   const [assessmentList, setAssessmentsList] = useState([]);
+  const [assessmentName, setAssessmentsName] = useState("assessment result");
 
   const onPaginationChange = (val) => {
     setPage(val);
@@ -268,9 +272,18 @@ const AssessmentResult = (props) => {
             }
             onChange={(item) => {
               setCurrentAssessmentTab(item.value);
+              setAssessmentsName(item.label);
               setApiFlag(true);
               setPage(1);
             }}
+          />
+        </div>
+        <div>
+          <CSVExport
+            // taskFilter={taskFilter}
+            fileName={assessmentName}
+            searchedData={resultData}
+            exportLoading={isLoading}
           />
         </div>
       </div>
@@ -306,7 +319,7 @@ const AssessmentResult = (props) => {
                       <Td>{key + 1}</Td>
                       <Td>{item?.userName}</Td>
                       <Td className="lowercase">
-                        {item?.userEmail.toLowerCase()}
+                        {item?.userEmail?.toLowerCase()}
                       </Td>
                       <Td>{item?.quizTitle}</Td>
                       <Td>{`${item?.correctAnswers} / ${item?.quizQuestionsLength}`}</Td>
@@ -315,6 +328,11 @@ const AssessmentResult = (props) => {
                         {`${item?.wrongAnswers} / ${item?.quizQuestionsLength}`}
                       </Td>
                       <Td>{`${item?.totalMarks} / ${item?.quizTotalMarks}`}</Td>
+                      <Td>{`${(
+                        (Number(item?.totalMarks) /
+                          Number(item?.quizTotalMarks)) *
+                        100
+                      ).toFixed(2)}%`}</Td>
                       <Td>
                         {Math.floor(item?.totalTime / 60)} / {item?.quizTime}
                       </Td>

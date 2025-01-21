@@ -257,7 +257,7 @@ const StaffList = (props) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
                       <Td>{item?.name}</Td>
-                      <Td className="lowercase">{item?.email.toLowerCase()}</Td>
+                      <Td className="lowercase">{item?.email?.toLowerCase()}</Td>
 
                       <Td>{item?.phone}</Td>
                       <Td className="capitalize">

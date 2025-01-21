@@ -305,7 +305,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
               Select Start Date
             </div>
             <div className="col-span-2">
-              <DatePicker
+              <DatePicker.DateTimepicker
                 placeholder="Please Select Start Date of the assessment"
                 onChange={(e) => {
                   setFormData({
@@ -325,7 +325,7 @@ const AssessmentCard = ({ variant = "full", assessmentData, setApiFlag }) => {
               Select End Date
             </div>
             <div className="col-span-2">
-              <DatePicker
+              <DatePicker.DateTimepicker
                 placeholder="Please Select End Date of the assessment"
                 onChange={(e) => {
                   setFormData({

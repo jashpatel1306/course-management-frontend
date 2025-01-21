@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Card, Input, Pagination } from "components/ui";
+import { Card, Input, Pagination, Select } from "components/ui";
 import React, { useEffect, useState } from "react";
 import AssessmentCard from "./assessmentCard";
 import { HiOutlineSearch } from "react-icons/hi";
@@ -12,6 +12,14 @@ import appConfig from "configs/app.config";
 import { AiOutlineClose } from "react-icons/ai";
 import openNotification from "views/common/notification";
 import { DataNoFound } from "assets/svg";
+
+const activeFilter = [
+  { label: "All", value: "all" },
+  { label: "Upcoming", value: "upcoming" },
+  { label: "Ongoing", value: "active" },
+  { label: "Completed", value: "expired" }
+];
+
 const AssessmentList = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -24,6 +32,8 @@ const AssessmentList = () => {
   const [page, setPage] = useState(1);
   const [apiFlag, setApiFlag] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
+  const [activeTab, setActiveTab] = useState("all");
+
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
@@ -35,7 +45,12 @@ const AssessmentList = () => {
         pageNo: page,
         perPage: appConfig.pagePerData
       };
-
+      if (activeTab && activeTab !== "all") {
+        formData = {
+          ...formData,
+          status: activeTab
+        };
+      }
       const response = await axiosInstance.post(
         `student/get-all-assign-assessments`,
         formData
@@ -86,7 +101,23 @@ const AssessmentList = () => {
               My Assessments
             </div>
           </div>
-          <div className="w-full md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+          <div className="w-full flex gap-2 md:w-[100%] p-1 lg:w-[25%] sm:w-[100%]">
+            <Select
+              isSearchable={true}
+              className="w-[55%]"
+              placeholder="Filter"
+              options={activeFilter}
+              value={
+                activeTab
+                  ? activeFilter.find((item) => item.value === activeTab)
+                  : null
+              }
+              onChange={(item) => {
+                setActiveTab(item.value);
+                setApiFlag(true);
+                setPage(1);
+              }}
+            />
             <Input
               placeholder="Search By Name, Email"
               className=" input-wrapper"

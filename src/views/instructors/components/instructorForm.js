@@ -34,7 +34,7 @@ function InstructorForm(props) {
       .of(Yup.object())
       .nullable()
       .default([])
-      .required("At least one course ID is required"),
+      .required("At least one course ID is required")
   });
   const [loading, setLoading] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
@@ -52,7 +52,7 @@ function InstructorForm(props) {
     courses: [],
     location: "",
     experienceInYears: "",
-    active: true,
+    active: true
   });
   const [errorData, setErrorData] = useState({
     name: "",
@@ -61,7 +61,7 @@ function InstructorForm(props) {
     skills: "",
     location: "",
     collegeId: "",
-    experienceInYears: "",
+    experienceInYears: ""
   });
   const resetErrorData = () => {
     setErrorData({
@@ -71,7 +71,7 @@ function InstructorForm(props) {
       skills: "",
       location: "",
       collegeId: "",
-      experienceInYears: "",
+      experienceInYears: ""
     });
   };
   const getCoursesOptionData = async (collegeId = "") => {
@@ -105,7 +105,7 @@ function InstructorForm(props) {
       courses: [],
       location: "",
       experienceInYears: "",
-      active: true,
+      active: true
     });
   };
   useEffect(() => {
@@ -144,7 +144,7 @@ function InstructorForm(props) {
               )
             : [],
         active:
-          instructorData?.active !== undefined ? instructorData?.active : true,
+          instructorData?.active !== undefined ? instructorData?.active : true
       });
     }
   }, [instructorData]);
@@ -175,6 +175,7 @@ function InstructorForm(props) {
         resetErrorData();
         resetFormData();
         handleCloseClick();
+        openNotification("success", response.message);
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -224,7 +225,7 @@ function InstructorForm(props) {
         skills: "",
         location: "",
         experienceInYears: "",
-        courses: "",
+        courses: ""
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -237,7 +238,7 @@ function InstructorForm(props) {
           location: "",
           collegeId: "",
           experienceInYears: "",
-          courses: "",
+          courses: ""
         };
       } else {
         return {
@@ -253,7 +254,7 @@ function InstructorForm(props) {
             : "",
           courses: errorObject.courses ? errorObject.courses : "",
 
-          collegeId: errorObject.collegeId ? errorObject.collegeId : "",
+          collegeId: errorObject.collegeId ? errorObject.collegeId : ""
         };
       }
     }
@@ -265,13 +266,13 @@ function InstructorForm(props) {
       if (instructorData?._id) {
         const newFormData = {
           ...formData,
-          courses: formData?.courses?.map((info) => info.value),
+          courses: formData?.courses?.map((info) => info.value)
         };
         await editInstructorMethod(newFormData, instructorData?._id);
       } else {
         await addNewInstructorMethod({
           ...formData,
-          courses: formData?.courses?.map((info) => info.value),
+          courses: formData?.courses?.map((info) => info.value)
         });
       }
     } else {
@@ -346,7 +347,7 @@ function InstructorForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    name: e.target.value,
+                    name: e.target.value
                   });
                 }}
                 value={formData?.name}
@@ -369,7 +370,7 @@ function InstructorForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    email: e.target.value.trim(),
+                    email: e.target.value.trim()
                   });
                 }}
                 value={formData?.email}
@@ -392,7 +393,7 @@ function InstructorForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    phone: e.target.value,
+                    phone: e.target.value
                   });
                 }}
                 value={formData?.phone}
@@ -416,7 +417,7 @@ function InstructorForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeId: e.value,
+                        collegeId: e.value
                       });
                       getCoursesOptionData(e.value);
                     }}
@@ -452,9 +453,9 @@ function InstructorForm(props) {
                     skills: e.map((e) => {
                       return {
                         label: e.label,
-                        value: e.value,
+                        value: e.value
                       };
-                    }),
+                    })
                   });
                 }}
                 value={formData.skills}
@@ -480,7 +481,7 @@ function InstructorForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    location: e.target.value,
+                    location: e.target.value
                   });
                 }}
                 value={formData?.location}
@@ -501,7 +502,7 @@ function InstructorForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    experienceInYears: e.target.value,
+                    experienceInYears: e.target.value
                   });
                 }}
                 value={formData?.experienceInYears}
@@ -526,7 +527,7 @@ function InstructorForm(props) {
                 onChange={(value) => {
                   setFormData({
                     ...formData,
-                    courses: value,
+                    courses: value
                   });
                 }}
                 value={formData?.courses}
@@ -548,7 +549,7 @@ function InstructorForm(props) {
                 onChange={(val) => {
                   setFormData({
                     ...formData,
-                    active: !val,
+                    active: !val
                   });
                 }}
               />
