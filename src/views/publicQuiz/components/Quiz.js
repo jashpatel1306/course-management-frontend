@@ -314,7 +314,7 @@ export const Quiz = (props) => {
                 </div>
               </div>
             </div>
-            <div className="flex-1 max-h-[calc(70vh_-_80px)] md:h-screen lg:max-h-[75vh] overflow-y-scroll mobile-scrollbar mx-auto p-8 ">
+            <div className="flex-1 max-h-[calc(57vh_-_80px)] md:h-screen lg:max-h-[75vh] overflow-y-scroll mobile-scrollbar mx-auto p-8 ">
               {isQusLoading ? (
                 <>
                   <div className="flex justify-center items-center">
