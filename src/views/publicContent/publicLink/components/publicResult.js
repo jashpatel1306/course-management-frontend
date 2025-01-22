@@ -139,7 +139,7 @@ const PublicResultList = () => {
                 size="sm"
                 icon={<HiArrowNarrowLeft size={30} />}
                 onClick={async () => {
-                  navigate("/app/admin/public-content");
+                  navigate("/app/admin/public-link");
                 }}
               />
             </div>
@@ -220,7 +220,7 @@ const PublicResultList = () => {
                                 setIsOpen(true);
                               }}
                             />
-                            {/* <Button
+                            <Button
                               shape="circle"
                               variant="solid"
                               className="mr-2"
@@ -232,7 +232,7 @@ const PublicResultList = () => {
                                 }app/student/quiz-result/${item?.trackingId}`;
                                 window.open(url, "_blank");
                               }}
-                            /> */}
+                            />
                           </div>
                         </Td>
                       </Tr>
