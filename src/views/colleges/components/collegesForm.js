@@ -461,7 +461,11 @@ function CollegeForm(props) {
             </div>
             <div className="col-span-2">
               <Input
-                type="text"
+                  type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"]?.includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 placeholder="Please Enter Contact Person Phone Number"
                 className={
                   errorData.contactPersonNo

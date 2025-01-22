@@ -1,11 +1,23 @@
-import { STUDENT_PREFIX_PATH } from "constants/route.constant";
+import {
+  ADMIN_PREFIX_PATH,
+  STUDENT_PREFIX_PATH
+} from "constants/route.constant";
 import { NAV_ITEM_TYPE_ITEM } from "constants/navigation.constant";
 import { STUDENT } from "constants/roles.constant";
 
 const studentNavigationConfig = [
+  // {
+  //   key: "apps.student.dashboard",
+  //   path: `${STUDENT_PREFIX_PATH}/dashboard`,
+  //   title: "Dashboard",
+  //   icon: "dashboard",
+  //   type: NAV_ITEM_TYPE_ITEM,
+  //   authority: [STUDENT],
+  //   subMenu: []
+  // },
   {
-    key: "apps.student.dashboard",
-    path: `${STUDENT_PREFIX_PATH}/dashboard`,
+    key: "apps.dashboard",
+    path: `${ADMIN_PREFIX_PATH}/dashboard`,
     title: "Dashboard",
     icon: "dashboard",
     type: NAV_ITEM_TYPE_ITEM,

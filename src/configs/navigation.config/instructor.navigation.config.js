@@ -1,16 +1,28 @@
-import { INSTRUCTOR_PREFIX_PATH } from "constants/route.constant";
+import {
+  ADMIN_PREFIX_PATH,
+  INSTRUCTOR_PREFIX_PATH
+} from "constants/route.constant";
 import { NAV_ITEM_TYPE_ITEM } from "constants/navigation.constant";
 import { INSTRUCTOR } from "constants/roles.constant";
 
 const instructorNavigationConfig = [
+  // {
+  //   key: "apps.instructor.dashboard",
+  //   path: `${INSTRUCTOR_PREFIX_PATH}/dashboard`,
+  //   title: "Dashboard",
+  //   icon: "dashboard",
+  //   type: NAV_ITEM_TYPE_ITEM,
+  //   authority: [INSTRUCTOR],
+  //   subMenu: [],
+  // },
   {
-    key: "apps.instructor.dashboard",
-    path: `${INSTRUCTOR_PREFIX_PATH}/dashboard`,
+    key: "apps.dashboard",
+    path: `${ADMIN_PREFIX_PATH}/dashboard`,
     title: "Dashboard",
     icon: "dashboard",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [INSTRUCTOR],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.instructor.mycourses",
@@ -19,7 +31,7 @@ const instructorNavigationConfig = [
     icon: "student",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [INSTRUCTOR],
-    subMenu: [],
+    subMenu: []
   },
   {
     key: "apps.instructor.assessment",
@@ -28,8 +40,8 @@ const instructorNavigationConfig = [
     icon: "assessment",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [INSTRUCTOR],
-    subMenu: [],
-  },
+    subMenu: []
+  }
   // {
   //   key: "instructor.certificate",
   //   path: `${ADMIN_PREFIX_PATH}/certificate`,

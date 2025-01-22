@@ -16,12 +16,24 @@ import AppRoute from "components/route/AppRoute";
 import QuizRoute from "components/route/quizRoute";
 
 const { authenticatedEntryPath } = appConfig;
-
+// const findDefaultParth = (userAuthority) => {
+//   if (userAuthority?.length > 0) {
+//     switch (userAuthority[0]) {
+//       case "student":
+//         return studentAuthenticatedEntryPath;
+//       case "instructor":
+//         return instructorAuthenticatedEntryPath;
+//       default:
+//         return authenticatedEntryPath;
+//     }
+//   } else {
+//     return authenticatedEntryPath;
+//   }
+// };
 const AllRoutes = (props) => {
   const userAuthority = useSelector(
     (state) => state.auth.user.userData.authority
   );
-
   return (
     <Routes>
       <Route path="/" element={<ProtectedRoute />}>

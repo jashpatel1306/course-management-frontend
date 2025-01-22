@@ -29,7 +29,7 @@ function useAuth() {
     try {
       const formData = {
         email: email.trim(),
-        password: password,
+        password: password
       };
       const response = await axiosInstance.post("user/sign-in", formData);
       if (response.status) {
@@ -47,27 +47,25 @@ function useAuth() {
               password: userData.password ? userData.password : "",
               permissions: userData.permissions ? userData.permissions : [],
               collegeId: collegeId ? collegeId : "",
-              batchId: batchId ? batchId : "",
+              batchId: batchId ? batchId : ""
             })
           );
         }
 
         const redirectUrl = query.get(REDIRECT_URL_KEY);
-        if (userData.role === INSTRUCTOR) {
-          navigate(
-            redirectUrl
-              ? redirectUrl
-              : appConfig.instructorAuthenticatedEntryPath
-          );
-        } else if (userData.role === STUDENT) {
-          navigate(
-            redirectUrl ? redirectUrl : appConfig.studentAuthenticatedEntryPath
-          );
-        } else {
-          navigate(
-            redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
-          );
-        }
+        // if (userData.role === INSTRUCTOR) {
+        //   navigate(
+        //     redirectUrl
+        //       ? redirectUrl
+        //       : appConfig.instructorAuthenticatedEntryPath
+        //   );
+        // } else if (userData.role === STUDENT) {
+        //   navigate(
+        //     redirectUrl ? redirectUrl : appConfig.studentAuthenticatedEntryPath
+        //   );
+        // } else {
+        navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath);
+        // }
         return response;
       } else {
         return response;
@@ -76,7 +74,7 @@ function useAuth() {
       console.log("signIn error:", errors);
       return {
         status: false,
-        message: errors?.response?.data?.message || errors.toString(),
+        message: errors?.response?.data?.message || errors.toString()
       };
     }
   };
@@ -104,7 +102,7 @@ function useAuth() {
   return {
     authenticated: token && signIn && checkAuthenticated(),
     signIn,
-    signOut,
+    signOut
   };
 }
 

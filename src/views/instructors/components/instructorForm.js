@@ -22,7 +22,10 @@ function InstructorForm(props) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    phone: Yup.string().required("Phone number is required"),
+    phone: Yup.string()
+      .required("Phone number is required")
+      .length(10, "Phone number must be exactly 10 digits"),
+
     collegeId: Yup.string().required("College Id is required"),
     skills: Yup.array().required("Skills is required"),
     location: Yup.string().required("Location is required"),
@@ -387,9 +390,13 @@ function InstructorForm(props) {
             </div>
             <div className="col-span-2">
               <Input
-                type="text"
+                type="number"
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
+                onKeyDown={(evt) =>
+                  ["e", "E", "+", "-"]?.includes(evt.key) &&
+                  evt.preventDefault()
+                }
                 onChange={(e) => {
                   setFormData({
                     ...formData,

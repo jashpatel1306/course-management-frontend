@@ -2,7 +2,15 @@ import React from "react";
 import SuperAdminDashboard from "./superAdminDashboard";
 import ClientDashboard from "./clientDashboard";
 import { useSelector } from "react-redux";
-import { ADMIN, STAFF, STUDENT, SUPERADMIN } from "constants/roles.constant";
+import {
+  ADMIN,
+  STAFF,
+  STUDENT,
+  INSTRUCTOR,
+  SUPERADMIN
+} from "constants/roles.constant";
+import InstructorsDashboard from "views/instructorPanel/dashboard";
+import StudentDashboard from "./studentDashboard";
 
 const ProjectDashboard = () => {
   const userAuthority = useSelector(
@@ -14,7 +22,8 @@ const ProjectDashboard = () => {
       {role === SUPERADMIN && <SuperAdminDashboard />}
       {role === STAFF && <SuperAdminDashboard />}
       {role === ADMIN && <ClientDashboard />}
-      {role === STUDENT && <ClientDashboard />}
+      {role === INSTRUCTOR && <InstructorsDashboard />}
+      {role === STUDENT && <StudentDashboard />}
     </div>
   );
 };

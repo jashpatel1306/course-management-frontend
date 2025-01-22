@@ -45,7 +45,7 @@ const CourseList = (props) => {
       setIsLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);

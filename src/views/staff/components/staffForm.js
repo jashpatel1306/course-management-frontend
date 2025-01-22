@@ -370,7 +370,11 @@ function StaffForm(props) {
             </div>
             <div className="col-span-2">
               <Input
-                type="text"
+               type="number"
+               onKeyDown={(evt) =>
+                 ["e", "E", "+", "-"]?.includes(evt.key) &&
+                 evt.preventDefault()
+               }
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
                 onChange={(e) => {

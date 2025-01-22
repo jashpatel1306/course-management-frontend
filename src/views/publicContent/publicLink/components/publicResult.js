@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { CSVExport } from "./csvExport";
+import { FaEye } from "react-icons/fa";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -92,7 +93,7 @@ const PublicResultList = () => {
       let formData = {
         search: "",
         pageNo: page,
-        perPage: 1000
+        perPage: 10000
       };
       const response = await axiosInstance.post(
         `user/quiz-results-by-quizid/${quiz_id}`,
@@ -126,7 +127,7 @@ const PublicResultList = () => {
     setPage(1);
     setApiFlag(true);
   }, []);
-
+  console.log("location?.state : ", location?.state);
   return (
     <>
       <Card className="mb-8">
@@ -153,7 +154,7 @@ const PublicResultList = () => {
             <CSVExport
               searchedData={exportData}
               exportLoading={exportLoading}
-              fileName = {location?.state?.quizName}
+              fileName={location?.state?.quizName}
             />
           </div>
         </div>
@@ -198,21 +199,41 @@ const PublicResultList = () => {
                       <Tr key={item?._id} className="capitalize">
                         <Td>{key + 1}</Td>
                         <Td>{item?.createdAt}</Td>
-                        <Td>{item?.correctAnswers}</Td>
-                        <Td>{item?.wrongAnswers}</Td>
-                        <Td>{item?.totalMarks}</Td>
-                        <Td>{Math.ceil(item?.totalTime/60)} min</Td>
+                        <Td>{`${item?.correctAnswers} / ${item?.totalQuestions}`}</Td>{" "}
                         <Td>
-                          <Button
-                            shape="circle"
-                            variant="solid"
-                            size="sm"
-                            icon={<IoInformation />}
-                            onClick={() => {
-                              setSelectObject(item);
-                              setIsOpen(true);
-                            }}
-                          />
+                          {`${item?.wrongAnswers} / ${item?.totalQuestions}`}
+                        </Td>
+                        <Td>{`${item?.totalMarks} / ${item?.quizTotalMarks}`}</Td>
+                        <Td>
+                          {Math.ceil(item?.totalTime / 60)} / {item?.quizTime}{" "}
+                          min
+                        </Td>
+                        <Td>
+                          <div className="flex gap-2">
+                            <Button
+                              shape="circle"
+                              variant="solid"
+                              size="sm"
+                              icon={<IoInformation />}
+                              onClick={() => {
+                                setSelectObject(item);
+                                setIsOpen(true);
+                              }}
+                            />
+                            {/* <Button
+                              shape="circle"
+                              variant="solid"
+                              className="mr-2"
+                              size="sm"
+                              icon={<FaEye />}
+                              onClick={() => {
+                                const url = `${
+                                  window.location.href.split("app")[0]
+                                }app/student/quiz-result/${item?.trackingId}`;
+                                window.open(url, "_blank");
+                              }}
+                            /> */}
+                          </div>
                         </Td>
                       </Tr>
                     );

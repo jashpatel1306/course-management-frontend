@@ -88,7 +88,7 @@ const QuizMainContent = () => {
                                         <div className="w-1/2 md:w-auto flex items-center space-x-2">
                                             <span className="text-sm">
                                                 <strong>Total Marks:</strong>{" "}
-                                                {results.totalMarks}
+                                                {results?.totalMarks}
                                             </span>
                                         </div>
 
@@ -97,21 +97,21 @@ const QuizMainContent = () => {
                                                 <strong>
                                                     Correct Answers:
                                                 </strong>{" "}
-                                                {results.correctAnswers}
+                                                {results?.correctAnswers}
                                             </span>
                                         </div>
 
                                         <div className="w-1/2 md:w-auto flex items-center space-x-2">
                                             <span className="text-sm">
                                                 <strong>Wrong Answers:</strong>{" "}
-                                                {results.wrongAnswers}
+                                                {results?.wrongAnswers}
                                             </span>
                                         </div>
 
                                         <div className="w-1/2 md:w-auto flex items-center space-x-2">
                                             <span className="text-sm">
                                                 <strong>Total Time:</strong>{" "}
-                                                {results.totalTime} seconds
+                                                {results?.totalTime} seconds
                                             </span>
                                         </div>
 
