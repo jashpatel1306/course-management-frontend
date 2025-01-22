@@ -144,8 +144,8 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
       {!expired && (
         <>
           <div className="flex flex-col lg:flex-row">
-            <div className={`w-full lg:w-[35%] h-[40vh] lg:h-screen bg-white`}>
-              <section className="flex flex-col h-full justify-around items-start text-start p-10 lg:py-0 md:px-16 gap-y-8">
+            <div className={`w-full lg:w-[35%] h-[40vh] lg:h-screen bg-white overflow-y-auto`}>
+              <section className="flex flex-col h-full justify-around items-start text-start p-10 lg:py-0 md:px-16 gap-y-8 !py-6">
                 <Logo mode={mode} className="hidden md:block" />
                 <div>
                   <div className="gap-y-4">
