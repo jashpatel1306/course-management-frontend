@@ -37,8 +37,8 @@ function AssignCourseForm(props) {
     collegeId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
     batchId: "",
-    startTime: null,
-    endTime: null
+    startTime: new Date(),
+    endTime: new Date()
   });
   const [errorData, setErrorData] = useState({
     courseId: "",
@@ -227,9 +227,12 @@ function AssignCourseForm(props) {
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
+    console.log("errorObject :", errorObject)
     if (!errorObject.status) {
       resetErrorData();
+      console.log("Please enter")
       if (assignCourseData?._id) {
+        console.log("edit Assign Course")
         // const newFormData = { ...formData };
         // await editAssignCourseMethod(newFormData, assignCourseData?._id);
       } else {
