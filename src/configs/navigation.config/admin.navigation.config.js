@@ -3,11 +3,7 @@ import {
   NAV_ITEM_TYPE_COLLAPSE,
   NAV_ITEM_TYPE_ITEM
 } from "constants/navigation.constant";
-import {
-  ADMIN,
-  SUPERADMIN,
-  STAFF,
-} from "constants/roles.constant";
+import { ADMIN, SUPERADMIN, STAFF } from "constants/roles.constant";
 
 const adminNavigationConfig = [
   {
@@ -168,15 +164,7 @@ const adminNavigationConfig = [
     authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: []
   },
-  // {
-  //   key: "apps.policy",
-  //   path: `${ADMIN_PREFIX_PATH}/policy`,
-  //   title: "Policy",
-  //   icon: "policy",
-  //   type: NAV_ITEM_TYPE_ITEM,
-  //   authority: [ADMIN, SUPERADMIN],
-  //   subMenu: []
-  // },
+
   {
     key: "apps.configuration",
     path: ``,
@@ -204,6 +192,15 @@ const adminNavigationConfig = [
       //   subMenu: [],
       // },
     ]
+  },
+  {
+    key: "apps.testPage",
+    path: `${ADMIN_PREFIX_PATH}/testpage`,
+    title: "Complier Testing",
+    icon: "policy",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [],
+    subMenu: []
   }
 ];
 

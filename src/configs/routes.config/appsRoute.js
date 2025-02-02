@@ -259,18 +259,19 @@ const appsRoute = [
     component: React.lazy(() => import("views/policy")),
     authority: [ADMIN, SUPERADMIN, STAFF]
   },
-  // {
-  //   key: "configuration.policy",
-  //   path: `${ADMIN_PREFIX_PATH}/configuration/policy`,
-  //   component: React.lazy(() => import("views/configuration/policy")),
-  //   authority: [SUPERADMIN],
-  // },
+  
   {
     key: "configuration.departments",
     path: `${ADMIN_PREFIX_PATH}/configuration/departments`,
     component: React.lazy(() => import("views/configuration/departments")),
     authority: [ADMIN, SUPERADMIN, STAFF]
-  }
+  },
+  {
+    key: "apps.testPage",
+    path: `${ADMIN_PREFIX_PATH}/testpage`,
+    component: React.lazy(() => import("views/testPage")),
+    authority: [],
+  },
 ];
 
 export default appsRoute;
