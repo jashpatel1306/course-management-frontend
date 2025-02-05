@@ -138,6 +138,8 @@ function CollegeForm(props) {
         setLoading(false);
         handleCloseClick();
         resetFormData();
+        openNotification("success", response.message);
+
       } else {
         setLoading(false);
         openNotification("danger", response.message);

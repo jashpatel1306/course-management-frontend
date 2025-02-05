@@ -13,6 +13,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { CSVExport } from "./csvExport";
 import { FaEye } from "react-icons/fa";
+import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -198,7 +199,9 @@ const PublicResultList = () => {
                     return (
                       <Tr key={item?._id} className="capitalize">
                         <Td>{key + 1}</Td>
-                        <Td>{item?.createdAt}</Td>
+                        <Td>
+                          {formatTimestampToReadableDate(item?.createdAt)}
+                        </Td>
                         <Td>{`${item?.correctAnswers} / ${item?.totalQuestions}`}</Td>{" "}
                         <Td>
                           {`${item?.wrongAnswers} / ${item?.totalQuestions}`}

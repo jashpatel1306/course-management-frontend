@@ -1,6 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { Table, Dialog, Button, Select, Badge, Dropdown, MenuItem } from "components/ui";
+import {
+  Table,
+  Dialog,
+  Button,
+  Select,
+  Badge,
+  Dropdown,
+  MenuItem
+} from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import axiosInstance from "apiServices/axiosInstance";
@@ -38,8 +46,14 @@ const DepartmentList = (props) => {
       const response = await axiosInstance.get(`admin/college-option`);
 
       if (response.success) {
-        setCollegeList(response.data);
-        setCurrentTab(response.data[0].value);
+        const tempList = response.data;
+
+        tempList.unshift({
+          label: "All Colleges",
+          value: "all"
+        });
+        setCollegeList(tempList);
+        setCurrentTab(tempList[0].value);
         setApiFlag(true);
       } else {
         openNotification("danger", response.error);
@@ -54,6 +68,7 @@ const DepartmentList = (props) => {
 
   const fetchData = async () => {
     try {
+      console.log("currentTab: ",currentTab)
       const response = await axiosInstance.get(
         `user/departments/${currentTab}`
       );
@@ -206,39 +221,46 @@ const DepartmentList = (props) => {
 
                       <Td>
                         <div className="flex justify-end ">
-                        <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
-                            <MenuItem key='actions' eventKey='actions'>
-                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
-                            </MenuItem>}
-                            placement="middle-end-top">
+                          <Dropdown
+                            trigger="click"
+                            menuClass="min-w-0 flex justify-center items-center"
+                            renderTitle={
+                              <MenuItem key="actions" eventKey="actions">
+                                <BsThreeDots
+                                  className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`}
+                                />
+                              </MenuItem>
+                            }
+                            placement="middle-end-top"
+                          >
+                            <Button
+                              shape="circle"
+                              variant="solid"
+                              className="mr-2"
+                              size="sm"
+                              icon={<HiOutlinePencil />}
+                              onClick={async () => {
+                                parentCloseCallback();
+                                setData(item);
+                                setTimeout(() => {
+                                  parentCallback();
+                                }, 50);
+                              }}
+                            />
+                            {item?.active && (
                               <Button
                                 shape="circle"
+                                color="red-700"
                                 variant="solid"
-                                className="mr-2"
                                 size="sm"
-                                icon={<HiOutlinePencil />}
-                                onClick={async () => {
-                                  parentCloseCallback();
-                                  setData(item);
-                                  setTimeout(() => {
-                                    parentCallback();
-                                  }, 50);
+                                icon={<HiOutlineTrash />}
+                                onClick={() => {
+                                  setSelectObject(item);
+                                  setDeleteIsOpen(true);
                                 }}
                               />
-                              {item?.active && (
-                                <Button
-                                  shape="circle"
-                                  color="red-700"
-                                  variant="solid"
-                                  size="sm"
-                                  icon={<HiOutlineTrash />}
-                                  onClick={() => {
-                                    setSelectObject(item);
-                                    setDeleteIsOpen(true);
-                                  }}
-                                />
-                              )}
-                            </Dropdown>
+                            )}
+                          </Dropdown>
                         </div>
                       </Td>
                     </Tr>

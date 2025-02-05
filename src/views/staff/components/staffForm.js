@@ -171,6 +171,7 @@ function StaffForm(props) {
         resetErrorData();
         resetFormData();
         handleCloseClick();
+        openNotification("success", response.message);
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -192,6 +193,7 @@ function StaffForm(props) {
         resetErrorData();
         resetFormData();
         handleCloseClick();
+        openNotification("success", response.message);
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -370,11 +372,11 @@ function StaffForm(props) {
             </div>
             <div className="col-span-2">
               <Input
-               type="number"
-               onKeyDown={(evt) =>
-                 ["e", "E", "+", "-"]?.includes(evt.key) &&
-                 evt.preventDefault()
-               }
+                type="number"
+                onKeyDown={(evt) =>
+                  ["e", "E", "+", "-"]?.includes(evt.key) &&
+                  evt.preventDefault()
+                }
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
                 onChange={(e) => {
