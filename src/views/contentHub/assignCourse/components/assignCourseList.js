@@ -220,7 +220,7 @@ const InstructorList = (props) => {
                       )}
                       <Td>{key + 1}</Td>
                       <Td>{item?.batchName}</Td>
-                      <Td>120</Td>
+                      <Td>{item?.studentCount}</Td>
                       <Td>
                         <p className="capitalize w-full max-w-lg">
                           {item.courses
