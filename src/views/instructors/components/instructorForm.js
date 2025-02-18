@@ -390,7 +390,7 @@ function InstructorForm(props) {
             </div>
             <div className="col-span-2">
               <Input
-                type="number"
+                type="string"
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
                 onKeyDown={(evt) =>
