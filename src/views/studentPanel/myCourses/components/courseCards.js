@@ -29,19 +29,19 @@ const CourseCard = ({ index, item, trackingRecode }) => {
   const enrollCourse = async () => {
     try {
       const response = await axiosInstance.post(
-        `student/course/enroll/${item._id}`
+        `student/course/enroll/${item?._id}`
       );
       if (response.success) {
         setIsLoading(false);
-        const url = `/app/student/course/${item._id}`;
+        const url = `/app/student/course/${item?._id}`;
         window.open(url, "_blank");
       } else {
-        openNotification("danger", response.message);
+        openNotification("danger", response?.message);
         setIsLoading(false);
       }
     } catch (error) {
       console.log("get-all-course error:", error);
-      openNotification("danger", error.message);
+      openNotification("danger", error?.message);
       setIsLoading(false);
     }
   };
@@ -84,7 +84,7 @@ const CourseCard = ({ index, item, trackingRecode }) => {
               className="text-lg font-bold line-clamp-1 cursor-pointer"
               onClick={() => {
                 if (trackingRecode) {
-                  const url = `/app/student/course/${item._id}`;
+                  const url = `/app/student/course/${item?._id}`;
                   window.open(url, "_blank");
                 }
               }}
