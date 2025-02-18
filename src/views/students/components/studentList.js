@@ -33,7 +33,7 @@ const columns = [
   "Roll No",
   "Name",
   "Email",
-  "Branch",
+  "Departments",
   "Phone No",
   "Batch Name",
   "Section",
