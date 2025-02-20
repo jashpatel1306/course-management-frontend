@@ -8,7 +8,6 @@ import useQuery from "./useQuery";
 import axiosInstance from "apiServices/axiosInstance";
 import { setThemeColor, setThemeColorLevel } from "store/theme/themeSlice";
 import { themeConfig } from "configs/theme.config";
-import { INSTRUCTOR, STUDENT } from "constants/roles.constant";
 
 function useAuth() {
   const dispatch = useDispatch();

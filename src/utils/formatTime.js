@@ -1,10 +1,9 @@
 export const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-  
-    const minutesString = minutes.toString().padStart(2, "0");
-    const secondsString = seconds.toString().padStart(2, "0");
-  
-    return `${minutesString} : ${secondsString}`;
-  };
-  
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+
+  const minutesString = minutes.toString().padStart(2, "0");
+  const secondsString = seconds.toString().padStart(2, "0");
+  console.log("Time Format :", `${minutesString} : ${secondsString}`);
+  return `${minutesString} : ${secondsString}`;
+};

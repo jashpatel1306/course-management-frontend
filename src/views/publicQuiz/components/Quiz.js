@@ -39,9 +39,25 @@ export const Quiz = (props) => {
     }
 
     timerRef.current = setInterval(() => {
-      setTimePassed((prevTimePassed) =>
-        prevTimePassed > TIME_LIMIT ? TIME_LIMIT : prevTimePassed - 1
-      );
+      setTimePassed((prevTimePassed) => {
+        console.log("TIME_LIMIT :", TIME_LIMIT);
+        console.log("prevTimePassed :", prevTimePassed);
+        console.log(
+          "result :",
+          prevTimePassed > TIME_LIMIT ? TIME_LIMIT : prevTimePassed - 1
+        );
+        if (prevTimePassed > TIME_LIMIT) {
+          return TIME_LIMIT;
+        } else {
+          if (prevTimePassed - 1 > 0) {
+            return prevTimePassed - 1;
+          } else {
+            playQuizEnd();
+            setQuizFinished(true);
+            return 0;
+          }
+        }
+      });
     }, 1000);
   };
 
@@ -137,7 +153,10 @@ export const Quiz = (props) => {
         questionData.questionType
       );
     }
-    if (questionData.questionType?.toLowerCase() === "mcq" && selectedAnswerIndex) {
+    if (
+      questionData.questionType?.toLowerCase() === "mcq" &&
+      selectedAnswerIndex
+    ) {
       await UpdateQuizQuestionData(
         questionData._id,
         selectedAnswerIndex,

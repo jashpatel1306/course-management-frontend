@@ -1,16 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 import { CgExport } from "react-icons/cg";
 import { Button } from "components/ui";
-import { htmlToText } from "html-to-text";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-const convertToHHMM = (hours, minutes) => {
-  const HH = String(hours).padStart(2, "0");
-  const MM = String(minutes).padStart(2, "0");
-  return `${HH}:${MM}`;
-};
 export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
   const [row, setRow] = useState([]);
   useEffect(() => {

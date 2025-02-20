@@ -328,11 +328,13 @@ const ContentView = (props) => {
 
         <div className="w-full max-h-[90vh] overflow-y-scroll hidden-scroll ">
           <div className="p-6">
-            {currentContentIndex >= 0 && (
-              <ContentContainer
-                contentData={contentData[currentContentIndex]}
-              />
-            )}
+            {currentContentIndex >= 0 &&
+              contentData?.length &&
+              contentData[currentContentIndex] && (
+                <ContentContainer
+                  contentData={contentData[currentContentIndex]}
+                />
+              )}
           </div>
         </div>
         <div className="absolute bottom-0 w-full flex justify-between bg-white p-4 px-6 shadow-customfooter	">

@@ -51,7 +51,6 @@ const StatisticCard = (props) => {
 const ClientDashboard = () => {
   const [apiFlag, setApiFlag] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [coursesData, setCoursesData] = useState();
   const [coursesTrackingData, setCoursesTrackingData] = useState();
   const [userAssessmentsData, setUserAssessmentsData] = useState();
@@ -91,15 +90,15 @@ const ClientDashboard = () => {
       );
       if (response.success) {
         setCoursesTrackingData(response.data);
-        setIsLoading(false);
+        setLoading(false);
       } else {
         openNotification("danger", response.message);
-        setIsLoading(false);
+        setLoading(false);
       }
     } catch (error) {
       console.log("get-all-course error:", error);
       openNotification("danger", error.message);
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   useEffect(() => {

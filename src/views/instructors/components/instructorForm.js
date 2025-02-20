@@ -505,7 +505,7 @@ function InstructorForm(props) {
             </div>
             <div className="col-span-2">
               <FormNumericInput
-                placeholder="Enter Passout Year"
+                placeholder="Enter Your Experience Year"
                 onChange={(e) => {
                   setFormData({
                     ...formData,

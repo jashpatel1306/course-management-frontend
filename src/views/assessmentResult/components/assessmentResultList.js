@@ -10,7 +10,6 @@ import { useDebounce } from "use-debounce";
 import { useSelector } from "react-redux";
 import { SUPERADMIN } from "constants/roles.constant";
 import { FaEye } from "react-icons/fa";
-import { CgExport } from "react-icons/cg";
 import { CSVExport } from "./exportTasks";
 
 const { Tr, Th, Td, THead, TBody } = Table;
