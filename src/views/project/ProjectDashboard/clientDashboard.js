@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "components/ui";
-import {
-  HiOutlineUserGroup,
-  HiOutlineUserAdd,
-  HiOutlineUsers
-} from "react-icons/hi";
 import { useSelector } from "react-redux";
 import TopList from "./components/toplist";
 import StudentRegistrations from "./components/studentRegistrations";
@@ -12,9 +7,12 @@ import axiosInstance from "apiServices/axiosInstance";
 import ActiveUserAnalysis from "./components/activeUserChart";
 import NumberFormat from "react-number-format";
 import { getCurrentToPreviousYearDateRange } from "views/common/commonFuntion";
+import { FaGraduationCap, FaUserTie } from "react-icons/fa6";
+import { IoPeople } from "react-icons/io5";
+import { MdOutlineOndemandVideo } from "react-icons/md";
 
 const StatisticCard = (props) => {
-  const { label, value } = props;
+  const { label, value, icon } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -27,7 +25,9 @@ const StatisticCard = (props) => {
             cursor-pointer
           `}
         >
-          {/* <Avatar className={avatarClass} size={avatarSize} icon={icon} /> */}
+          <div className={`flex items-center justify-center bg-gradient-to-br from-[#0DA9F0] to-[#0648BF] p-3 rounded-full`}>
+            {icon && icon}
+          </div>
           <div>
             <h6
               className={`font-bold text-lg text-${themeColor}-${primaryColorLevel} capitalize`}
@@ -105,19 +105,19 @@ const ClientDashboard = () => {
   }, []);
   return (
     <div>
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-4 gap-x-4 gap-y-0 mb-4">
         <StatisticCard
-          icon={<HiOutlineUserGroup />}
+          icon={<FaGraduationCap className="w-6 h-6 text-white" />}
           label="Number of Students"
           value={countData?.students}
         />
         <StatisticCard
-          icon={<HiOutlineUsers />}
+          icon={<IoPeople className="w-6 h-6 text-white" />}
           label="Number of Batches"
           value={countData?.batches}
         />
         <StatisticCard
-          icon={<HiOutlineUserAdd />}
+          icon={<FaUserTie className="w-6 h-6 text-white" />}
           label="Number of Instructors"
           value={countData?.instructors}
         />
@@ -127,13 +127,13 @@ const ClientDashboard = () => {
           value={countData?.colleges}
         /> */}
         <StatisticCard
-          icon={<HiOutlineUserGroup />}
+          icon={<MdOutlineOndemandVideo className="w-6 h-6 text-white" />}
           label="Number of Courses"
           value={countData?.courses}
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 mb-6 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 mb-6 gap-y-4 lg:gap-4">
         <div className="col-span-1 ">
           {!loading && <TopList data={topBatchesData} title={"Top Batches"} />}
         </div>
@@ -146,7 +146,7 @@ const ClientDashboard = () => {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4  gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-4">
         <div className="col-span-3  ">
           {!loading && (
             <StudentRegistrations
