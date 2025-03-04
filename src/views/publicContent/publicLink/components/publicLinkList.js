@@ -132,7 +132,8 @@ const PublicLinkList = (props) => {
     }
   };
   const handleCopyClick = (link = "") => {
-    window.open(link, "_blank");
+    // window.open(link, "_blank");
+    navigator.clipboard.writeText(link);
     openNotification("success", "Copied");
   };
   return (
