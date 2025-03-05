@@ -18,12 +18,7 @@ function AssignCourseForm(props) {
   const assignCourseValidationSchema = Yup.object().shape({
     courseId: Yup.string().required("Course Id is required"),
     collegeId: Yup.string().required("College Id is required"),
-    batchId: Yup.string().required("Batch Id is required"),
-    startTime: Yup.date().required("start Date is required"),
-
-    endTime: Yup.date()
-      .required("End Date is required")
-      .min(Yup.ref("startTime"))
+    batchId: Yup.string().required("Batch Id is required")
   });
   const [loading, setLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
@@ -36,32 +31,24 @@ function AssignCourseForm(props) {
     courseId: "",
     collegeId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
-    batchId: "",
-    startTime: new Date(),
-    endTime: new Date()
+    batchId: ""
   });
   const [errorData, setErrorData] = useState({
     courseId: "",
     collegeId: "",
-    batchId: "",
-    startTime: null,
-    endTime: null
+    batchId: ""
   });
   const resetErrorData = () => {
     setErrorData({
       courseId: "",
       collegeId: "",
-      batchId: "",
-      startTime: null,
-      endTime: null
+      batchId: ""
     });
   };
   const resetFormData = () => {
     setFormData({
       courseId: "",
       batchId: "",
-      startTime: null,
-      endTime: null,
       collegeId:
         userData?.authority.toString() === SUPERADMIN
           ? null
@@ -80,10 +67,6 @@ function AssignCourseForm(props) {
       setFormData({
         courseId: assignCourseData?.courseId ? assignCourseData?.courseId : "",
         batchId: assignCourseData?.batchId ? assignCourseData?.batchId : "",
-        startTime: assignCourseData?.startTime
-          ? assignCourseData?.startTime
-          : null,
-        endTime: assignCourseData?.endTime ? assignCourseData?.endTime : null,
         collegeId:
           userData?.authority.toString() === SUPERADMIN
             ? assignCourseData?.collegeId
@@ -198,9 +181,7 @@ function AssignCourseForm(props) {
       return {
         courseId: "",
         collegeId: "",
-        batchId: "",
-        startTime: null,
-        endTime: null
+        batchId: ""
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -208,9 +189,7 @@ function AssignCourseForm(props) {
         return {
           courseId: "",
           collegeId: "",
-          batchId: "",
-          startTime: null,
-          endTime: null
+          batchId: ""
         };
       } else {
         return {
@@ -218,21 +197,19 @@ function AssignCourseForm(props) {
           status: true,
           courseId: errorObject.courseId ? errorObject.courseId : "",
           collegeId: errorObject.collegeId ? errorObject.collegeId : "",
-          batchId: errorObject.batchId ? errorObject.batchId : "",
-          startTime: errorObject.startTime ? errorObject.startTime : null,
-          endTime: errorObject.endTime ? errorObject.endTime : null
+          batchId: errorObject.batchId ? errorObject.batchId : ""
         };
       }
     }
   };
   const SubmitHandle = async () => {
     const errorObject = formValidation();
-    console.log("errorObject :", errorObject)
+    console.log("errorObject :", errorObject);
     if (!errorObject.status) {
       resetErrorData();
-      console.log("Please enter")
+      console.log("Please enter");
       if (assignCourseData?._id) {
-        console.log("edit Assign Course")
+        console.log("edit Assign Course");
         // const newFormData = { ...formData };
         // await editAssignCourseMethod(newFormData, assignCourseData?._id);
       } else {
@@ -382,51 +359,6 @@ function AssignCourseForm(props) {
               />
             </div>
             {DisplayError(errorData.courseId)}
-          </div>
-          {/* startDate */}
-          <div className="col-span-1 gap-4 mb-4 hidden">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              Start Date & Time
-            </div>
-            <div className="col-span-2">
-              <DatePicker.DateTimepicker
-                placeholder="Please Select a Start Date"
-                className={errorData.startTime && "select-error"}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    startTime: e
-                  });
-                }}
-                value={formData?.startTime}
-              />
-            </div>
-            {DisplayError(errorData.startTime)}
-          </div>
-          {/* endDate */}
-          <div className="col-span-1 gap-4 mb-4 hidden">
-            <div
-              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
-            >
-              End Date & Time
-            </div>
-            <div className="col-span-2">
-              <DatePicker.DateTimepicker
-                placeholder="Please Select a End Date"
-                className={errorData.endTime && "select-error"}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    endTime: e
-                  });
-                }}
-                minDate={formData?.startTime}
-                value={formData?.endTime}
-              />
-            </div>
-            {DisplayError(errorData.endTime)}
           </div>
         </div>
       </Drawer>

@@ -389,14 +389,9 @@ function InstructorForm(props) {
               Phone
             </div>
             <div className="col-span-2">
-              <Input
-                type="string"
+              <FormNumericInput
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
-                onKeyDown={(evt) =>
-                  ["e", "E", "+", "-"]?.includes(evt.key) &&
-                  evt.preventDefault()
-                }
                 onChange={(e) => {
                   setFormData({
                     ...formData,

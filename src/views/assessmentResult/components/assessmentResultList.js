@@ -23,7 +23,7 @@ const columns = [
   "wrong Answers	",
   "total Marks	",
   "accuracy",
-  "total Time	",
+  "total Time	(Min)",
   "Active"
 ];
 
@@ -221,17 +221,18 @@ const AssessmentResult = (props) => {
           {userData.authority.toString() === SUPERADMIN && (
             <Select
               size="sm"
+              isClearable
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
               value={collegeList.find(
-                (item) => item.value === currentCollegeTab
+                (item) => item?.value === currentCollegeTab
               )}
               onChange={(item) => {
-                setCurrentCollegeTab(item.value);
-                getBatchOptionData(item.value);
+                setCurrentCollegeTab(item?.value ? item?.value : "");
+                getBatchOptionData(item?.value ? item?.value : "");
                 setApiFlag(true);
                 setPage(1);
               }}
@@ -239,6 +240,7 @@ const AssessmentResult = (props) => {
           )}
           <Select
             size="sm"
+            isClearable
             isSearchable={true}
             className="w-full lg:w-96 md:mb-0 mb-4 sm:mb-0"
             placeholder="Batches"
@@ -246,17 +248,18 @@ const AssessmentResult = (props) => {
             loading={batchLoading}
             value={
               currentBatchTab
-                ? batchList.find((item) => item.value === currentBatchTab)
+                ? batchList.find((item) => item?.value === currentBatchTab)
                 : null
             }
             onChange={(item) => {
-              setCurrentBatchTab(item.value);
+              setCurrentBatchTab(item?.value ? item?.value : "");
               setApiFlag(true);
               setPage(1);
             }}
           />
           <Select
             size="sm"
+            isClearable
             isSearchable={true}
             className="w-[100%] md:mb-0 mb-4 sm:mb-0"
             placeholder="Assessment"
@@ -265,13 +268,13 @@ const AssessmentResult = (props) => {
             value={
               currentAssessmentTab
                 ? assessmentList.find(
-                    (item) => item.value === currentAssessmentTab
+                    (item) => item?.value === currentAssessmentTab
                   )
                 : null
             }
             onChange={(item) => {
-              setCurrentAssessmentTab(item.value);
-              setAssessmentsName(item.label);
+              setCurrentAssessmentTab(item?.value ? item?.value : "");
+              setAssessmentsName(item?.label ? item?.label : "");
               setApiFlag(true);
               setPage(1);
             }}

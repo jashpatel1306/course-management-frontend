@@ -36,7 +36,7 @@ export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
           "Wrong Answers",
           "Total Marks",
           "Accuracy",
-          "Total Time"
+          "Total Time (Min)"
         ],
         ...csvData
       ]);

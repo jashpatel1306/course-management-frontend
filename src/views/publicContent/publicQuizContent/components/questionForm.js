@@ -319,7 +319,7 @@ function QuestionForm(props) {
             className={`mr-2 border border-${themeColor}-${primaryColorLevel}`}
             onClick={addAnswer}
           >
-            <span>Answer</span>
+            <span>Add Option</span>
           </Button>
         </div>
         <div className="flex justify-between md:justify-end gap-2 mt-4 md:mt-0">

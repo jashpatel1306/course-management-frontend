@@ -191,16 +191,17 @@ const InstructorList = (props) => {
           {userData.authority.toString() === SUPERADMIN && (
             <Select
               size="sm"
+              isClearable
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
               value={collegeList.find(
-                (item) => item.value === currentCollegeTab
+                (item) => item?.value === currentCollegeTab
               )}
               onChange={(item) => {
-                setCurrentCollegeTab(item.value);
+                setCurrentCollegeTab(item?.value ? item?.value : "");
                 setApiFlag(true);
                 setPage(1);
               }}

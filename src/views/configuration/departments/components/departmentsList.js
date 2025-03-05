@@ -68,7 +68,7 @@ const DepartmentList = (props) => {
 
   const fetchData = async () => {
     try {
-      console.log("currentTab: ",currentTab)
+      console.log("currentTab: ", currentTab);
       const response = await axiosInstance.get(
         `user/departments/${currentTab}`
       );
@@ -135,6 +135,7 @@ const DepartmentList = (props) => {
           <div className="w-full md:w-[100%] p-1 lg:w-[25%]">
             <Select
               size="sm"
+              isClearable
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
@@ -142,7 +143,7 @@ const DepartmentList = (props) => {
               loading={collegeLoading}
               value={collegeList.find((item) => item.value === currentTab)}
               onChange={(item) => {
-                setCurrentTab(item.value);
+                setCurrentTab(item?.value ? item?.value : "");
                 setApiFlag(true);
               }}
             />

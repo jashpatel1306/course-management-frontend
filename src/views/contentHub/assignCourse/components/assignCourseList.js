@@ -1,12 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Dialog,
-  Button,
-  Select,
-} from "components/ui";
+import { Table, Dialog, Button, Select } from "components/ui";
 import { TableRowSkeleton } from "components/shared";
 
 import axiosInstance from "apiServices/axiosInstance";
@@ -145,16 +140,17 @@ const InstructorList = (props) => {
         <div className="w-96">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
+              isClearable
               isSearchable={true}
               className="md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
               value={collegeList.find(
-                (item) => item.value === currentCollegeTab
+                (item) => item?.value === currentCollegeTab
               )}
               onChange={(item) => {
-                setCurrentCollegeTab(item.value);
+                setCurrentCollegeTab(item?.value ? item?.value : "");
                 setApiFlag(true);
                 setPage(1);
               }}

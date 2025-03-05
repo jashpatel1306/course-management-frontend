@@ -24,8 +24,8 @@ function isLinkExpired(expirationDate) {
 const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
   const navigate = useNavigate();
 
-  const mode = useSelector(state => state.theme.mode)
-  
+  const mode = useSelector((state) => state.theme.mode);
+
   const calculateTimeLeft = () => {
     const difference = +new Date(quizData.startDate) - +new Date();
     let timeLeft = null;
@@ -45,7 +45,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
   const [step, setStep] = useState("timeLeft");
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
   const [timeCondition, setTimeCondition] = useState(false);
-  const [expired, setExpired] = useState(isLinkExpired(quizData.endDate));
+  const [expired] = useState(isLinkExpired(quizData.endDate));
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
@@ -60,6 +60,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
   const [errorPassword, setErrorPassword] = useState("");
   const [specificField, setSpecificField] = useState();
   const [errorData, setErrorData] = useState({ status: false });
+
   const handleSubmit = () => {
     let errorStatus = false;
 
@@ -131,8 +132,12 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
     }
   };
   useEffect(() => {
-    if (!timeLeft) {
-      setStep("instructions");
+    if (quizData.soltStatus) {
+      if (!timeLeft) {
+        setStep("instructions");
+      }
+    } else {
+      setStep("limit");
     }
     if (expired) {
       navigate(`/expired-link`);
@@ -144,7 +149,9 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
       {!expired && (
         <>
           <div className="flex flex-col lg:flex-row">
-            <div className={`w-full lg:w-[35%] h-[40vh] lg:h-screen bg-white overflow-y-auto`}>
+            <div
+              className={`w-full lg:w-[35%] h-[40vh] lg:h-screen bg-white overflow-y-auto`}
+            >
               <section className="flex flex-col h-full justify-around items-start text-start p-10 lg:py-0 md:px-16 gap-y-8 !py-6">
                 <Logo mode={mode} className="hidden md:block" />
                 <div>
@@ -459,6 +466,24 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                           </Button>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div></div>
+                </section>
+              ) : (
+                <></>
+              )}
+
+              {/* Instructions */}
+              {step === "limit" ? (
+                <section className="flex flex-col h-full justify-around items-center text-start pl-6 md:pl-16 pr-8 md:pr-32 p-6 gap-y-6 ">
+                  <div></div>
+                  <div>
+                    <div className="flex flex-col gap-y-8 mb-8">
+                      <h2 className="text-4xl font-semibold">
+                        You have reached the maximum access limit for this quiz.
+                        Please contact support for further assistance.
+                      </h2>
                     </div>
                   </div>
                   <div></div>

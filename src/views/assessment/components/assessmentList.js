@@ -158,20 +158,22 @@ const AssessmentList = () => {
             {userData.authority.toString() === SUPERADMIN && (
               <Select
                 size="sm"
+                isClearable
                 isSearchable={true}
                 className="w-full mb-4 lg:mb-0"
                 placeholder="College"
                 options={collegeList}
                 loading={collegeLoading}
                 value={collegeList.find(
-                  (item) => item.value === currentCollegeTab
+                  (item) => item?.value === currentCollegeTab
                 )}
                 onChange={(item) => {
-                  setCurrentCollegeTab(item.value);
+                  setCurrentCollegeTab(item?.value ? item?.value : "");
                   setCurrentTab(null);
                   setBatchesList([]);
-                  if (item.value !== "all") {
-                    getBatchOptionData(item.value);
+
+                  if (item?.value && item?.value !== "all") {
+                    getBatchOptionData(item?.value);
                   }
                   setApiFlag(true);
                   setPage(1);
@@ -180,6 +182,7 @@ const AssessmentList = () => {
             )}
             <Select
               size="sm"
+              isClearable
               isSearchable={true}
               className="w-full mb-4 lg:mb-0"
               placeholder="Batches"
@@ -187,11 +190,11 @@ const AssessmentList = () => {
               loading={batchLoading}
               value={
                 currentTab
-                  ? batchesList?.find((item) => item.value === currentTab)
+                  ? batchesList?.find((item) => item?.value === currentTab)
                   : null
               }
               onChange={(item) => {
-                setCurrentTab(item.value);
+                setCurrentTab(item?.value ? item?.value : "");
                 setApiFlag(true);
                 setPage(1);
               }}

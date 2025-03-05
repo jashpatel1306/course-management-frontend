@@ -38,11 +38,18 @@ const columns = [
   "Batch Name",
   "Section",
   "Passout Year",
-  // "Gender",
   "Sem",
   "Actions"
 ];
+const createYearArray = () => {
+  const currentYear = new Date().getFullYear();
+  const endYear = currentYear + 10;
 
+  return Array.from({ length: endYear - 1991 }, (_, index) => {
+    const year = (1992 + index).toString();
+    return { label: year, value: year };
+  });
+};
 const StudentList = (props) => {
   const {
     flag,
@@ -73,6 +80,9 @@ const StudentList = (props) => {
   const [batchLoading, setBatchLoading] = useState(false);
 
   const [batchList, setBatchList] = useState([]);
+  const [yearList] = useState(createYearArray());
+  const [yearTab, setYearTab] = useState();
+
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [apiFlag, setApiFlag] = useState(false);
@@ -80,13 +90,12 @@ const StudentList = (props) => {
   const [collegeList, setCollegeList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
   const [departmentLoading, setDepartmentLoading] = useState(false);
-  const [semesterList] = useState([]);
-  const [semesterLoading] = useState(false);
 
   const onPaginationChange = (val) => {
     setPage(val);
     setApiFlag(true);
   };
+
   const getCollegeOptionData = async () => {
     try {
       setCollegeLoading(true);
@@ -111,6 +120,7 @@ const StudentList = (props) => {
       setCollegeLoading(false);
     }
   };
+
   const getBatchOptionData = async (collegeId = "") => {
     try {
       setBatchLoading(true);
@@ -132,6 +142,7 @@ const StudentList = (props) => {
       setBatchLoading(false);
     }
   };
+
   const getDepartmentOptionData = async (collegeId) => {
     try {
       setDepartmentLoading(true);
@@ -160,6 +171,7 @@ const StudentList = (props) => {
       let formData = {
         search: removeSpecials(debouncedText),
         batchId: batchTab ? batchTab : "all",
+
         departmentId: departmentTab
           ? departmentTab === "all"
             ? ""
@@ -174,10 +186,17 @@ const StudentList = (props) => {
           collegeId: currentCollegeTab ? currentCollegeTab : "all"
         };
       }
+
       if (departmentTab) {
         formData = {
           ...formData,
           departmentId: departmentTab === "all" ? "" : departmentTab
+        };
+      }
+      if (yearTab) {
+        formData = {
+          ...formData,
+          passoutYear: yearTab ? yearTab : ""
         };
       }
       if (activeTab) {
@@ -230,16 +249,19 @@ const StudentList = (props) => {
       }
     }
   }, []);
+
   useEffect(() => {
     if (!flag) {
       setApiFlag(true);
     }
   }, [flag]);
+
   useEffect(() => {
     if (refreshFlag) {
       setApiFlag(true);
     }
   }, [refreshFlag]);
+
   useEffect(() => {
     setPage(1);
     setApiFlag(true);
@@ -271,6 +293,7 @@ const StudentList = (props) => {
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-5">
           {userData.authority.toString() === SUPERADMIN && (
             <Select
+              isClearable
               size="small"
               isSearchable={true}
               className="w-full md:mb-0 mb-4 sm:mb-0"
@@ -278,26 +301,35 @@ const StudentList = (props) => {
               options={collegeList}
               loading={collegeLoading}
               value={collegeList.find(
-                (item) => item.value === currentCollegeTab
+                (item) => item?.value === currentCollegeTab
               )}
               onChange={(item) => {
-                setCurrentCollegeTab(item.value);
-                setBatchTab(null);
-                setDepartmentTab(null);
-                setActiveTab(null);
-                setBatchList([]);
-                setDepartmentList([]);
-                if (item.value !== "all") {
-                  getBatchOptionData(item.value);
-                  getDepartmentOptionData(item.value);
+                if (item?.value) {
+                  setCurrentCollegeTab(item?.value);
+                  setBatchTab(null);
+                  setDepartmentTab(null);
+                  setActiveTab(null);
+                  setBatchList([]);
+                  setDepartmentList([]);
+                  if (item.value !== "all") {
+                    getBatchOptionData(item.value);
+                    getDepartmentOptionData(item.value);
+                  }
+                } else {
+                  setCurrentCollegeTab("");
+                  setBatchTab(null);
+                  setDepartmentTab(null);
+                  setActiveTab(null);
+                  setBatchList([]);
+                  setDepartmentList([]);
                 }
-
                 setApiFlag(true);
                 setPage(1);
               }}
             />
           )}
           <Select
+            isClearable
             size="small"
             isSearchable={true}
             className="w-full md:mb-0 mb-4 sm:mb-0 capitalize"
@@ -306,17 +338,18 @@ const StudentList = (props) => {
             loading={batchLoading}
             value={
               batchTab
-                ? batchList.find((item) => item.value === batchTab)
+                ? batchList.find((item) => item?.value === batchTab)
                 : null
             }
             onChange={(item) => {
               setActiveTab(null);
-              setBatchTab(item.value);
+              setBatchTab(item?.value ? item?.value : "");
               setApiFlag(true);
               setPage(1);
             }}
           />
           <Select
+            isClearable
             size="small"
             isSearchable={true}
             className="w-full md:mb-0 mb-4 sm:mb-0"
@@ -325,25 +358,32 @@ const StudentList = (props) => {
             loading={departmentLoading}
             value={
               departmentTab
-                ? departmentList.find((item) => item.value === departmentTab)
+                ? departmentList.find((item) => item?.value === departmentTab)
                 : null
             }
             onChange={(item) => {
               setActiveTab(null);
-              setDepartmentTab(item.value);
+              setDepartmentTab(item?.value ? item?.value : "");
               setApiFlag(true);
               setPage(1);
             }}
           />
           <Select
+            isClearable
             size="small"
             isSearchable={true}
             className="w-full md:mb-0 mb-4 sm:mb-0"
-            placeholder="Semesters"
-            options={semesterList}
-            loading={semesterLoading}
+            placeholder="Passout Years"
+            options={yearList}
+            value={
+              yearTab
+                ? yearList.find((item) => item?.value === departmentTab)
+                : null
+            }
             onChange={(item) => {
               setActiveTab(null);
+              setYearTab(item?.value ? item?.value : "");
+
               setApiFlag(true);
               setPage(1);
             }}
@@ -415,7 +455,9 @@ const StudentList = (props) => {
                     >
                       <Td>{item?.rollNo}</Td>
                       <Td>{item?.name}</Td>
-                      <Td className="lowercase">{item?.email?.toLowerCase()}</Td>
+                      <Td className="lowercase">
+                        {item?.email?.toLowerCase()}
+                      </Td>
                       <Td>
                         {item?.department?._id
                           ? item?.department?.department

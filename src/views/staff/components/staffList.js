@@ -179,16 +179,17 @@ const StaffList = (props) => {
           {userData.authority.toString() === SUPERADMIN && (
             <Select
               size="sm"
+              isClearable
               isSearchable={true}
               className="w-[100%] md:mb-0 mb-4 sm:mb-0"
               placeholder="College"
               options={collegeList}
               loading={collegeLoading}
               value={collegeList.find(
-                (item) => item.value === currentCollegeTab
+                (item) => item?.value === currentCollegeTab
               )}
               onChange={(item) => {
-                setCurrentCollegeTab(item.value);
+                setCurrentCollegeTab(item?.value ? item?.value : "");
                 setApiFlag(true);
                 setPage(1);
               }}
@@ -257,7 +258,9 @@ const StaffList = (props) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
                       <Td>{item?.name}</Td>
-                      <Td className="lowercase">{item?.email?.toLowerCase()}</Td>
+                      <Td className="lowercase">
+                        {item?.email?.toLowerCase()}
+                      </Td>
 
                       <Td>{item?.phone}</Td>
                       <Td className="capitalize">
@@ -267,39 +270,46 @@ const StaffList = (props) => {
 
                       <Td>
                         <div className="flex items-center">
-                        <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
-                            <MenuItem key='actions' eventKey='actions'>
-                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
-                            </MenuItem>}
-                            placement="middle-end-top">
-                                <Button
-                                  shape="circle"
-                                  variant="solid"
-                                  className="mr-2"
-                                  size="sm"
-                                  icon={<HiOutlinePencil />}
-                                  onClick={async () => {
-                                    parentCloseCallback();
-                                    setData(item);
-                                    setTimeout(() => {
-                                      parentCallback();
-                                    }, 50);
-                                  }}
+                          <Dropdown
+                            trigger="click"
+                            menuClass="min-w-0 flex justify-center items-center"
+                            renderTitle={
+                              <MenuItem key="actions" eventKey="actions">
+                                <BsThreeDots
+                                  className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`}
                                 />
-                                {item?.active && (
-                                  <Button
-                                    shape="circle"
-                                    color="red-700"
-                                    variant="solid"
-                                    size="sm"
-                                    icon={<HiOutlineTrash />}
-                                    onClick={() => {
-                                      setSelectObject(item);
-                                      setDeleteIsOpen(true);
-                                    }}
-                                  />
-                                )}
-                            </Dropdown>
+                              </MenuItem>
+                            }
+                            placement="middle-end-top"
+                          >
+                            <Button
+                              shape="circle"
+                              variant="solid"
+                              className="mr-2"
+                              size="sm"
+                              icon={<HiOutlinePencil />}
+                              onClick={async () => {
+                                parentCloseCallback();
+                                setData(item);
+                                setTimeout(() => {
+                                  parentCallback();
+                                }, 50);
+                              }}
+                            />
+                            {item?.active && (
+                              <Button
+                                shape="circle"
+                                color="red-700"
+                                variant="solid"
+                                size="sm"
+                                icon={<HiOutlineTrash />}
+                                onClick={() => {
+                                  setSelectObject(item);
+                                  setDeleteIsOpen(true);
+                                }}
+                              />
+                            )}
+                          </Dropdown>
                         </div>
                       </Td>
                     </Tr>

@@ -142,17 +142,18 @@ const PublicLinkList = (props) => {
         <div className="flex flex-col lg:flex-row lg:items-center gap-x-4 lg:w-[25%] md:w-[50%] p-1 sm:w-[50%]"></div>
         <div className="w-full md:w-56 p-1 lg:w-[25%]">
           <Select
+            isClearable
             isSearchable={true}
             className=""
             placeholder="Filter"
             options={activeFilter}
             value={
               activeTab
-                ? activeFilter.find((item) => item.value === activeTab)
+                ? activeFilter.find((item) => item?.value === activeTab)
                 : null
             }
             onChange={(item) => {
-              setActiveTab(item.value);
+              setActiveTab(item?.value ? item?.value : "");
               setApiFlag(true);
               setPage(1);
             }}
@@ -201,7 +202,6 @@ const PublicLinkList = (props) => {
                           size="sm"
                           icon={<FaLink className="text-blue-700" />}
                           onClick={async () => {
-                         
                             handleCopyClick(
                               `${FRONTEND_BASE_URL}/app/quiz/${item._id}/public`
                             );
@@ -214,7 +214,9 @@ const PublicLinkList = (props) => {
                           variant="transparent"
                           className="mr-2 border-none !bg-transparent"
                           size="sm"
-                          icon={<FaRegEdit size={20} className="text-blue-700" />}
+                          icon={
+                            <FaRegEdit size={20} className="text-blue-700" />
+                          }
                           onClick={async () => {
                             parentCloseCallback();
                             setData(item);
@@ -231,7 +233,12 @@ const PublicLinkList = (props) => {
                             variant="solid"
                             className="mr-2 border-none !bg-transparent"
                             size="sm"
-                            icon={<CgFileDocument size={20} className="text-blue-700" />}
+                            icon={
+                              <CgFileDocument
+                                size={20}
+                                className="text-blue-700"
+                              />
+                            }
                             onClick={async () => {
                               navigate(
                                 `/app/admin/public-content/quiz-result/${item._id}`,
@@ -252,7 +259,12 @@ const PublicLinkList = (props) => {
                             variant="solid"
                             size="sm"
                             className="mr-2 border-none !bg-transparent"
-                            icon={<FaRegTrashAlt size={20} className="text-red-700" />}
+                            icon={
+                              <FaRegTrashAlt
+                                size={20}
+                                className="text-red-700"
+                              />
+                            }
                             onClick={() => {
                               setSelectObject(item);
                               setDeleteIsOpen(true);

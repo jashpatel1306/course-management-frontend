@@ -2,7 +2,7 @@ import axiosInstance from "apiServices/axiosInstance";
 import { FormNumericInput } from "components/shared";
 import { Button, Card, InputGroup, Radio, Select } from "components/ui";
 import Addon from "components/ui/InputGroup/Addon";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { HiOutlineTrash, HiPlus } from "react-icons/hi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -153,7 +153,10 @@ function QuestionForm(props) {
         return;
       }
 
-      if (questionType?.toLowerCase() === "mcq" && !answers.some((answer) => answer.correct)) {
+      if (
+        questionType?.toLowerCase() === "mcq" &&
+        !answers.some((answer) => answer.correct)
+      ) {
         openNotification("danger", "Please select a correct answer.");
         return;
       }
@@ -184,7 +187,9 @@ function QuestionForm(props) {
               <Select
                 placeholder="Please Select"
                 defaultValue={
-                  questionType?.toLowerCase() === "mcq" ? typeOptions[0] : typeOptions[1]
+                  questionType?.toLowerCase() === "mcq"
+                    ? typeOptions[0]
+                    : typeOptions[1]
                 }
                 options={typeOptions}
                 onChange={(e) => {
@@ -314,7 +319,7 @@ function QuestionForm(props) {
             className={`mr-2 border border-${themeColor}-${primaryColorLevel}`}
             onClick={addAnswer}
           >
-            <span>Answer</span>
+            <span>Add Option</span>
           </Button>
         </div>
         <div className="flex justify-between md:justify-end gap-2 mt-4 md:mt-0">

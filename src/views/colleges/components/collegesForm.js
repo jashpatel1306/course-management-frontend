@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
+import { FormNumericInput } from "components/shared";
 const addvalidationSchema = Yup.object().shape({
   collegeName: Yup.string()
     .min(3, "Too Short!")
@@ -139,7 +140,6 @@ function CollegeForm(props) {
         handleCloseClick();
         resetFormData();
         openNotification("success", response.message);
-
       } else {
         setLoading(false);
         openNotification("danger", response.message);
@@ -385,8 +385,7 @@ function CollegeForm(props) {
               College Phone Number
             </div>
             <div className="col-span-2">
-              <Input
-                type="text"
+              <FormNumericInput
                 placeholder="Please Enter College Phone Number"
                 className={
                   errorData.collegeNo ? "select-error capitalize" : "capitalize"
@@ -462,12 +461,7 @@ function CollegeForm(props) {
               Contact Person Phone Number
             </div>
             <div className="col-span-2">
-              <Input
-                  type="number"
-                  onKeyDown={(evt) =>
-                    ["e", "E", "+", "-"]?.includes(evt.key) &&
-                    evt.preventDefault()
-                  }
+              <FormNumericInput
                 placeholder="Please Enter Contact Person Phone Number"
                 className={
                   errorData.contactPersonNo

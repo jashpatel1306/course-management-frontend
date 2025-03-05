@@ -144,17 +144,18 @@ const CourseList = (props) => {
         <div className="grid grid-cols-1 md:grid-cols-4 mt-4">
           <Select
             size="sm"
+            isClearable
             isSearchable={true}
             className="col-span-1 md:mb-0 mb-4 sm:mb-0"
             placeholder="Active Filter"
             options={activeFilter}
             value={
               activeTab
-                ? activeFilter.find((item) => item.value === activeTab)
+                ? activeFilter.find((item) => item?.value === activeTab)
                 : null
             }
             onChange={(item) => {
-              setActiveTab(item.value);
+              setActiveTab(item?.value ? item?.value : "");
               setApiFlag(true);
               setPage(1);
             }}

@@ -23,7 +23,7 @@ const columns = [
   "correct Answers",
   "wrong Answers",
   "total Marks",
-  "total Time",
+  "total Time	(Min)",
   "Details"
 ];
 

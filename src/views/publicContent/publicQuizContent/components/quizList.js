@@ -136,15 +136,16 @@ const QuizList = (props) => {
             <Select
               isSearchable={true}
               className=""
+              isClearable
               placeholder="Filter"
               options={activeFilter}
               value={
                 activeTab
-                  ? activeFilter.find((item) => item.value === activeTab)
+                  ? activeFilter.find((item) => item?.value === activeTab)
                   : null
               }
               onChange={(item) => {
-                setActiveTab(item.value);
+                setActiveTab(item?.value ? item?.value : "");
                 setApiFlag(true);
                 setPage(1);
               }}
@@ -207,22 +208,29 @@ const QuizList = (props) => {
 
                         <Td>
                           <div className="flex items-center">
-                          <Dropdown trigger="click" menuClass="min-w-0 flex justify-center items-center" renderTitle={
-                            <MenuItem key='actions' eventKey='actions'>
-                              <BsThreeDots className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`} />
-                            </MenuItem>}
-                            placement="middle-end-bottom">
-                               <Button
-                                  shape="circle"
-                                  variant="solid"
-                                  size="sm"
-                                  icon={<HiOutlinePencil />}
-                                  onClick={async () => {
-                                    navigate(
-                                      `/app/admin/public-content/quiz-form/${item._id}`
-                                    );
-                                  }}
-                                />
+                            <Dropdown
+                              trigger="click"
+                              menuClass="min-w-0 flex justify-center items-center"
+                              renderTitle={
+                                <MenuItem key="actions" eventKey="actions">
+                                  <BsThreeDots
+                                    className={`cursor-pointer text-2xl text-${themeColor}-${primaryColorLevel}`}
+                                  />
+                                </MenuItem>
+                              }
+                              placement="middle-end-bottom"
+                            >
+                              <Button
+                                shape="circle"
+                                variant="solid"
+                                size="sm"
+                                icon={<HiOutlinePencil />}
+                                onClick={async () => {
+                                  navigate(
+                                    `/app/admin/public-content/quiz-form/${item._id}`
+                                  );
+                                }}
+                              />
                               {/* {item?.active && (
                                 <Button
                                   shape="circle"

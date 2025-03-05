@@ -43,7 +43,7 @@ export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
         "Correct Answers",
         "Wrong Answers",
         "Total Marks",
-        "Total Time"
+        "Total Time	(Min)"
       ];
       const headers = ["No", ...dynamicHeaders, ...staticHeaders];
 

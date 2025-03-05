@@ -7,6 +7,7 @@ import openNotification from "views/common/notification";
 import { useSelector } from "react-redux";
 import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
+import { FormNumericInput } from "components/shared";
 
 const staffPermissionOptions = [
   { value: "dashboard", label: "Dashboard" },
@@ -371,12 +372,7 @@ function StaffForm(props) {
               Phone
             </div>
             <div className="col-span-2">
-              <Input
-                type="number"
-                onKeyDown={(evt) =>
-                  ["e", "E", "+", "-"]?.includes(evt.key) &&
-                  evt.preventDefault()
-                }
+              <FormNumericInput
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
                 onChange={(e) => {

@@ -12,7 +12,7 @@ import { SUPERADMIN } from "constants/roles.constant";
 const genderList = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
-  { label: "Other", value: "other" },
+  { label: "Other", value: "other" }
 ];
 
 function StudentForm(props) {
@@ -40,12 +40,12 @@ function StudentForm(props) {
       is: (userData) =>
         userData?.authority.toString() === SUPERADMIN.toString(),
       then: Yup.string().required("College Name is required"),
-      otherwise: Yup.string().notRequired(),
+      otherwise: Yup.string().notRequired()
     }),
     semester: Yup.number()
       .required("Semester is required")
       .positive("Must be a positive number"),
-    active: Yup.boolean(),
+    active: Yup.boolean()
   });
   const [loading, setLoading] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
@@ -69,7 +69,7 @@ function StudentForm(props) {
     gender: "",
 
     semester: "",
-    active: true,
+    active: true
   });
   const [errorData, setErrorData] = useState({
     name: "",
@@ -81,7 +81,7 @@ function StudentForm(props) {
     passoutYear: "",
     gender: "",
     collegeUserId: "",
-    semester: "",
+    semester: ""
   });
 
   const resetErrorData = () => {
@@ -94,7 +94,7 @@ function StudentForm(props) {
       section: "",
       passoutYear: "",
       gender: "",
-      semester: "",
+      semester: ""
     });
   };
 
@@ -115,7 +115,7 @@ function StudentForm(props) {
       passoutYear: "",
       gender: "",
       semester: "",
-      active: true,
+      active: true
     });
   };
 
@@ -128,7 +128,7 @@ function StudentForm(props) {
         getCollegeOptionData();
       }
     }
-  }, [isOpen,userData.authority,userData.collegeId]);
+  }, [isOpen, userData.authority, userData.collegeId]);
 
   useEffect(() => {
     if (studentData?._id) {
@@ -152,16 +152,16 @@ function StudentForm(props) {
             : ""
           : "",
         department: studentData?.department
-        ? studentData?.department?._id
           ? studentData?.department?._id
-          : ""
-        : "",
+            ? studentData?.department?._id
+            : ""
+          : "",
         section: studentData?.section ? studentData?.section : "",
         passoutYear: studentData?.passoutYear ? studentData?.passoutYear : "",
         gender: studentData?.gender ? studentData?.gender : "",
         colName: studentData?.colName ? studentData?.colName : "",
         semester: studentData?.semester ? studentData?.semester : "",
-        active: studentData?.active !== undefined ? studentData?.active : true,
+        active: studentData?.active !== undefined ? studentData?.active : true
       });
     }
   }, [studentData]);
@@ -285,7 +285,7 @@ function StudentForm(props) {
         passoutYear: "",
         gender: "",
 
-        semester: "",
+        semester: ""
       };
     } catch (error) {
       const errorObject = getErrorMessages(error);
@@ -300,7 +300,7 @@ function StudentForm(props) {
           passoutYear: "",
           gender: "",
           collegeUserId: "",
-          semester: "",
+          semester: ""
         };
       } else {
         return {
@@ -317,7 +317,7 @@ function StudentForm(props) {
           collegeUserId: errorObject.collegeUserId
             ? errorObject.collegeUserId
             : "",
-          semester: errorObject.semester ? errorObject.semester : "",
+          semester: errorObject.semester ? errorObject.semester : ""
         };
       }
     }
@@ -405,7 +405,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    name: e.target.value,
+                    name: e.target.value
                   });
                 }}
                 value={formData?.name}
@@ -428,7 +428,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    email: e.target.value.trim(),
+                    email: e.target.value.trim()
                   });
                 }}
                 value={formData?.email}
@@ -451,7 +451,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    rollNo: e.target.value,
+                    rollNo: e.target.value
                   });
                 }}
                 value={formData?.rollNo}
@@ -467,18 +467,13 @@ function StudentForm(props) {
               Phone
             </div>
             <div className="col-span-2">
-              <Input
-               type="number"
-               onKeyDown={(evt) =>
-                 ["e", "E", "+", "-"]?.includes(evt.key) &&
-                 evt.preventDefault()
-               }
+              <FormNumericInput
                 placeholder="Please Enter Phone Number"
                 className={errorData.phone && "select-error"}
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    phone: e.target.value,
+                    phone: e.target.value
                   });
                 }}
                 value={formData?.phone}
@@ -502,7 +497,7 @@ function StudentForm(props) {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeUserId: e.value,
+                        collegeUserId: e.value
                       });
                       getBatchOptionData(e.value);
                       getDepartmentOptionData(e.value);
@@ -534,7 +529,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    batchId: e.value,
+                    batchId: e.value
                   });
                 }}
                 value={batchList?.find(
@@ -559,7 +554,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    department: e.value,
+                    department: e.value
                   });
                 }}
                 loading={departmentLoading}
@@ -588,7 +583,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    section: e.target.value,
+                    section: e.target.value
                   });
                 }}
                 value={formData?.section}
@@ -609,7 +604,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    passoutYear: e.target.value,
+                    passoutYear: e.target.value
                   });
                 }}
                 value={formData?.passoutYear}
@@ -631,7 +626,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    gender: e.value,
+                    gender: e.value
                   });
                 }}
                 value={genderList.find(
@@ -656,7 +651,7 @@ function StudentForm(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    semester: e.target.value,
+                    semester: e.target.value
                   });
                 }}
                 value={formData?.semester}
@@ -678,7 +673,7 @@ function StudentForm(props) {
                 onChange={(val) => {
                   setFormData({
                     ...formData,
-                    active: !val,
+                    active: !val
                   });
                 }}
               />
