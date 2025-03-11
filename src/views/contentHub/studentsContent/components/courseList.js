@@ -164,7 +164,7 @@ const CourseList = (props) => {
           <div></div>
           <Input
             size="sm"
-            placeholder="Search By Name, Email"
+            placeholder="Search By Name"
             className="input-wrapper md:mb-0 mb-4"
             value={searchText}
             prefix={
