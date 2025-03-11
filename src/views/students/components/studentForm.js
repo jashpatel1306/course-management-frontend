@@ -14,7 +14,15 @@ const genderList = [
   { label: "Female", value: "female" },
   { label: "Other", value: "other" }
 ];
+const createYearArray = () => {
+  const currentYear = new Date().getFullYear();
+  const endYear = currentYear + 10;
 
+  return Array.from({ length: endYear - 1991 }, (_, index) => {
+    const year = (1992 + index).toString();
+    return { label: year, value: year };
+  });
+};
 function StudentForm(props) {
   const { handleCloseClick, studentData, isOpen } = props;
   const themeColor = useSelector((state) => state?.theme?.themeColor);
@@ -54,6 +62,8 @@ function StudentForm(props) {
   const [collegeList, setCollegeList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
   const [departmentLoading, setDepartmentLoading] = useState(false);
+  const [yearList] = useState(createYearArray());
+
   const [formData, setFormData] = useState({
     studentId: "",
     name: "",
@@ -599,16 +609,27 @@ function StudentForm(props) {
               Passout Year
             </div>
             <div className="col-span-2">
-              <FormNumericInput
-                placeholder="Enter Passout Year"
-                onChange={(e) => {
+              <Select
+                isClearable
+                size="small"
+                isSearchable={true}
+                className="w-full md:mb-0 mb-4 sm:mb-0"
+                placeholder="Select Passout Year"
+                options={yearList}
+                value={
+                  formData?.passoutYear
+                    ? {
+                        label: formData?.passoutYear,
+                        value: formData?.passoutYear
+                      }
+                    : null
+                }
+                onChange={(item) => {
                   setFormData({
                     ...formData,
-                    passoutYear: e.target.value
+                    passoutYear: item?.value ? item?.value : null
                   });
                 }}
-                value={formData?.passoutYear}
-                className={errorData.passoutYear && "select-error"}
               />
             </div>
             {DisplayError(errorData.passoutYear)}

@@ -28,10 +28,10 @@ function AssignCourseForm(props) {
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
   const [formData, setFormData] = useState({
-    courseId: "",
+    courseId: null,
     collegeId:
       userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
-    batchId: ""
+    batchId: null
   });
   const [errorData, setErrorData] = useState({
     courseId: "",
@@ -40,15 +40,15 @@ function AssignCourseForm(props) {
   });
   const resetErrorData = () => {
     setErrorData({
-      courseId: "",
-      collegeId: "",
-      batchId: ""
+      courseId: null,
+      collegeId: null,
+      batchId: null
     });
   };
   const resetFormData = () => {
     setFormData({
-      courseId: "",
-      batchId: "",
+      courseId: null,
+      batchId: null,
       collegeId:
         userData?.authority.toString() === SUPERADMIN
           ? null
@@ -150,6 +150,7 @@ function AssignCourseForm(props) {
       setLoading(true);
       const response = await axiosInstance.post(`user/assign-course`, value);
       if (response.success) {
+        openNotification("success", response.message);
         setLoading(false);
         resetErrorData();
         resetFormData();
@@ -295,9 +296,12 @@ function AssignCourseForm(props) {
                       getBatchOptionData(e.value);
                       getCoursesOptionData(e.value);
                     }}
-                    value={collegeList.find(
-                      (info) => info.value === formData?.collegeId
-                    )}
+                    value={
+                      formData?.collegeId &&
+                      collegeList.find(
+                        (info) => info.value === formData?.collegeId
+                      )
+                    }
                     options={collegeList}
                     className={errorData.collegeId && "select-error"}
                   />
@@ -325,9 +329,10 @@ function AssignCourseForm(props) {
                     batchId: e.value
                   });
                 }}
-                value={batchList?.find(
-                  (info) => info.value === formData?.batchId
-                )}
+                value={
+                  formData?.batchId &&
+                  batchList?.find((info) => info.value === formData?.batchId)
+                }
                 options={batchList}
                 className={errorData.batchId && "select-error"}
               />
@@ -351,9 +356,10 @@ function AssignCourseForm(props) {
                     courseId: e.value
                   });
                 }}
-                value={coursesList?.find(
-                  (info) => info.value === formData?.courseId
-                )}
+                value={
+                  formData?.courseId &&
+                  coursesList?.find((info) => info.value === formData?.courseId)
+                }
                 options={coursesList}
                 className={errorData.courseId && "select-error"}
               />
