@@ -15,9 +15,12 @@ import DisplayError from "views/common/displayError";
 import { FormNumericInput, PasswordInput } from "components/shared";
 import { MdDelete } from "react-icons/md";
 import useEncryption from "common/useEncryption";
+import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 const typeOptions = [
   { value: "text", label: "Text" },
   { value: "number", label: "Number" },
+  { value: "string", label: "String" },
   { value: "email", label: "Email" }
 ];
 function PublicLinkForm(props) {
@@ -501,7 +504,7 @@ function PublicLinkForm(props) {
               Start Date & Time
             </div>
             <div className="col-span-2">
-              <DatePicker.DateTimepicker
+              {/* <DatePicker.DateTimepicker
                 placeholder="Please Select a Start Date"
                 className={errorData.startDate && "select-error"}
                 onChange={(e) => {
@@ -511,6 +514,25 @@ function PublicLinkForm(props) {
                   });
                 }}
                 value={formData?.startDate}
+              /> */}
+
+              <DateTimePicker
+                // label="Please Select a Start Date"
+                className={errorData.startDate && "select-error"}
+                viewRenderers={{
+                  hours: renderTimeViewClock,
+                  minutes: renderTimeViewClock,
+                  seconds: renderTimeViewClock,
+                }}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    startDate: e?.$d
+                  });
+                }}
+                format="DD-MMM-YYYY HH:mm a"
+                // value={formData?.startDate}
+                defaultValue={dayjs(formData?.startDate || new Date())} // formData?.startDate convert to dayjs.Dayjs
               />
             </div>
             {DisplayError(errorData.startDate)}
@@ -523,7 +545,7 @@ function PublicLinkForm(props) {
               End Date & Time
             </div>
             <div className="col-span-2">
-              <DatePicker.DateTimepicker
+              {/* <DatePicker.DateTimepicker
                 placeholder="Please Select a End Date"
                 className={errorData.endDate && "select-error"}
                 onChange={(e) => {
@@ -534,6 +556,26 @@ function PublicLinkForm(props) {
                 }}
                 minDate={formData?.startDate}
                 value={formData?.endDate}
+              /> */}
+
+              <DateTimePicker
+                // label="Please Select a End Date"
+                className={errorData.endDate && "select-error"}
+                viewRenderers={{
+                  hours: renderTimeViewClock,
+                  minutes: renderTimeViewClock,
+                  seconds: renderTimeViewClock,
+                }}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    endDate: e?.$d
+                  });
+                }}
+                format="DD-MMM-YYYY HH:mm a"
+                // value={formData?.endDate}
+                defaultValue={dayjs(formData?.endDate || new Date())} // formData?.startDate convert to dayjs.Dayjs
+                minDate={dayjs(formData?.startDate || new Date())}
               />
             </div>
             {DisplayError(errorData.endDate)}

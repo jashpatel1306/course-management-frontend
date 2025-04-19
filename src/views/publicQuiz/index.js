@@ -104,7 +104,7 @@ const QuizMainContent = () => {
                   quiz: (
                     <Quiz
                       quizData={quizData}
-                      questions={questions}
+                      questions={questions.sort(() => Math.random() - 0.5)} // shuffling the questions randomly
                       setResults={setResults}
                       results={results}
                       setDisplayView={setDisplayView}

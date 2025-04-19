@@ -1,0 +1,37 @@
+/* MUI date picker - custom styles */
+.MuiFormControl-root {
+    @apply w-full flex relative !border-none;
+}
+
+.MuiPickersInputBase-root {
+    @apply h-11 focus:!ring-blue-700 focus-within:!ring-blue-700 focus-within:!border-blue-700 border focus-within:!border-2 focus:!border-blue-700;
+    appearance: none;
+    border-color: rgba(209, 213, 219, 1) !important;
+    border-radius: .375rem !important;
+    color: inherit !important;
+    padding: .5rem .75rem;
+    transition-duration: .15s;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    width: 100%;
+    font-family: 'Inter', sans-serif !important;
+    font-size: .875rem !important;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+.css-lqwr9g-MuiPickersOutlinedInput-notchedOutline,
+.css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root.Mui-error .MuiPickersOutlinedInput-notchedOutline,
+.css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root.Mui-focused:not(.Mui-error) .MuiPickersOutlinedInput-notchedOutline {
+    border: 0 !important;
+    outline: none;
+}
+
+.css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.select-error .MuiPickersInputBase-root {
+    border: 2px solid red !important;
+    border-radius: 0.5rem !important;
+}

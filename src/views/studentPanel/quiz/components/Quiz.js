@@ -51,7 +51,7 @@ export const Quiz = (props) => {
           if (prevTimePassed - 1 > 0) {
             return prevTimePassed - 1;
           } else {
-            playQuizEnd();
+            // playQuizEnd();
             setQuizFinished(true);
             return 0;
           }
@@ -113,7 +113,7 @@ export const Quiz = (props) => {
             secondsUsed: response?.data?.totalTime
           });
 
-          playQuizEnd();
+          // playQuizEnd();
 
           setQuizFinished(true);
           return;

@@ -305,7 +305,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                       <div className="text-gray-700">
                         <div className="col-span-2">
                           <Input
-                            type="text"
+                            type="password"
                             placeholder="Please Enter Password"
                             className={
                               errorData.errorPassword
@@ -395,6 +395,7 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                           {quizData.specificField?.map((field, index) => {
                             return (
                               <>
+                                {/* Number Input */}
                                 {field.type === "number" && (
                                   <div className="col-span-1 mb-4">
                                     <div
@@ -421,8 +422,74 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                                     {DisplayError(errorData[field.label])}
                                   </div>
                                 )}
-                                {(field.type === "text" ||
-                                  field.type === "email") && (
+
+                                {/* Text Input */}
+                                {(field.type === "text") && (
+                                  <div className="col-span-1 mb-4">
+                                    <div
+                                      className={`font-bold capitalize mb-1 text-gray-700`}
+                                    >
+                                      {field.label} *
+                                    </div>
+                                    <div className="col-span-2">
+                                      <Input
+                                        type="text"
+                                        className={
+                                          errorData[field.label]
+                                            ? "select-error"
+                                            : removeDefaultCss
+                                        }
+                                        onChange={(e) => {
+                                          if (
+                                            !e.target.value.match(
+                                              /^[a-zA-Z\s]*$/
+                                            ) // Allow only letters and spaces and empty string
+                                          ) {
+                                            return;
+                                          }
+                                          setSpecificField({
+                                            ...specificField,
+                                            [field.label]: e.target.value
+                                          });
+                                        }}
+                                        value={specificField?.[field.label]}
+                                      />
+                                    </div>
+                                    {DisplayError(errorData[field.label])}
+                                  </div>
+                                )}
+
+                                {/* Email */}
+                                {(field.type === "email") && (
+                                  <div className="col-span-1 mb-4">
+                                    <div
+                                      className={`font-bold capitalize mb-1 text-gray-700`}
+                                    >
+                                      {field.label} *
+                                    </div>
+                                    <div className="col-span-2">
+                                      <Input
+                                        type="email"
+                                        className={
+                                          errorData[field.label]
+                                            ? "select-error"
+                                            : removeDefaultCss
+                                        }
+                                        onChange={(e) => {
+                                          setSpecificField({
+                                            ...specificField,
+                                            [field.label]: e.target.value
+                                          });
+                                        }}
+                                        value={specificField?.[field.label]}
+                                      />
+                                    </div>
+                                    {DisplayError(errorData[field.label])}
+                                  </div>
+                                )}
+
+                                {/* String */}
+                                {(field.type === "string") && (
                                   <div className="col-span-1 mb-4">
                                     <div
                                       className={`font-bold capitalize mb-1 text-gray-700`}

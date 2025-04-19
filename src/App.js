@@ -7,7 +7,9 @@ import Theme from "components/template/Theme";
 import Layout from "components/layout";
 import history from "./history";
 import "./locales";
-
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'assets/styles/components/_mui-date-picker.css';
 
 function App() {
 
@@ -16,7 +18,9 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter history={history}>
           <Theme>
-            <Layout />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Layout />
+            </LocalizationProvider>
           </Theme>
         </BrowserRouter>
       </PersistGate>

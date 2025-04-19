@@ -40,19 +40,19 @@ export const Quiz = (props) => {
 
     timerRef.current = setInterval(() => {
       setTimePassed((prevTimePassed) => {
-        console.log("TIME_LIMIT :", TIME_LIMIT);
-        console.log("prevTimePassed :", prevTimePassed);
-        console.log(
-          "result :",
-          prevTimePassed > TIME_LIMIT ? TIME_LIMIT : prevTimePassed - 1
-        );
+        // console.log("TIME_LIMIT :", TIME_LIMIT);
+        // console.log("prevTimePassed :", prevTimePassed);
+        // console.log(
+        //   "result :",
+        //   prevTimePassed > TIME_LIMIT ? TIME_LIMIT : prevTimePassed - 1
+        // );
         if (prevTimePassed > TIME_LIMIT) {
           return TIME_LIMIT;
         } else {
           if (prevTimePassed - 1 > 0) {
             return prevTimePassed - 1;
           } else {
-            playQuizEnd();
+            // playQuizEnd();
             setQuizFinished(true);
             return 0;
           }
@@ -62,6 +62,7 @@ export const Quiz = (props) => {
   };
 
   const fetchQuestionData = async (questionId) => {
+    setSelectedAnswerIndex(-1);
     try {
       setIsQusLoading(true);
       const response = await axiosInstance.get(
@@ -89,15 +90,15 @@ export const Quiz = (props) => {
       setIsQusLoading(false);
     }
   };
-  const UpdateQuizQuestionData = async (questionId, answerId, questionType) => {
+  const UpdateQuizQuestionData = async (questionId, answerId, questionType, goToNextQuestion = true) => {
     try {
       setIsLoading(true);
-      console.log(
-        "Math.floor(TIME_LIMIT - timePassed / 60): ",
-        TIME_LIMIT,
-        timePassed,
-        Math.floor(TIME_LIMIT - timePassed / 60)
-      );
+      // console.log(
+      //   "Math.floor(TIME_LIMIT - timePassed / 60): ",
+      //   TIME_LIMIT,
+      //   timePassed,
+      //   Math.floor(TIME_LIMIT - timePassed / 60)
+      // );
       const response = await axiosInstance.put(
         `student/quiz/update/${quizId}`,
         {
@@ -113,7 +114,7 @@ export const Quiz = (props) => {
         setSelectedAnswerIndex(-1);
         setFillAnswer("");
         setNextButton(false);
-        if (activeQuestion + 1 >= questions.length) {
+        if (goToNextQuestion && activeQuestion + 1 >= questions.length) {
           //Quiz finished!
           setResults({
             ...results,
@@ -122,14 +123,16 @@ export const Quiz = (props) => {
             secondsUsed: response?.data?.totalTime
           });
 
-          playQuizEnd();
+          // playQuizEnd();
 
           setQuizFinished(true);
           return;
         }
         setQuestionStatus(response?.data?.result);
         // Set next question
-        setActiveQuestion((prev) => prev + 1);
+        if (goToNextQuestion) {
+          setActiveQuestion((prev) => prev + 1);
+        }
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -165,8 +168,36 @@ export const Quiz = (props) => {
     }
     //
   };
+
+  const handleActiveQuestionChange = async (questionIndex) => {
+    if (selectedAnswerIndex !== -1) {
+      if (questionData.questionType?.toLowerCase() === "fill" && fillAnswer) {
+        await UpdateQuizQuestionData(
+          questionData._id,
+          fillAnswer,
+          questionData.questionType,
+          false
+        );
+      }
+      if (
+        questionData.questionType?.toLowerCase() === "mcq" &&
+        selectedAnswerIndex
+      ) {
+        await UpdateQuizQuestionData(
+          questionData._id,
+          selectedAnswerIndex,
+          questionData.questionType,
+          false
+        );
+      }
+    }
+    setActiveQuestion(questionIndex);
+  };
+
   const handleBackQuestion = async () => {
     setActiveQuestion((prev) => prev - 1);
+    setSelectedAnswerIndex(-1);
+    setNextButton(false);
   };
   const handleSkipQuestion = async () => {
     setActiveQuestion((prev) => prev + 1);
@@ -209,6 +240,7 @@ export const Quiz = (props) => {
     fetchQuestionData(questions[activeQuestion]);
   }, [activeQuestion]);
   useEffect(() => {
+    console.log("fillAnswer", fillAnswer, selectedAnswerIndex);
     if (fillAnswer) {
       setNextButton(true);
     }
@@ -304,7 +336,7 @@ export const Quiz = (props) => {
                               : "border-gray-300"
                           }`}
                           onClick={() => {
-                            setActiveQuestion(index);
+                            handleActiveQuestionChange(index);
                           }}
                         >
                           {index + 1}
@@ -326,10 +358,6 @@ export const Quiz = (props) => {
                       Answered - {questionStatus.length}
                     </span>
                   </div>
-                  {/* <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
-                    <span className="text-sm">Answered & Marked</span>
-                  </div> */}
                 </div>
               </div>
             </div>

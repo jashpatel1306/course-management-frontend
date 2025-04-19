@@ -456,6 +456,10 @@ const CourseContentForm = () => {
                             onChange={(file) => {
                               setFile(file[0]);
                             }}
+                            onFileRemove={(file) => {
+                              setFile(null);
+                              setError("");
+                            }}
                           >
                             <div className="w-full my-8 text-center ">
                               <div className="text-6xl w-full mb-4 flex justify-center">

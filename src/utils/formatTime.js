@@ -4,6 +4,6 @@ export const formatTime = (time) => {
 
   const minutesString = minutes.toString().padStart(2, "0");
   const secondsString = seconds.toString().padStart(2, "0");
-  console.log("Time Format :", `${minutesString} : ${secondsString}`);
+  // console.log("Time Format :", `${minutesString} : ${secondsString}`);
   return `${minutesString} : ${secondsString}`;
 };
