@@ -12,6 +12,7 @@ import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 import Logo from "components/template/Logo";
+import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
 const removeDefaultCss =
   "focus:ring-gray-700 focus-within:ring-gray-700 focus-within:border-gray-700 focus:border-gray-700";
 function isLinkExpired(expirationDate) {
@@ -60,6 +61,14 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
   const [errorPassword, setErrorPassword] = useState("");
   const [specificField, setSpecificField] = useState();
   const [errorData, setErrorData] = useState({ status: false });
+  const [ pwInputType, setPwInputType ] = useState('password')
+  
+  // Handle password visibility
+  const onPasswordVisibleClick = e => {
+    e.preventDefault()
+    const nextValue = pwInputType === 'password' ? 'text' : 'password'
+    setPwInputType(nextValue)
+  }
 
   const handleSubmit = () => {
     let errorStatus = false;
@@ -318,7 +327,15 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
                       <div className="text-gray-700">
                         <div className="col-span-2">
                           <Input
-                            type="password"
+                            type={pwInputType} 
+                            suffix={
+                              <span 
+                                className="cursor-pointer text-xl" 
+                                onClick={e => onPasswordVisibleClick(e)}
+                              >
+                                { pwInputType === 'password' ? <HiOutlineEyeOff /> : <HiOutlineEye />}
+                              </span>
+                            }
                             placeholder="Please Enter Password"
                             className={
                               errorData.errorPassword
