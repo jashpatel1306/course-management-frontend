@@ -80,6 +80,19 @@ const Intro = ({ onGetStartedClick, quizData, setResults, results }) => {
             [item.label]: `${item.label} Field is required`
           }));
         }
+
+        // Validate email
+        if (specificField && item.type === "email") {
+          const emailRegex = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/; // Regular expression to validate email
+          if (specificField[item.label] && !emailRegex.test(specificField[item.label])) {
+            errorStatus = true;
+            setErrorData((prevState) => ({
+              ...prevState,
+              status: true,
+              [item.label]: `${item.label} should be a valid email address`
+            }));
+          }
+        }
       });
     }
 
