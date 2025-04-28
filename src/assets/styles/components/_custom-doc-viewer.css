@@ -1,0 +1,21 @@
+.doc-viwer-container {
+    position: relative;
+}
+
+.doc-viwer-overlay {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #313131;
+    width: 50px;
+    height: 50px;
+}
+
+.ppt-viewer-overlay {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: #313131;
+    width: 100px;
+    height: 25px;
+}
