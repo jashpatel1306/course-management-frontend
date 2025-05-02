@@ -131,12 +131,7 @@ const AssessmentView = () => {
                             <Button
                               variant="solid"
                               onClick={() => {
-                                const url = `${
-                                  window.location.href.split("app")[0]
-                                }app/student/quiz-result/${
-                                  trackingQuizData[0]?._id
-                                }`;
-                                window.open(url, "_blank");
+                                navigate('/app/student/quiz-attempts');
                               }}
                             >
                               Result

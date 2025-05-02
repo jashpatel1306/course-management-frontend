@@ -114,7 +114,7 @@ const ClientDashboard = () => {
   return (
     <div>
       {!loading && (
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 lg:gap-4 gap-x-4 gap-y-0 mb-4">
           <StatisticCard
             icon={<HiOutlineUserGroup />}
             label="Total Course"

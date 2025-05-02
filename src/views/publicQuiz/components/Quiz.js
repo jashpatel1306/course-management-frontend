@@ -1,18 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { motion } from "framer-motion";
-import { OptionList } from "./OptionList";
-import { formatTime } from "utils/formatTime";
-import { playQuizEnd } from "utils/playSound";
-import { Button, Input, Spinner } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
-import openNotification from "views/common/notification";
-import { useParams } from "react-router-dom";
-import { MdTimer } from "react-icons/md";
-import { FaQuestionCircle } from "react-icons/fa";
 import Logo from "components/template/Logo";
+import { Button, Input, Spinner } from "components/ui";
+import { motion } from "framer-motion";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { FaQuestionCircle } from "react-icons/fa";
+import { MdTimer } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { formatTime } from "utils/formatTime";
+import openNotification from "views/common/notification";
+import { OptionList } from "./OptionList";
 
 export const Quiz = (props) => {
     const { questions, quizData, setResults, setDisplayView, results } = props;
@@ -256,10 +255,14 @@ export const Quiz = (props) => {
         }
     }, [timePassed]);
     useEffect(() => {
-        fetchQuestionData(questions[activeQuestion]);
+        const activeQuestionId = findQuestionIdByActiveIndex(
+            processedSubjects,
+            activeQuestion
+        );
+
+        fetchQuestionData(activeQuestionId);
     }, [activeQuestion]);
     useEffect(() => {
-        console.log("fillAnswer", fillAnswer, selectedAnswerIndex);
         if (fillAnswer) {
             setNextButton(true);
         }
@@ -268,15 +271,52 @@ export const Quiz = (props) => {
         }
     }, [fillAnswer, selectedAnswerIndex]);
 
-    // const answered = [2]; // Example answered questions
+    // Use useMemo to ensure shuffling happens only once when questions or subjectDetails change
+    const processedSubjects = useMemo(() => {
+        const result = [];
+        let questionIndex = 0;
 
-    // const answeredAndMarked = []; // Example answered and marked questions
+        for (const subject of quizData?.subjectDetails) {
+            const startIndex = questionIndex;
+            const endIndex = questionIndex + subject.totalQuestion;
 
-    // const getStatusClass = (number) => {
-    //   if (answeredAndMarked.includes(number)) return "bg-orange-500";
-    //   if (answered.includes(number)) return "bg-green-500";
-    //   return "border-gray-300";
-    // };
+            // Get the questions for this subject
+            let subjectQuestions = questions.slice(startIndex, endIndex);
+
+            // Shuffle the questions for this subject
+            subjectQuestions = subjectQuestions.sort(() => Math.random() - 0.5);
+
+            const subjectQuestionIds = subjectQuestions.map((item, idx) => ({
+                id: item,
+                originalIndex: startIndex + idx,
+            }));
+
+            result.push({
+                subjectName: subject.title,
+                questions: subjectQuestionIds,
+                startIndex,
+            });
+
+            questionIndex = endIndex;
+        }
+
+        return result;
+    }, [questions, quizData?.subjectDetails]);
+
+    const findQuestionIdByActiveIndex = (
+        processedSubjects,
+        activeQuestionIndex
+    ) => {
+        for (const subject of processedSubjects) {
+            for (const question of subject.questions) {
+                if (question.originalIndex === activeQuestionIndex) {
+                    return question.id;
+                }
+            }
+        }
+
+        return null;
+    };
 
     return (
         <motion.div
@@ -374,15 +414,54 @@ export const Quiz = (props) => {
                                     })}
                                 </div> */}
 
-                                <QuestionRendererWithPreprocessing
-                                    activeQuestion={activeQuestion}
-                                    handleActiveQuestionChange={
-                                        handleActiveQuestionChange
-                                    }
-                                    questionStatus={questionStatus}
-                                    questions={questions}
-                                    subjectDetails={quizData?.subjectDetails}
-                                />
+                                {/* Subject wise questions (left side) */}
+                                <div className="flex flex-col gap-2 max-h-[120px] md:max-h-none overflow-y-scroll md:overflow-hidden overflow-x-hidden mobile-scrollbar">
+                                    {processedSubjects.map((subject) => (
+                                        <React.Fragment
+                                            key={subject.subjectName}
+                                        >
+                                            {/* Subject heading */}
+                                            <div className="py-2 mt-2 mb-1 font-bold text-lg border-b">
+                                                {subject.subjectName}
+                                            </div>
+
+                                            <div className="grid grid-cols-10 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                                                {subject.questions.map(
+                                                    (item) => {
+                                                        const findStatus =
+                                                            questionStatus.some(
+                                                                (info) =>
+                                                                    info.questionId ===
+                                                                    item.id
+                                                            );
+
+                                                        return (
+                                                            <div
+                                                                key={item.id}
+                                                                className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${
+                                                                    activeQuestion ===
+                                                                    item.originalIndex
+                                                                        ? "bg-gray-500 text-white"
+                                                                        : findStatus
+                                                                        ? "bg-green-500 text-white"
+                                                                        : "border-gray-300"
+                                                                }`}
+                                                                onClick={() => {
+                                                                    handleActiveQuestionChange(
+                                                                        item.originalIndex
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {item.originalIndex +
+                                                                    1}
+                                                            </div>
+                                                        );
+                                                    }
+                                                )}
+                                            </div>
+                                        </React.Fragment>
+                                    ))}
+                                </div>
 
                                 <div className="md:sticky bg-white w-full p-4 bottom-0 mt-4 flex md:flex-col gap-5 md:gap-2">
                                     <div className="flex items-center space-x-2">
@@ -546,83 +625,5 @@ export const Quiz = (props) => {
                 </div>
             </>
         </motion.div>
-    );
-};
-
-const QuestionRendererWithPreprocessing = ({
-    questions,
-    questionStatus,
-    activeQuestion,
-    handleActiveQuestionChange,
-    subjectDetails,
-}) => {
-    // Use useMemo to ensure shuffling happens only once when questions or subjectDetails change
-    const processedSubjects = useMemo(() => {
-        const result = [];
-        let questionIndex = 0;
-
-        for (const subject of subjectDetails) {
-            const startIndex = questionIndex;
-            const endIndex = questionIndex + subject.totalQuestion;
-
-            // Get the questions for this subject
-            const subjectQuestions = questions.slice(startIndex, endIndex);
-
-            const subjectQuestionIds = subjectQuestions.map((item, idx) => ({
-                id: item,
-                originalIndex: startIndex + idx,
-            }));
-
-            result.push({
-                subjectName: subject.title,
-                questions: subjectQuestionIds,
-                startIndex,
-            });
-
-            questionIndex = endIndex;
-        }
-
-        return result;
-    }, [questions, subjectDetails]);
-
-    return (
-        <div className="flex flex-col gap-2 max-h-[120px] md:max-h-none overflow-y-scroll md:overflow-hidden overflow-x-hidden mobile-scrollbar">
-            {processedSubjects.map((subject) => (
-                <React.Fragment key={subject.subjectName}>
-                    {/* Subject heading */}
-                    <div className="py-2 mt-2 mb-1 font-bold text-lg border-b">
-                        {subject.subjectName}
-                    </div>
-
-                    <div className="grid grid-cols-10 md:grid-cols-3 lg:grid-cols-5 gap-2">
-                        {subject.questions.map((item) => {
-                            const findStatus = questionStatus.some(
-                                (info) => info.questionId === item.id
-                            );
-
-                            return (
-                                <div
-                                    key={item.id}
-                                    className={`w-8 h-8 flex items-center justify-center border rounded-full cursor-pointer ${
-                                        activeQuestion === item.originalIndex
-                                            ? "bg-gray-500 text-white"
-                                            : findStatus
-                                            ? "bg-green-500 text-white"
-                                            : "border-gray-300"
-                                    }`}
-                                    onClick={() => {
-                                        handleActiveQuestionChange(
-                                            item.originalIndex
-                                        );
-                                    }}
-                                >
-                                    {item.originalIndex + 1}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </React.Fragment>
-            ))}
-        </div>
     );
 };
