@@ -51,20 +51,32 @@ const CommonViewer = ({ url }) => {
 
     return (
         <>
-            <div className="doc-viwer-container">
+            <div
+                className="doc-viwer-container"
+                style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "calc(100vh - 200px)",
+                }}
+            >
                 {isLoading && (
-                    <div className="flex justify-center items-center h-96">
+                    <div className="flex justify-center items-center h-full w-full absolute z-10">
                         <Spinner className="mr-4" size="40px" />
                     </div>
                 )}
                 <iframe
-                    // src={`https://docs.google.com/viewer?url=${encodeURIComponent(
-                    //     secureUrl
-                    // )}&embedded=true`}
                     src={getSrcURL(secureUrl)}
                     width="100%"
-                    height="700px"
-                    style={{ border: "none", backgroundColor: "white" }}
+                    height="100%"
+                    style={{
+                        border: "none",
+                        backgroundColor: "white",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                    }}
                     onLoad={() => setIsLoading(false)}
                 />
 
@@ -75,6 +87,8 @@ const CommonViewer = ({ url }) => {
     );
 };
 const AssessmentView = ({ contentData }) => {
+    const navigate = useNavigate();
+
     const [isLoading, setIsLoading] = useState(true);
     const [apiFlag, setApiFlag] = useState(false);
     const [assessmentData, setAssessmentData] = useState();
@@ -167,17 +181,20 @@ const AssessmentView = ({ contentData }) => {
                                                     <Button
                                                         variant="solid"
                                                         onClick={() => {
-                                                            const url = `${
-                                                                window.location.href.split(
-                                                                    "app"
-                                                                )[0]
-                                                            }app/student/quiz-result/${
-                                                                trackingQuizData[0]
-                                                                    ?._id
-                                                            }`;
-                                                            window.open(
-                                                                url,
-                                                                "_blank"
+                                                            // const url = `${
+                                                            //     window.location.href.split(
+                                                            //         "app"
+                                                            //     )[0]
+                                                            // }app/student/quiz-result/${
+                                                            //     trackingQuizData[0]
+                                                            //         ?._id
+                                                            // }`;
+                                                            // window.open(
+                                                            //     url,
+                                                            //     "_blank"
+                                                            // );
+                                                            navigate(
+                                                                "/app/student/quiz-attempts"
                                                             );
                                                         }}
                                                     >
@@ -344,18 +361,16 @@ const ContentView = (props) => {
     };
     return (
         <>
-            <div className="flex-1 relative bg-white">
-                <div className="flex justify-start gap-4 items-center bg-blue-600 p-[1.12rem] shadow-customheader	">
+            <div className="w-full flex flex-col h-screen bg-white">
+                <div className="flex justify-start gap-4 items-center bg-blue-600 p-[1.12rem] shadow-customheader">
                     <button className="text-gray-700" onClick={toggleSidebar}>
                         {isSidebarOpen ? (
-                            <>
-                                <Button
-                                    shape="circle"
-                                    size="sm"
-                                    variant="twoTone"
-                                    icon={<HiOutlineArrowLeft size={25} />}
-                                />
-                            </>
+                            <Button
+                                shape="circle"
+                                size="sm"
+                                variant="twoTone"
+                                icon={<HiOutlineArrowLeft size={25} />}
+                            />
                         ) : (
                             <Button
                                 shape="circle"
@@ -370,8 +385,8 @@ const ContentView = (props) => {
                     </h1>
                 </div>
 
-                <div className="w-full max-h-[90vh] overflow-y-scroll hidden-scroll ">
-                    <div className="p-6">
+                <div className="flex-1 overflow-hidden">
+                    <div className="h-full overflow-y-auto p-6 hidden-scroll">
                         {currentContentIndex >= 0 &&
                             contentData?.length &&
                             contentData[currentContentIndex] && (
@@ -383,24 +398,28 @@ const ContentView = (props) => {
                             )}
                     </div>
                 </div>
-                <div className="absolute bottom-0 w-full flex justify-between bg-white p-4 px-6 shadow-customfooter	">
+
+                <div className="w-full flex justify-between bg-white p-4 px-6 shadow-customfooter">
                     <Button
                         variant="twoTone"
                         className={`bg-${themeColor}-200`}
                         onClick={() => {
-                            const previousContent =
-                                contentData[currentContentIndex - 1];
-                            setActiveContent({
-                                lectureId: previousContent.lectureId,
-                                contentId: previousContent.id,
-                            });
+                            if (currentContentIndex > 0) {
+                                const previousContent =
+                                    contentData[currentContentIndex - 1];
+                                setActiveContent({
+                                    lectureId: previousContent.lectureId,
+                                    contentId: previousContent.id,
+                                });
+                            }
                         }}
+                        disabled={currentContentIndex <= 0}
                     >
                         Previous
                     </Button>
                     <Button
                         variant="solid"
-                        loading={isLoading}
+                        disabled={isLoading}
                         onClick={() => {
                             const currentContent =
                                 contentData[currentContentIndex];
@@ -420,7 +439,7 @@ const ContentView = (props) => {
                             }
                         }}
                     >
-                        Next
+                        {isLoading ? "Loading..." : "Next"}
                     </Button>
                 </div>
             </div>

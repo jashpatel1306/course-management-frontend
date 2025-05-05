@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import "assets/styles/components/_custom-doc-viewer.css";
 import { Button, Spinner } from "components/ui";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import "assets/styles/components/_custom-doc-viewer.css";
 
 const generateSecureUrl = (pptUrl) => {
     const token = generateRandomToken(16); // Generate a 16-byte token
@@ -45,26 +45,34 @@ const CommonViewer = ({ url }) => {
 
     return (
         <>
-            <div className="doc-viwer-container">
+            <div
+                className="doc-viwer-container"
+                style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "calc(100vh - 200px)",
+                }}
+            >
                 {isLoading && (
-                    <div className="flex justify-center items-center h-96">
+                    <div className="flex justify-center items-center h-full w-full absolute z-10">
                         <Spinner className="mr-4" size="40px" />
                     </div>
                 )}
                 <iframe
-                    // src={`https://docs.google.com/viewer?url=${encodeURIComponent(
-                    //   secureUrl
-                    // )}&embedded=true`}
-                    // src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-                    //     secureUrl
-                    // )}`}
-
                     src={getSrcURL(secureUrl)}
                     width="100%"
                     title="CommonViewer"
-                    height="700px"
                     className="custom-doc-viewer"
-                    style={{ border: "none", backgroundColor: "white" }}
+                    height="100%"
+                    style={{
+                        border: "none",
+                        backgroundColor: "white",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                    }}
                     onLoad={() => setIsLoading(false)}
                 />
 
@@ -150,8 +158,8 @@ const ContentView = (props) => {
 
     return (
         <>
-            <div className="flex-1 relative bg-white">
-                <div className="flex justify-start gap-4 items-center bg-blue-600 p-[1.12rem] shadow-customheader	">
+            <div className="w-full flex flex-col h-screen bg-white">
+                <div className="flex justify-start gap-4 items-center bg-blue-600 p-[1.12rem] shadow-customheader">
                     <button className="text-gray-700" onClick={toggleSidebar}>
                         {isSidebarOpen ? (
                             <>
@@ -176,8 +184,8 @@ const ContentView = (props) => {
                     </h1>
                 </div>
 
-                <div className="w-full max-h-[90vh] overflow-y-scroll hidden-scroll ">
-                    <div className="p-6">
+                <div className="flex-1 overflow-hidden">
+                    <div className="h-full overflow-y-auto p-6 hidden-scroll">
                         {currentContentIndex >= 0 ? (
                             <ContentContainer
                                 contentData={contentData[currentContentIndex]}
@@ -191,18 +199,21 @@ const ContentView = (props) => {
                         )}
                     </div>
                 </div>
-                <div className="absolute bottom-0 w-full flex justify-between bg-white p-4 px-6 shadow-customfooter	">
+                <div className="w-full flex justify-between bg-white p-4 px-6 shadow-customfooter">
                     <Button
                         variant="twoTone"
                         className={`bg-${themeColor}-200`}
                         onClick={() => {
-                            const previousContent =
-                                contentData[currentContentIndex - 1];
-                            setActiveContent({
-                                lectureId: previousContent.lectureId,
-                                contentId: previousContent.id,
-                            });
+                            if (currentContentIndex > 0) {
+                                const previousContent =
+                                    contentData[currentContentIndex - 1];
+                                setActiveContent({
+                                    lectureId: previousContent.lectureId,
+                                    contentId: previousContent.id,
+                                });
+                            }
                         }}
+                        disabled={currentContentIndex <= 0}
                     >
                         Previous
                     </Button>

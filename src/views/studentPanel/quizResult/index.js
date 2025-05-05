@@ -96,7 +96,7 @@ const QuizMainContent = () => {
                                                     className="w-1/2 md:w-auto flex items-center space-x-2"
                                                     key={index}
                                                 >
-                                                    <span className="text-sm">
+                                                    <span className="text-sm break-all">
                                                         <strong className="capitalize">
                                                             {key}:
                                                         </strong>{" "}
@@ -110,20 +110,37 @@ const QuizMainContent = () => {
                                             results?.subject?.map(
                                                 (subject, index) => (
                                                     <>
-                                                        <p className="font-semibold">
-                                                            Subject:&nbsp;
+                                                        <p className="">
+                                                            <strong>
+                                                                Topic:
+                                                            </strong>
+                                                            &nbsp;
                                                             {subject?.title}
                                                         </p>
 
                                                         <div className="w-1/2 md:w-auto flex items-center space-x-2">
                                                             <span className="text-sm">
                                                                 <strong>
-                                                                    Total Marks:
-                                                                </strong>{" "}
+                                                                    Total
+                                                                    Questions:
+                                                                </strong>
+                                                                &nbsp;
                                                                 {
-                                                                    subject?.ObtainedMarks
+                                                                    results
+                                                                        ?.result[
+                                                                        index
+                                                                    ]?.results
+                                                                        ?.length
                                                                 }
-                                                                /
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="w-1/2 md:w-auto flex items-center space-x-2">
+                                                            <span className="text-sm">
+                                                                <strong>
+                                                                    Total Marks:
+                                                                </strong>
+                                                                &nbsp;
                                                                 {
                                                                     results
                                                                         ?.result[
@@ -139,21 +156,11 @@ const QuizMainContent = () => {
                                                                 <strong>
                                                                     Correct
                                                                     Answers:
-                                                                </strong>{" "}
+                                                                </strong>
+                                                                &nbsp;
                                                                 {
                                                                     subject?.correctAnswers
                                                                 }
-                                                                /
-                                                                {results
-                                                                    ?.result[0]
-                                                                    .quizType ===
-                                                                "public"
-                                                                    ? quizData?.totalQuestions
-                                                                    : results
-                                                                          ?.result[
-                                                                          index
-                                                                      ]?.results
-                                                                          ?.length}
                                                             </span>
                                                         </div>
 
@@ -162,21 +169,11 @@ const QuizMainContent = () => {
                                                                 <strong>
                                                                     Wrong
                                                                     Answers:
-                                                                </strong>{" "}
+                                                                </strong>
+                                                                &nbsp;
                                                                 {
                                                                     subject?.wrongAnswers
                                                                 }
-                                                                /
-                                                                {results
-                                                                    ?.result[0]
-                                                                    .quizType ===
-                                                                "public"
-                                                                    ? quizData?.totalQuestions
-                                                                    : results
-                                                                          ?.result[
-                                                                          index
-                                                                      ]?.results
-                                                                          ?.length}
                                                             </span>
                                                         </div>
 
@@ -184,6 +181,60 @@ const QuizMainContent = () => {
                                                     </>
                                                 )
                                             )}
+
+                                        <div className="w-1/2 md:w-auto flex items-center space-x-2">
+                                            <span className="text-sm">
+                                                <strong>
+                                                    Total Questions:
+                                                </strong>&nbsp;
+                                                {
+                                                    results?.quizData?.totalQuestions
+                                                }
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="w-1/2 md:w-auto flex items-center space-x-2">
+                                            <span className="text-sm">
+                                                <strong>
+                                                    Total Marks:
+                                                </strong>&nbsp;
+                                                {
+                                                    results?.quizData?.totalMarks
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div className="w-1/2 md:w-auto flex items-center space-x-2">
+                                            <span className="text-sm">
+                                                <strong>
+                                                    Total Correct Answers:
+                                                </strong>&nbsp;
+                                                {
+                                                    results?.subject?.reduce(
+                                                        (acc, curr) =>
+                                                            acc +
+                                                            curr.correctAnswers,
+                                                        0
+                                                    )
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <div className="w-1/2 md:w-auto flex items-center space-x-2">
+                                            <span className="text-sm">
+                                                <strong>
+                                                    Total Obtained Marks:
+                                                </strong>&nbsp;
+                                                {
+                                                    results?.subject?.reduce(
+                                                        (acc, curr) =>
+                                                            acc +
+                                                            curr.ObtainedMarks,
+                                                        0
+                                                    )
+                                                }
+                                            </span>
+                                        </div>
 
                                         <div className="w-1/2 md:w-auto flex items-center space-x-2">
                                             <span className="text-sm">
