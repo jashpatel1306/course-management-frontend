@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { formatTime } from "utils/formatTime";
 import openNotification from "views/common/notification";
 import { OptionList } from "./OptionList";
+import { generateHtml } from "utils/textToHtmlConverter";
 
 export const Quiz = (props) => {
     const { questions, quizData, setResults, setDisplayView, results } = props;
@@ -481,7 +482,7 @@ export const Quiz = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex-1 max-h-[calc(57vh_-_80px)] md:h-screen lg:max-h-[75vh] overflow-y-scroll mobile-scrollbar mx-auto p-8 ">
+                        <div className="flex-1 w-full max-h-[calc(57vh_-_80px)] md:h-screen md:max-h-[75vh] overflow-y-scroll mobile-scrollbar p-8">
                             {isQusLoading ? (
                                 <>
                                     <div className="flex justify-center items-center">
@@ -540,11 +541,11 @@ export const Quiz = (props) => {
                                                 </p>
                                             </div>
                                             <div className=" pt-2 pb-8">
-                                                <div className="mt-2 rounded-xl border-2 border-gray-600 px-5 md:px-7 py-4 w-full mb-8 ">
+                                                <div className="mt-2 rounded-xl border-2 border-gray-600 px-5 md:px-7 py-4 w-full mb-8 overflow-auto">
                                                     <h4 className="text-gray-700 font-semibold text-base md:text-lg">
                                                         <span
                                                             dangerouslySetInnerHTML={{
-                                                                __html: questionData?.question,
+                                                                __html: questionData?.questionType?.trim()?.toUpperCase() === "CODE" ? generateHtml(questionData?.question) : questionData?.question,
                                                             }}
                                                         ></span>
                                                     </h4>

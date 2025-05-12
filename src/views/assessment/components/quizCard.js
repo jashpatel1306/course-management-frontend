@@ -174,7 +174,7 @@ const QuizCard = (props) => {
       console.log("onHandleBox error :", error);
     }
   };
-  console.log("quizData: ",quizData)
+  
   return (
     <>
       <Card className="bg-gray-50 border-2 mb-3" bodyClass="p-3 sm:p-[1.25rem]">

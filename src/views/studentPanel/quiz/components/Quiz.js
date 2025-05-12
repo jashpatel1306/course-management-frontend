@@ -12,6 +12,7 @@ import { MdTimer } from "react-icons/md";
 import { FaQuestionCircle } from "react-icons/fa";
 import Logo from "components/template/Logo";
 import { useSelector } from "react-redux";
+import { generateHtml } from "utils/textToHtmlConverter";
 
 export const Quiz = (props) => {
   const { questions, quizData, setResults, setDisplayView, results } = props;
@@ -238,42 +239,40 @@ export const Quiz = (props) => {
       transition={{ duration: 0.5 }}
     >
       <>
-        <div className="w-full ">
+        <div className="w-full">
           {/* quiz hearder */}
-          <div>
-            <div className="flex justify-between items-center px-6 bg-gray-600 text-white p-2 py-3">
-              <div className="flex items-center gap-4">
-                <Logo mode={mode} className="hidden md:block" />
-                <div className="font-bold text-lg ">{quizData?.title}</div>
-              </div>
+          <div className="h-[90px] flex justify-between items-center px-6 bg-gray-600 text-white p-2 py-3">
+            <div className="flex items-center gap-4">
+              <Logo mode={mode} className="hidden md:block" />
+              <div className="font-bold text-sm md:text-lg ">{quizData?.title}</div>
+            </div>
 
-              <div className="flex gap-4 items-center">
-                <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
-                  <MdTimer size={25} />
-                  <span className="text-xl">{formatTime(timePassed)}</span>
-                </div>
-                <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
-                  <span className="text-lg">
-                    <FaQuestionCircle size={18} />
-                  </span>
-                  <span className="text-lg">Question</span>
-                  <span className="text-lg">:</span>
-                  <span className="text-lg">
-                    {" "}
-                    {activeQuestion + 1} / {numberOfQuestions}
-                  </span>
-                </div>
+            <div className="flex gap-4 items-center">
+              <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
+                <MdTimer size={25} />
+                <span className="text-sm md:text-xl">{formatTime(timePassed)}</span>
+              </div>
+              <div className="flex gap-2 items-center border-2 p-1 rounded-xl px-4">
+                <span className="text-sm md:text-lg">
+                  <FaQuestionCircle size={18} />
+                </span>
+                <span className="text-sm md:text-lg">Question</span>
+                <span className="text-sm md:text-lg">:</span>
+                <span className="text-sm md:text-lg">
+                  {" "}
+                  {activeQuestion + 1} / {numberOfQuestions}
+                </span>
               </div>
             </div>
           </div>
           {/* quiz main content */}
 
-          <div className="flex">
-            <div className="w-[15%] min-h-[100vh] overflow-y-scroll hidden-scroll py-8 border-r border-gray-500">
+          <div className="flex h-[calc(100vh-160px)] flex-col md:flex-row">
+            <div className="w-full md:max-w-[260px] overflow-y-scroll hidden-scroll py-8 border-r border-gray-500">
               <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-lg font-bold">{quizData?.title}</h2>
                 {/* <h3 className="text-sm font-medium">Analytical Ability</h3> */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                <div className="grid grid-cols-10 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {questions.map((item, index) => {
                     const findStatus = questionStatus.some(
                       (info) => info.questionId === item
@@ -315,7 +314,7 @@ export const Quiz = (props) => {
                 </div>
               </div>
             </div>
-            <div className="w-[70%] min-h-[100vh]  overflow-y-scroll hidden-scroll mx-auto py-8">
+            <div className="w-full md:w-[70%] overflow-y-scroll hidden-scroll p-8">
               {isQusLoading ? (
                 <>
                   <div className="flex justify-center items-center">
@@ -367,11 +366,11 @@ export const Quiz = (props) => {
                         </p>
                       </div>
                       <div className=" pt-2 pb-8">
-                        <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
+                        <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 overflow-auto">
                           <h4 className="text-gray-700 font-semibold text-lg">
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: questionData?.question
+                                __html: questionData?.questionType?.trim()?.toUpperCase() === 'CODE' ? generateHtml(questionData?.question) : questionData?.question
                               }}
                             ></span>
                           </h4>
@@ -391,52 +390,50 @@ export const Quiz = (props) => {
           </div>
 
           {/* quiz footer */}
-          <div>
-            <div className="absolute bottom-0 w-full flex justify-between items-center px-6 bg-gray-200 text-white p-2 py-3">
-              <div className="flex gap-4">
-                {activeQuestion + 1 >= questions.length ? (
-                  <></>
-                ) : (
-                  <Button
-                    variant="solid"
-                    color="gray-600"
-                    disabled={activeQuestion + 1 >= questions.length}
-                    className="w-48"
-                    onClick={handleSkipQuestion}
-                    // loading={isLoading}
-                  >
-                    Skip
-                  </Button>
-                )}
-              </div>
-
-              <div className="flex gap-4 items-center text-lg">
-                {activeQuestion >= questions.length ? (
-                  <></>
-                ) : (
-                  <Button
-                    variant="solid"
-                    color="gray-600"
-                    className="w-48"
-                    onClick={handleBackQuestion}
-                    // loading={isLoading}
-                  >
-                    Back
-                  </Button>
-                )}
+          <div className="h-[70px] w-full flex justify-between items-center px-6 bg-gray-200 text-white p-2 py-3">
+            <div className="flex gap-4">
+              {activeQuestion + 1 >= questions.length ? (
+                <></>
+              ) : (
                 <Button
                   variant="solid"
                   color="gray-600"
-                  disabled={!nextButton}
-                  className="w-48"
-                  onClick={handleNextQuestion}
+                  disabled={activeQuestion + 1 >= questions.length}
+                  className="max-w-48 md:w-48"
+                  onClick={handleSkipQuestion}
                   // loading={isLoading}
                 >
-                  {activeQuestion + 1 >= questions.length
-                    ? "Submit Test"
-                    : "Next"}
+                  Skip
                 </Button>
-              </div>
+              )}
+            </div>
+
+            <div className="flex gap-4 items-center text-lg">
+              {activeQuestion >= questions.length ? (
+                <></>
+              ) : (
+                <Button
+                  variant="solid"
+                  color="gray-600"
+                  className="max-w-48 md:w-48"
+                  onClick={handleBackQuestion}
+                  // loading={isLoading}
+                >
+                  Back
+                </Button>
+              )}
+              <Button
+                variant="solid"
+                color="gray-600"
+                disabled={!nextButton}
+                className="max-w-48 md:w-48"
+                onClick={handleNextQuestion}
+                // loading={isLoading}
+              >
+                {activeQuestion + 1 >= questions.length
+                  ? "Submit Test"
+                  : "Next"}
+              </Button>
             </div>
           </div>
         </div>

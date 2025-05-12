@@ -44,7 +44,6 @@ function InstructorForm(props) {
   const [collegeList, setCollegeList] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(false);
   const [coursesList, setCoursesList] = useState([]);
-  const [isCreatedSuccess, setIsCreatedSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -279,7 +278,6 @@ function InstructorForm(props) {
           courses: formData?.courses?.map((info) => info.value)
         });
       }
-      setIsCreatedSuccess(true);
     } else {
       setErrorData(errorObject);
     }
@@ -561,35 +559,6 @@ function InstructorForm(props) {
           </div>
         </div>
       </Drawer>
-
-
-      <Dialog
-        isOpen={isCreatedSuccess}
-        style={{
-          content: {
-            marginTop: 250
-          }
-        }}
-        contentClassName="pb-0 px-0"
-        onClose={() => {
-          setIsCreatedSuccess(false);
-        }}
-        onRequestClose={() => {
-          setIsCreatedSuccess(false);
-        }}
-      >
-        <div className="px-6 pb-6">
-          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
-            Success
-          </h5>
-          <p>Instructor {instructorData ? "Updated" : "Created"} Successfully</p>
-        </div>
-        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
-          <Button variant="solid" onClick={() => setIsCreatedSuccess(false)}>
-            Okay
-          </Button>
-        </div>
-      </Dialog>
     </>
   );
 }
