@@ -5,6 +5,7 @@ import { Spinner } from "components/ui";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { generateHtml } from "utils/textToHtmlConverter";
 import openNotification from "views/common/notification";
 
 const QuizMainContent = () => {
@@ -186,21 +187,20 @@ const QuizMainContent = () => {
                                             <span className="text-sm">
                                                 <strong>
                                                     Total Questions:
-                                                </strong>&nbsp;
+                                                </strong>
+                                                &nbsp;
                                                 {
-                                                    results?.quizData?.totalQuestions
+                                                    results?.quizData
+                                                        ?.totalQuestions
                                                 }
                                             </span>
                                         </div>
-                                        
+
                                         <div className="w-1/2 md:w-auto flex items-center space-x-2">
                                             <span className="text-sm">
-                                                <strong>
-                                                    Total Marks:
-                                                </strong>&nbsp;
-                                                {
-                                                    results?.quizData?.totalMarks
-                                                }
+                                                <strong>Total Marks:</strong>
+                                                &nbsp;
+                                                {results?.quizData?.totalMarks}
                                             </span>
                                         </div>
 
@@ -208,15 +208,14 @@ const QuizMainContent = () => {
                                             <span className="text-sm">
                                                 <strong>
                                                     Total Correct Answers:
-                                                </strong>&nbsp;
-                                                {
-                                                    results?.subject?.reduce(
-                                                        (acc, curr) =>
-                                                            acc +
-                                                            curr.correctAnswers,
-                                                        0
-                                                    )
-                                                }
+                                                </strong>
+                                                &nbsp;
+                                                {results?.subject?.reduce(
+                                                    (acc, curr) =>
+                                                        acc +
+                                                        curr.correctAnswers,
+                                                    0
+                                                )}
                                             </span>
                                         </div>
 
@@ -224,15 +223,14 @@ const QuizMainContent = () => {
                                             <span className="text-sm">
                                                 <strong>
                                                     Total Obtained Marks:
-                                                </strong>&nbsp;
-                                                {
-                                                    results?.subject?.reduce(
-                                                        (acc, curr) =>
-                                                            acc +
-                                                            curr.ObtainedMarks,
-                                                        0
-                                                    )
-                                                }
+                                                </strong>
+                                                &nbsp;
+                                                {results?.subject?.reduce(
+                                                    (acc, curr) =>
+                                                        acc +
+                                                        curr.ObtainedMarks,
+                                                    0
+                                                )}
                                             </span>
                                         </div>
 
@@ -305,7 +303,13 @@ const QuizMainContent = () => {
                                                                         <span
                                                                             className="!text-sm"
                                                                             dangerouslySetInnerHTML={{
-                                                                                __html: question.question,
+                                                                                __html:
+                                                                                    question?.questionType
+                                                                                        ?.trim()
+                                                                                        ?.toUpperCase() ===
+                                                                                    "CODE"
+                                                                                        ? generateHtml(question.question)
+                                                                                        : question.question,
                                                                             }}
                                                                         ></span>
                                                                     </h4>
