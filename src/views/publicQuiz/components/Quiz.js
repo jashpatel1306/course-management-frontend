@@ -173,7 +173,7 @@ export const Quiz = (props) => {
             );
         }
         if (
-            questionData.questionType?.toLowerCase() === "mcq" &&
+            (questionData.questionType?.toLowerCase() === "mcq" || questionData.questionType?.toLowerCase() === "code") &&
             selectedAnswerIndex
         ) {
             await UpdateQuizQuestionData(
@@ -199,7 +199,7 @@ export const Quiz = (props) => {
                 );
             }
             if (
-                questionData.questionType?.toLowerCase() === "mcq" &&
+                (questionData.questionType?.toLowerCase() === "mcq" || questionData.questionType?.toLowerCase() === "code") &&
                 selectedAnswerIndex
             ) {
                 await UpdateQuizQuestionData(
