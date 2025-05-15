@@ -9,6 +9,7 @@ import { formatTimestampToReadableDate } from "views/common/commonFuntion";
 export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
     const [row, setRow] = useState([]);
     const dynamicHeaders = new Set(); // To store dynamic keys for headers
+    const sectionHeaders = new Set();
 
     useEffect(() => {
         if (searchedData && searchedData.length) {
@@ -32,15 +33,40 @@ export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
                         dynamicHeaders.add(key); // Collect header names dynamically
                     });
                 }
+
+                if (info?.quizData?.quizzes && info?.quizData?.quizzes.length) {
+                    for (let i = 0; i < info?.quizData?.quizzes.length; i++) {
+                        const quiz = info?.quizData?.quizzes[i];
+                        sectionHeaders.add(`Section${i+1}`);
+                        row.push(`${quiz.title}`);
+                        
+                        // Add the total number of questions for each section
+                        sectionHeaders.add(`Section${i+1} TQ`);
+                        row.push(`${quiz?.totalQuestions}`);
+
+                        // Add the total number of correct answers for each section
+                        sectionHeaders.add(`Section${i+1} TC`);
+                        row.push(`${quiz?.correctAnswers}`);
+
+                        // Add the total number of wrong answers for each section
+                        sectionHeaders.add(`Section${i+1} TW`);
+                        row.push(`${quiz?.wrongAnswers}`);
+
+                        // Add the total marks for each section
+                        sectionHeaders.add(`Section${i+1} TM`);
+                        row.push(`${quiz?.totalMarks}`);
+                    }
+                }
+                
                 row.push(`${formatTimestampToReadableDate(info?.createdAt)}`); // Date
-                row.push(`${info?.totalQuestions}`); // Total Questions
+                row.push(`${info?.quizData?.totalQuestions}`); // Total Questions
                 row.push(`${info?.correctAnswers}`); // Correct Answers
                 row.push(`${info?.wrongAnswers}`); // Wrong Answers
-                row.push(`${info?.totalMarks} / ${info?.quizTotalMarks}`); // Total Marks
+                row.push(`${info?.totalMarks} / ${info?.quizData?.totalMarks}`); // Total Marks
                 row.push(
                     `${(
-                        (Number(info?.totalMarks) /
-                            Number(info?.quizTotalMarks)) *
+                        (Number(info?.totalMarks ?? 0) /
+                            Number(info?.quizData?.totalMarks ?? 1)) *
                         100
                     ).toFixed(2)}%`
                 ); // Accuracy
@@ -56,7 +82,7 @@ export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
                 "Accuracy",
                 "Total Time	(Min)",
             ];
-            const headers = ["No", ...dynamicHeaders, ...staticHeaders];
+            const headers = ["No", ...dynamicHeaders, ...sectionHeaders, ...staticHeaders];
 
             setRow([headers, ...csvData]);
         }

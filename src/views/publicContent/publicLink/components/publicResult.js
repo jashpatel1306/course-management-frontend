@@ -213,18 +213,18 @@ const PublicResultList = () => {
                                                         item?.createdAt
                                                     )}
                                                 </Td>
-                                                <Td>{`${item?.correctAnswers} / ${item?.totalQuestions}`}</Td>{" "}
+                                                <Td>{`${item?.correctAnswers} / ${item?.quizData?.totalQuestions}`}</Td>{" "}
                                                 <Td>
-                                                    {`${item?.wrongAnswers} / ${item?.totalQuestions}`}
+                                                    {`${item?.wrongAnswers} / ${item?.quizData?.totalQuestions}`}
                                                 </Td>
-                                                <Td>{`${item?.totalMarks} / ${item?.quizTotalMarks}`}</Td>
+                                                <Td>{`${item?.totalMarks} / ${item?.quizData?.totalMarks}`}</Td>
                                                 <Td>
                                                     {(
                                                         (Number(
-                                                            item?.totalMarks
+                                                            item?.totalMarks ?? 0
                                                         ) /
                                                             Number(
-                                                                item?.quizTotalMarks
+                                                                item?.quizData?.totalMarks
                                                             )) *
                                                         100
                                                     ).toFixed(2)}
@@ -234,7 +234,7 @@ const PublicResultList = () => {
                                                     {Math.ceil(
                                                         item?.totalTime / 60
                                                     )}{" "}
-                                                    / {item?.quizTime} min
+                                                    / {item?.quizData?.totalTime} min
                                                 </Td>
                                                 <Td>
                                                     <div className="flex gap-2">
