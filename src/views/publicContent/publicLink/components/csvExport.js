@@ -27,7 +27,15 @@ export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
                 //   `${info?.totalMarks}`,
                 //   `${Math.ceil(info?.totalTime / 60)} Min`
                 // ]);
+
                 if (info.specificField) {
+                    info.specificField = Object.keys(info?.specificField)
+                        .sort() // sorts keys alphabetically
+                        .reduce((acc, key) => {
+                            acc[key] = info?.specificField[key];
+                            return acc;
+                        }, {});
+
                     Object.keys(info.specificField).forEach((key) => {
                         row.push(`${info.specificField[key] || ""}`);
                         dynamicHeaders.add(key); // Collect header names dynamically
@@ -37,27 +45,27 @@ export const CSVExport = ({ searchedData, exportLoading, fileName }) => {
                 if (info?.quizData?.quizzes && info?.quizData?.quizzes.length) {
                     for (let i = 0; i < info?.quizData?.quizzes.length; i++) {
                         const quiz = info?.quizData?.quizzes[i];
-                        sectionHeaders.add(`Section${i+1}`);
+                        sectionHeaders.add(`Section${i + 1}`);
                         row.push(`${quiz.title}`);
-                        
+
                         // Add the total number of questions for each section
-                        sectionHeaders.add(`Section${i+1} TQ`);
+                        sectionHeaders.add(`Section${i + 1} TQ`);
                         row.push(`${quiz?.totalQuestions}`);
 
                         // Add the total number of correct answers for each section
-                        sectionHeaders.add(`Section${i+1} TC`);
+                        sectionHeaders.add(`Section${i + 1} TC`);
                         row.push(`${quiz?.correctAnswers}`);
 
                         // Add the total number of wrong answers for each section
-                        sectionHeaders.add(`Section${i+1} TW`);
+                        sectionHeaders.add(`Section${i + 1} TW`);
                         row.push(`${quiz?.wrongAnswers}`);
 
                         // Add the total marks for each section
-                        sectionHeaders.add(`Section${i+1} TM`);
+                        sectionHeaders.add(`Section${i + 1} TM`);
                         row.push(`${quiz?.totalMarks}`);
                     }
                 }
-                
+
                 row.push(`${formatTimestampToReadableDate(info?.createdAt)}`); // Date
                 row.push(`${info?.quizData?.totalQuestions}`); // Total Questions
                 row.push(`${info?.correctAnswers}`); // Correct Answers
