@@ -54,13 +54,14 @@ export const OptionList = ({
               {String.fromCharCode(65 + idx)}
             </div>
           </div>
-          <p className="text-brand-midnight font-normal text-base ml-4">
+        <p className="text-brand-midnight font-normal text-base ml-4" dangerouslySetInnerHTML={{ __html: option.content }} />
+          {/* <p className="text-brand-midnight font-normal text-base ml-4">
             {parse(
               option.content
                 .replaceAll("<pre", `<code><pre`)
                 .replaceAll("</pre>", `</pre></code>`)
             )}
-          </p>
+          </p> */}
           {/* {renderSelectedOptionBadge(idx)}
           {renderCorrectBadge(idx)} */}
         </div>
