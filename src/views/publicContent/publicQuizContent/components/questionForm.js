@@ -58,7 +58,10 @@ function QuestionForm(props) {
                   {
                       content: "",
                       correct:
-                          questionType?.toLowerCase() === "mcq" ? false : true,
+                          (questionType?.toLowerCase() === "mcq" ||
+                              questionType.toLowerCase() === "code")
+                              ? false
+                              : true,
                       reason: "",
                   },
               ]
@@ -70,7 +73,11 @@ function QuestionForm(props) {
         setAnswers([
             {
                 content: "",
-                correct: questionType?.toLowerCase() === "mcq" ? false : true,
+                correct:
+                    (questionType?.toLowerCase() === "mcq" ||
+                        questionType.toLowerCase() === "code")
+                        ? false
+                        : true,
                 reason: "",
             },
         ]);
@@ -91,7 +98,7 @@ function QuestionForm(props) {
         setAnswers(updatedAnswers);
     };
     const addAnswer = () => {
-        if (questionType?.toLowerCase() === "mcq") {
+        if (questionType?.toLowerCase() === "mcq" || questionType.toLowerCase() === "code") {
             setAnswers([
                 ...answers,
                 { content: "", correct: false, reason: "" },
@@ -169,7 +176,7 @@ function QuestionForm(props) {
             }
 
             if (
-                questionType?.toLowerCase() === "mcq" &&
+                (questionType?.toLowerCase() === "mcq" || questionType.toLowerCase() === "code") &&
                 !answers.some((answer) => answer.correct)
             ) {
                 openNotification("danger", "Please select a correct answer.");
@@ -197,7 +204,8 @@ function QuestionForm(props) {
                 <div className="mb-6">
                     <div className="flex flex-col md:flex-row justify-between text-gray-700 items-start md:items-center text-lg font-bold mb-5">
                         <div>
-                            {questionType?.toLowerCase() === "mcq"
+                            {(questionType?.toLowerCase() === "mcq" ||
+                                questionType.toLowerCase() === "code")
                                 ? "MCQ Question"
                                 : "Fill in the Blank Question"}
                         </div>
@@ -205,7 +213,8 @@ function QuestionForm(props) {
                             <Select
                                 placeholder="Please Select"
                                 defaultValue={
-                                    questionType?.toLowerCase() === "mcq"
+                                    (questionType?.toLowerCase() === "mcq" ||
+                                        questionType.toLowerCase() === "code")
                                         ? typeOptions[0]
                                         : typeOptions[1]
                                 }
@@ -245,7 +254,8 @@ function QuestionForm(props) {
                 </div>
                 <div>
                     <div className="block text-gray-700 text-lg font-bold mb-3">
-                        {questionType?.toLowerCase() === "mcq"
+                        {(questionType?.toLowerCase() === "mcq" ||
+                            questionType?.toLowerCase() === "code")
                             ? "Options"
                             : "Answer"}
                     </div>
@@ -254,7 +264,8 @@ function QuestionForm(props) {
                     answers?.map((answer, index) => (
                         <div key={index} className="mb-6">
                             <div className="flex gap-2 items-start mb-2">
-                                {questionType?.toLowerCase() === "mcq" ? (
+                                {(questionType?.toLowerCase() === "mcq" ||
+                                    questionType?.toLowerCase() === "code") ? (
                                     <>
                                         <Radio
                                             type="radio"
@@ -330,7 +341,8 @@ function QuestionForm(props) {
                                 />
                             </div>
 
-                            {questionType?.toLowerCase() === "mcq" ? (
+                            {(questionType?.toLowerCase() === "mcq" ||
+                                questionType?.toLowerCase() === "code") ? (
                                 <div className="flex justify-end w-full">
                                     <div className="w-11/12">
                                         <textarea
