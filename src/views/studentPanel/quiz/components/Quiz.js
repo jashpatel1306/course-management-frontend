@@ -335,7 +335,7 @@ export const Quiz = (props) => {
                       </div>
                       <div className=" pt-2 pb-8">
                         <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
-                          <h4 className="text-gray-700 font-semibold text-lg">
+                          <h4 className="text-gray-700 font-semibold text-lg select-none">
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: questionData?.question
@@ -367,7 +367,7 @@ export const Quiz = (props) => {
                       </div>
                       <div className=" pt-2 pb-8">
                         <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 overflow-auto">
-                          <h4 className="text-gray-700 font-semibold text-lg">
+                          <h4 className="text-gray-700 font-semibold text-lg select-none">
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: questionData?.questionType?.trim()?.toUpperCase() === 'CODE' ? generateHtml(questionData?.question) : questionData?.question

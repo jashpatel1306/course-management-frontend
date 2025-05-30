@@ -9,7 +9,7 @@
 // export const FRONTEND_BASE_URL = "http://43.205.25.25";
 
 export const BACKEND_BASE_URL = "https://lms.velths.com";
-export const FRONTEND_BASE_URL = "http://43.205.25.25";
+export const FRONTEND_BASE_URL = "https://lms.skillgraph.school";
 
 // export const BACKEND_BASE_URL ="https://lms.velths.com/";
 // export const FRONTEND_BASE_URL = "http://43.205.25.25";
