@@ -90,12 +90,9 @@ const AssessmentResult = (props) => {
     const getBatchOptionData = async (collegeId = "") => {
         try {
             setBatchLoading(true);
-            const response =
-                userData.authority.toString() === SUPERADMIN && collegeId
-                    ? await axiosInstance.get(
-                          `admin/batches-option/${collegeId}`
-                      )
-                    : await axiosInstance.get(`user/batches-option`);
+            const response = collegeId
+                ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
+                : await axiosInstance.get(`user/batches-option`);
 
             if (response.success) {
                 setBatchList(response.data.filter((e) => e.value !== "all"));
@@ -183,7 +180,7 @@ const AssessmentResult = (props) => {
     useEffect(() => {
         setApiFlag(true);
         if (userData.authority.toString() !== SUPERADMIN) {
-            getBatchOptionData();
+            getBatchOptionData(userData?.collegeId);
         } else {
             getCollegeOptionData();
             getBatchOptionData(collegeId);
@@ -356,7 +353,10 @@ const AssessmentResult = (props) => {
                                     })}
                                 </Tr>
                             </THead>
-                            <TableRowSkeleton columns={9} rows={10} />
+                            <TableRowSkeleton
+                                columns={9}
+                                rows={10}
+                            />
                         </Table>
                     </>
                 ) : resultData && resultData?.length ? (
@@ -496,7 +496,10 @@ const AssessmentResult = (props) => {
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={onHandleDeleteBox}>
+                    <Button
+                        variant="solid"
+                        onClick={onHandleDeleteBox}
+                    >
                         Okay
                     </Button>
                 </div>

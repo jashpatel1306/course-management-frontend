@@ -182,7 +182,7 @@ function StudentForm(props) {
       const response =
         userData.authority.toString() === SUPERADMIN && collegeId
           ? await axiosInstance.get(`admin/batches-option/${collegeId}`)
-          : await axiosInstance.get(`user/batches-option`);
+          : await axiosInstance.get(`user/batches-option/${userData.collegeId}`);
 
       if (response.success) {
         setBatchList(response.data.filter((e) => e.value !== "all"));
@@ -487,6 +487,7 @@ function StudentForm(props) {
                   });
                 }}
                 value={formData?.phone}
+                maxLength={10}
               />
             </div>
             {DisplayError(errorData.phone)}
