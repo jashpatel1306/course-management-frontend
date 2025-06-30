@@ -113,9 +113,9 @@ function useAuth() {
 
     const getUser = async () => {
         try {
-            const response = await axiosInstance.get("user/profile");
+            const response = await axiosInstance.get("user/get-user-profile");
             if (response) {
-                const { data, collegeId, batchId } = response;
+                const { data, collegeId, batchId } = response?.data;
                 const userData = data;
                 
                 dispatch(

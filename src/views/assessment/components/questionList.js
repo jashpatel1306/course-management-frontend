@@ -109,6 +109,7 @@ const DragAndDrop = (props) => {
   const [selectObject, setSelectObject] = useState();
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [multiDeleteIsOpen, setMultiDeleteIsOpen] = useState(false);
 
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
 
@@ -266,24 +267,33 @@ const DragAndDrop = (props) => {
     }
   };
 
-  const handleDelete = () => {
+  const handleMultiDelete = async () => {
+    if (selectedQuestions.length === 0) return;
+
     try {
-      // const response = await axiosInstance.delete(
-      //   `user/question/${selectObject._id}`
-      // );
-      // if (response.success) {
-      //   openNotification("success", response.message);
-      //   setApiFlag(true);
-      //   setDeleteIsOpen(false);
-      // } else {
-      //   openNotification("danger", response.message);
-      //   setDeleteIsOpen(false);
-      // }
-      console.log("selectedQuestions:", selectedQuestions); 
+      const response = await axiosInstance.post(
+        `user/delete-questions`,
+        { questionIds: selectedQuestions },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (response.success) {
+        openNotification("success", response.message || 'Questions deleted successfully');
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message || 'Failed to delete questions');
+      }
     } catch (error) {
       console.log("onHandleDeleteBox error:", error);
       openNotification("danger", error.message);
-      setDeleteIsOpen(false);
+    } finally {
+      setSelectedQuestions([]);
+      setSelectAll(false);
+      setMultiDeleteIsOpen(false);
     }
   };
 
@@ -308,7 +318,7 @@ const DragAndDrop = (props) => {
                   size="sm" 
                   variant="solid"
                   disabled={!selectedQuestions.length}
-                  onClick={handleDelete}
+                  onClick={() => setMultiDeleteIsOpen(true)}
                   className={`bg-${themeColor}-${primaryColorLevel}`}
                 >
                   Delete
@@ -375,6 +385,48 @@ const DragAndDrop = (props) => {
           </Button>
         </div>
       </Dialog>
+
+
+      <Dialog
+        isOpen={multiDeleteIsOpen}
+        style={{
+            content: {
+                marginTop: 250,
+            },
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+            setMultiDeleteIsOpen(false);
+        }}
+        onRequestClose={() => {
+            setMultiDeleteIsOpen(false);
+        }}
+    >
+        <div className="px-6 pb-6">
+            <h5
+                className={`mb-4 text-${themeColor}-${primaryColorLevel}`}
+            >
+                Confirm Delete
+            </h5>
+            <p>Are you sure you want to delete these questions?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+            <Button
+                className="ltr:mr-2 rtl:ml-2"
+                onClick={() => {
+                    setMultiDeleteIsOpen(false);
+                }}
+            >
+                Cancel
+            </Button>
+            <Button
+                variant="solid"
+                onClick={handleMultiDelete}
+            >
+                Okay
+            </Button>
+        </div>
+    </Dialog>
     </>
   );
 };

@@ -242,6 +242,8 @@ const StudentList = (props) => {
 
     useEffect(() => {
         setApiFlag(true);
+        console.log("userData", userData);
+
         if (userData.authority.toString() !== SUPERADMIN) {
             getBatchOptionData(userData.collegeId);
             getDepartmentOptionData(userData.collegeId);

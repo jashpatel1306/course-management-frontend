@@ -271,6 +271,8 @@ function AssignCourseForm(props) {
         }
     };
     const getAssessmentOptionData = async (collegeId = "") => {
+        console.log("collegeId", collegeId, userData);
+        
         try {
             setAssessmentsLoading(true);
             const response = await axiosInstance.get(
@@ -426,7 +428,7 @@ function AssignCourseForm(props) {
     };
     useEffect(() => {
         if (userData.authority.toString() !== SUPERADMIN) {
-            getBatchOptionData();
+            getBatchOptionData(userData.collegeId);
             getAssessmentOptionData(userData.collegeId);
         } else {
             getCollegeOptionData();

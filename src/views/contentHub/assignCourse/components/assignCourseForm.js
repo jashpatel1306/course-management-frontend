@@ -114,7 +114,7 @@ function AssignCourseForm(props) {
   };
   useEffect(() => {
     if (userData.authority.toString() !== SUPERADMIN && userData.collegeId) {
-      getBatchOptionData();
+      getBatchOptionData(userData.collegeId);
       getCoursesOptionData(userData.collegeId);
     } else {
       getCollegeOptionData();
