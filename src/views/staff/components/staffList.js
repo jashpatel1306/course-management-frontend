@@ -256,7 +256,10 @@ const StaffList = (props) => {
               <TBody>
                 {staffData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id} className="capitalize">
+                    <Tr key={item?._id} className={ item?.active
+                          ? "capitalize"
+                          : "bg-red-200"
+                    }>
                       <Td>{item?.name}</Td>
                       <Td className="lowercase">
                         {item?.email?.toLowerCase()}
@@ -265,7 +268,7 @@ const StaffList = (props) => {
                       <Td>{item?.phone}</Td>
                       <Td className="capitalize">
                         {" "}
-                        {item?.permissions.toString()}
+                        {item?.permissions?.join(", ")}
                       </Td>
 
                       <Td>

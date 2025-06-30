@@ -397,6 +397,7 @@ function CollegeForm(props) {
                   });
                 }}
                 value={formData?.collegeNo}
+                maxLength={10}
               />
             </div>
             {DisplayError(errorData.collegeNo)}
@@ -475,6 +476,7 @@ function CollegeForm(props) {
                   });
                 }}
                 value={formData?.contactPersonNo}
+                maxLength={10}
               />
             </div>
             {DisplayError(errorData.contactPersonNo)}

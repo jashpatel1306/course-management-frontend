@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from "react";
-import { Avatar, Button, Card, Dialog, Spinner, Table } from "components/ui";
+import { Avatar, Button, Card, Checkbox, Dialog, Spinner, Table } from "components/ui";
 import { useTable } from "react-table";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { HiOutlineMenu, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
@@ -107,8 +107,34 @@ const DragAndDrop = (props) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectObject, setSelectObject] = useState();
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
+
+  const handleSelectQuestion = (questionId) => {
+    if (selectedQuestions.includes(questionId)) {
+      const newSelected = selectedQuestions.filter(id => id !== questionId);
+      setSelectedQuestions(newSelected);
+      setSelectAll(false);
+    } else {
+      const newSelected = [...selectedQuestions, questionId];
+      setSelectedQuestions(newSelected);
+      if (newSelected.length === data.length) {
+        setSelectAll(true);
+      }
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedQuestions([]);
+      setSelectAll(false);
+    } else {
+      setSelectedQuestions(data.map(question => question._id));
+      setSelectAll(true);
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -120,6 +146,12 @@ const DragAndDrop = (props) => {
             <>
               <>
                 <div className="flex items-center gap-2 ">
+                  <div>
+                    <Checkbox 
+                      checked={selectedQuestions.includes(props.row.original._id)}
+                      onChange={() => handleSelectQuestion(props.row.original._id)}
+                    />
+                  </div>
                   <div>
                     <Avatar
                       size="sm"
@@ -175,7 +207,7 @@ const DragAndDrop = (props) => {
         )
       }
     ],
-    []
+    [selectedQuestions, handleSelectQuestion]
   );
 
   const fetchData = async () => {
@@ -207,6 +239,13 @@ const DragAndDrop = (props) => {
       fetchData();
     }
   }, [quizData]);
+
+  useEffect(() => {
+    // Reset selected questions when data changes
+    setSelectedQuestions([]);
+    setSelectAll(false);
+  }, [data]);
+
   const onHandleDeleteBox = async () => {
     try {
       const response = await axiosInstance.delete(
@@ -226,13 +265,55 @@ const DragAndDrop = (props) => {
       setDeleteIsOpen(false);
     }
   };
+
+  const handleDelete = () => {
+    try {
+      // const response = await axiosInstance.delete(
+      //   `user/question/${selectObject._id}`
+      // );
+      // if (response.success) {
+      //   openNotification("success", response.message);
+      //   setApiFlag(true);
+      //   setDeleteIsOpen(false);
+      // } else {
+      //   openNotification("danger", response.message);
+      //   setDeleteIsOpen(false);
+      // }
+      console.log("selectedQuestions:", selectedQuestions); 
+    } catch (error) {
+      console.log("onHandleDeleteBox error:", error);
+      openNotification("danger", error.message);
+      setDeleteIsOpen(false);
+    }
+  };
+
   return (
     <>
       {!loading ? (
         data?.length > 0 ? (
           <Card>
-            <div className="block text-gray-700 text-lg font-bold mb-3 ">
-              Questions
+            <div className="flex justify-between items-center mb-3">
+              <div className="block text-gray-700 text-lg font-bold">
+                Questions
+              </div>
+              <div className="flex items-center gap-5">
+                <div className="flex items-center">
+                  <Checkbox 
+                    checked={selectAll} 
+                    onChange={handleSelectAll}
+                  />
+                  <span className="text-sm">Select All</span>
+                </div>
+                <Button 
+                  size="sm" 
+                  variant="solid"
+                  disabled={!selectedQuestions.length}
+                  onClick={handleDelete}
+                  className={`bg-${themeColor}-${primaryColorLevel}`}
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
             <ReactTable
               columns={columns}

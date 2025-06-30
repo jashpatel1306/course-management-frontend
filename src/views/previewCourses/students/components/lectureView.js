@@ -25,7 +25,7 @@ const LectureView = (props) => {
         <div className="flex justify-between items-center border-b-2  p-3 px-4 ">
           <div
             className={`flex gap-4 items-center ${
-              activeContent.lectureId === data.id
+              activeContent?.lectureId === data.id
                 ? `text-${themeColor}-${primaryColorLevel}`
                 : ""
             }`}
@@ -48,7 +48,7 @@ const LectureView = (props) => {
                 variant="plain"
                 size="xs"
                 className={` ${
-                  activeContent.lectureId === data.id
+                  activeContent?.lectureId === data.id
                     ? `text-${themeColor}-${primaryColorLevel}`
                     : ""
                 }`}
@@ -60,7 +60,7 @@ const LectureView = (props) => {
                 variant="plain"
                 size="xs"
                 className={` ${
-                  activeContent.lectureId === data.id
+                  activeContent?.lectureId === data.id
                     ? `text-${themeColor}-${primaryColorLevel}`
                     : ""
                 }`}

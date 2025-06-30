@@ -123,7 +123,6 @@ function StaffForm(props) {
 
   useEffect(() => {
     if (staffData?._id) {
-      console.log("staffData?.collegeUserId._id: ", staffData?.collegeUserId);
       setFormData({
         staffId: staffData?._id ? staffData?._id : "",
         name: staffData?.name ? staffData?.name : "",
@@ -157,7 +156,6 @@ function StaffForm(props) {
         openNotification("danger", response.error);
       }
     } catch (error) {
-      console.log("getCollegeOptionData error :", error.message);
       openNotification("danger", error.message);
     } finally {
       setCollegeLoading(false);
@@ -234,7 +232,6 @@ function StaffForm(props) {
           permissions: ""
         };
       } else {
-        console.log("errorObject", errorObject);
         return {
           ...errorData,
           status: true,
@@ -382,6 +379,7 @@ function StaffForm(props) {
                   });
                 }}
                 value={formData?.phone}
+                maxLength={10}
               />
             </div>
             {DisplayError(errorData.phone)}

@@ -79,9 +79,11 @@ const CourseContentForm = () => {
       fetchCourseData();
     }
   }, [apiFlag]);
+
   useEffect(() => {
     setApiFlag(true);
   }, []);
+
   return (
     <>
       <div>
@@ -137,7 +139,7 @@ const CourseContentForm = () => {
                   {courseData?.sections.map((section,index) => {
                     return (
                       <>
-                        <SectionForm sectionIndex={index} section={section} courseId={course_id}/>
+                        <SectionForm sectionIndex={index} section={section} courseId={course_id} setApiFlag={setApiFlag}/>
                       </>
                     );
                   })}

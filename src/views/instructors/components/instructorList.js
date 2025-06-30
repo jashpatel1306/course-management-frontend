@@ -266,7 +266,10 @@ const InstructorList = (props) => {
               <TBody>
                 {instructorData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id} className="capitalize">
+                    <Tr key={item?._id} className={ item?.active
+                          ? "capitalize"
+                          : "bg-red-200"
+                    }>
                       <Td>
                         <Avatar
                           shape="circle"

@@ -1,6 +1,6 @@
 
 const appConfig = {
-   apiPrefix: "/api",
+  apiPrefix: "/api",
   authenticatedEntryPath: "/app/admin/dashboard",
   instructorAuthenticatedEntryPath: "/app/instructor/dashboard",
   studentAuthenticatedEntryPath: "/app/student/dashboard",

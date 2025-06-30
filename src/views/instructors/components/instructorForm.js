@@ -399,6 +399,7 @@ function InstructorForm(props) {
                   });
                 }}
                 value={formData?.phone}
+                maxLength={10}
               />
             </div>
             {DisplayError(errorData.phone)}

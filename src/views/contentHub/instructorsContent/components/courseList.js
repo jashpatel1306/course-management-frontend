@@ -48,7 +48,7 @@ const CourseList = (props) => {
       let formData = {
         search: removeSpecials(debouncedText),
         pageNo: page,
-        perPage: appConfig.pagePerData
+        perPage: 8
       };
       if (userData?.authority.toString() !== SUPERADMIN && currentCollegeTab) {
         formData = {
@@ -185,14 +185,14 @@ const CourseList = (props) => {
       <div>
         {isLoading ? (
           <>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 bg-gray-100 mt-4">
-                {[...Array(18).keys()].map((item, index) => {
+            <div className="w-full flex justify-center">
+              <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-gray-100 mt-4">
+                {[...Array(8).keys()].map((item, index) => {
                   return (
                     <>
-                      <div className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-white">
+                      <div className="rounded-lg overflow-hidden shadow-lg bg-white">
                         {/* Skeleton for Header Section */}
-                        <div className="w-60 h-40 bg-gray-300 animate-pulse"></div>
+                        <div className="w-full h-40 bg-gray-300 animate-pulse"></div>
 
                         {/* Skeleton for Course Details */}
                         <div className="p-4">

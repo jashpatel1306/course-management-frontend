@@ -84,7 +84,7 @@ const CommonViewer = ({ url }) => {
 const ContentContainer = ({ contentData }) => {
     return (
         <>
-            <div className="p-2 px-2">
+            <div className="h-full p-2 px-2">
                 {contentData?.type === "file" && (
                     <>
                         <h2 className="text-xl font-semibold text-gray-800 mb-2">
@@ -97,11 +97,11 @@ const ContentContainer = ({ contentData }) => {
                 )}
 
                 {!contentData?.type && (
-                    <>
+                    <div className="flex justify-center items-center h-full w-full">
                         <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                            same Course Content
+                            No Content Available
                         </h2>
-                    </>
+                    </div>
                 )}
             </div>
         </>
@@ -162,10 +162,16 @@ const ContentView = (props) => {
 
                 <div className="flex-1 overflow-hidden">
                     <div className="h-full overflow-y-auto p-6 hidden-scroll">
-                        {currentContentIndex >= 0 && (
+                        {currentContentIndex >= 0 ? (
                             <ContentContainer
                                 contentData={contentData[currentContentIndex]}
                             />
+                        ) : (
+                            <div className="flex justify-center items-center h-full w-full">
+                                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                                    No Content Available
+                                </h2>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -188,6 +194,7 @@ const ContentView = (props) => {
                     <Button
                         variant="solid"
                         loading={isLoading}
+                        disabled={isLoading || currentContentIndex >= contentData.length - 1}
                         onClick={() => {
                             const currentContent =
                                 contentData[currentContentIndex];

@@ -85,7 +85,7 @@ const CommonViewer = ({ url }) => {
 const ContentContainer = ({ contentData }) => {
     return (
         <>
-            <div className="p-2 px-2">
+            <div className="h-full p-2 px-2">
                 {contentData?.contentType === "text" && (
                     <>
                         <h2 className="text-xl font-semibold text-gray-800 mb-2">
@@ -122,11 +122,11 @@ const ContentContainer = ({ contentData }) => {
                     </>
                 )}
                 {!contentData?.contentType && (
-                    <>
+                    <div className="flex justify-center items-center h-full w-full">
                         <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                            Course Content
+                            No Content Available
                         </h2>
-                    </>
+                    </div>
                 )}
             </div>
         </>
@@ -192,8 +192,8 @@ const ContentView = (props) => {
                             />
                         ) : (
                             <>
-                                <div>
-                                    <p>Course Content</p>
+                                <div className="flex justify-center items-center h-full w-full">
+                                    <p>No Content Available</p>
                                 </div>
                             </>
                         )}
@@ -219,12 +219,13 @@ const ContentView = (props) => {
                     </Button>
                     <Button
                         variant="solid"
+                        disabled={contentData.length <= currentContentIndex + 1}
                         onClick={() => {
                             const nextContent =
                                 contentData[currentContentIndex + 1];
                             setActiveContent({
-                                lectureId: nextContent.lectureId,
-                                contentId: nextContent.id,
+                                lectureId: nextContent?.lectureId,
+                                contentId: nextContent?.id,
                             });
                         }}
                     >

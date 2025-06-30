@@ -80,6 +80,7 @@ const SectionForm = (props) => {
         });
         setIsOpen(false);
         setError("");
+        props.setApiFlag(true);
       } else {
         openNotification("danger", response.message);
       }
