@@ -76,7 +76,7 @@ const CourseList = (props) => {
         setCourseData(response.data);
         setTotalPage(
           response.pagination.total
-            ? Math.ceil(response.pagination.total / appConfig.pagePerData)
+            ? Math.ceil(response.pagination.total / 8)
             : 0
         );
         setIsLoading(false);
