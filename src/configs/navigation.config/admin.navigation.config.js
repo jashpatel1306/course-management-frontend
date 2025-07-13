@@ -138,6 +138,15 @@ const adminNavigationConfig = [
     subMenu: []
   },
   {
+    key: "apps.courseCompletionReport",
+    path: `${ADMIN_PREFIX_PATH}/course-completion-report`,
+    title: "Course Completion Report",
+    icon: "report",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    subMenu: []
+  },
+  {
     key: "apps.instructors",
     path: `${ADMIN_PREFIX_PATH}/instructors`,
     title: "Instructors",

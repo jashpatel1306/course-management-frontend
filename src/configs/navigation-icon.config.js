@@ -28,12 +28,9 @@ import {
   HiUsers,
   HiDatabase,
   HiPhone,
-  HiDocumentText,
+  HiDocumentText
 } from "react-icons/hi";
-import {
-  MdSubscriptions,
-  MdTransferWithinAStation
-} from "react-icons/md";
+import { MdSubscriptions, MdTransferWithinAStation } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 import { AiTwotoneSetting } from "react-icons/ai";
 import { PiStudentFill, PiFilesFill } from "react-icons/pi";
@@ -52,6 +49,7 @@ import {
   Result
 } from "assets/svg";
 import { BiSolidCategoryAlt } from "react-icons/bi";
+import { TbReportAnalytics } from "react-icons/tb";
 
 const navigationIcon = {
   // main navbar icon
@@ -78,8 +76,15 @@ const navigationIcon = {
   student: <Student />,
   batches: <BiSolidCategoryAlt />,
   attempts: <FaRegQuestionCircle />,
-  quiz: <img src='/img/others/publicContent.svg' alt="quiz" className="w-5 h-5 object-contain" />,
+  quiz: (
+    <img
+      src="/img/others/publicContent.svg"
+      alt="quiz"
+      className="w-5 h-5 object-contain"
+    />
+  ),
   result: <Result />,
+  report: <TbReportAnalytics />,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,

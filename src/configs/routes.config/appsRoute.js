@@ -259,7 +259,7 @@ const appsRoute = [
     component: React.lazy(() => import("views/policy")),
     authority: [ADMIN, SUPERADMIN, STAFF]
   },
-  
+
   {
     key: "configuration.departments",
     path: `${ADMIN_PREFIX_PATH}/configuration/departments`,
@@ -270,8 +270,15 @@ const appsRoute = [
     key: "apps.testPage",
     path: `${ADMIN_PREFIX_PATH}/testpage`,
     component: React.lazy(() => import("views/testPage")),
-    authority: [],
+    authority: []
   },
+
+  {
+    key: "apps.courseCompletionReport",
+    path: `${ADMIN_PREFIX_PATH}/course-completion-report`,
+    component: React.lazy(() => import("views/courseCompletionReport")),
+    subMenu: []
+  }
 ];
 
 export default appsRoute;
