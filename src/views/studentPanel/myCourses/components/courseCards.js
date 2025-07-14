@@ -1,6 +1,8 @@
 import axiosInstance from "apiServices/axiosInstance";
-import { Button, Progress, Tooltip } from "components/ui";
+import { Button, Dialog, Input, Progress, Tooltip } from "components/ui";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import DisplayError from "views/common/displayError";
 import openNotification from "views/common/notification";
 const getRandomBgColorClass = () => {
   // Define an array of possible Tailwind background color classes
@@ -23,9 +25,23 @@ const getRandomBgColorClass = () => {
   // Return a random background color class
   return bgColors[randomIndex];
 };
-const CourseCard = ({ index, item, trackingRecode }) => {
+const CourseCard = ({ index, item, trackingRecode, certificateRecode }) => {
+  const themeColor = useSelector((state) => state?.theme?.themeColor);
+  const primaryColorLevel = useSelector(
+    (state) => state?.theme?.primaryColorLevel
+  );
   const [isLoading, setIsLoading] = useState(false);
-
+  const [IsOpen, setIsOpen] = useState(false);
+  const [apiLoading, setApiLoading] = useState(false);
+  const { userData } = useSelector((state) => state.auth.user);
+  const [selectedName, setSelectedName] = useState("");
+  const [error, setError] = useState("");
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /**
+   * Enroll a course. If the course is successfully enrolled, it opens the course page in a new tab.
+   * If there is an error, it displays a notification with the error message.
+   */
+  /*******  32322a38-de76-4611-8aed-ceef91f560d9  *******/
   const enrollCourse = async () => {
     try {
       const response = await axiosInstance.post(
@@ -45,6 +61,42 @@ const CourseCard = ({ index, item, trackingRecode }) => {
       setIsLoading(false);
     }
   };
+
+  const createCertificate = async () => {
+    try {
+      const apiData = {
+        userId: userData?.user_id,
+        studentName: selectedName,
+        courseName: item?.courseName,
+        courseId: item?._id,
+        certificateStatus: "APPROVE"
+      };
+      const response = await axiosInstance.post(
+        `/api/student-certificates`,
+        apiData
+      );
+      if (response.success) {
+        setIsLoading(false);
+        const url = `/app/student/certificate/${certificateRecode?._id}`;
+        window.open(url, "_blank");
+      } else {
+        openNotification("danger", response?.message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log("createCertificate error:", error);
+      openNotification("danger", error?.message);
+      setIsLoading(false);
+    }
+  };
+  const percentage =
+    trackingRecode?.trackingContent?.length && trackingRecode?.totalcontent
+      ? Math.round(
+          (trackingRecode?.trackingContent?.length /
+            trackingRecode?.totalcontent) *
+            100
+        ) // Rounds to the nearest integer
+      : 0;
   return (
     <>
       <div
@@ -104,23 +156,43 @@ const CourseCard = ({ index, item, trackingRecode }) => {
           {/* Progress Bar */}
           {trackingRecode ? (
             <>
-              <div className="mt-2">
-                <div className="flex justify-between items-center text-sm text-gray-600">
-                  <span>Complete</span>
+              {percentage < 100 ? (
+                <div className="mt-2">
+                  <div className="flex justify-between items-center text-sm text-gray-600">
+                    <span>Complete</span>
+                  </div>
+                  <Progress percent={percentage} />
                 </div>
-                <Progress
-                  percent={
-                    trackingRecode.trackingContent.length &&
-                    trackingRecode.totalcontent
-                      ? Math.round(
-                          (trackingRecode.trackingContent.length /
-                            trackingRecode.totalcontent) *
-                            100
-                        ) // Rounds to the nearest integer
-                      : 0
-                  }
-                />
-              </div>
+              ) : certificateRecode ? (
+                <div className="mt-2">
+                  <Button
+                    variant="twoTone"
+                    block
+                    onClick={() => {
+                      //new code
+                      const url = `/app/student/certificate/${certificateRecode?._id}`;
+                      window.open(url, "_blank");
+                    }}
+                    loading={isLoading}
+                  >
+                    Certificate
+                  </Button>
+                </div>
+              ) : (
+                <div className="mt-2">
+                  <Button
+                    variant="twoTone"
+                    block
+                    onClick={() => {
+                      setSelectedName("");
+                      setIsOpen(true);
+                    }}
+                    loading={isLoading}
+                  >
+                    Get Certificate
+                  </Button>
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -138,6 +210,62 @@ const CourseCard = ({ index, item, trackingRecode }) => {
           )}
         </div>
       </div>
+      <Dialog
+        isOpen={IsOpen}
+        style={{
+          content: {
+            marginTop: 250
+          }
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setIsOpen(false);
+          setError("");
+          setSelectedName("");
+        }}
+        onRequestClose={() => {
+          setIsOpen(false);
+          setError("");
+          setSelectedName("");
+        }}
+      >
+        <div className="px-6 pb-4">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Enter your name for the certificate
+          </h5>
+          <div className="col-span-1 gap-4 mb-4">
+            <Input
+              placeholder="Enter your name"
+              onChange={(e) => setSelectedName(e.target.value)}
+            />
+          </div>
+          {DisplayError(error)}
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setIsOpen(false);
+              setError("");
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="solid"
+            onClick={() => {
+              if (selectedName) {
+                createCertificate();
+              } else {
+                setError("Please enter your name");
+              }
+            }}
+            loading={apiLoading}
+          >
+            Submit
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 };

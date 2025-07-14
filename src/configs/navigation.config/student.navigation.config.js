@@ -51,15 +51,15 @@ const studentNavigationConfig = [
   //   authority: [STUDENT],
   //   subMenu: [],
   // },
-  // {
-  //   key: "apps.certificate",
-  //   path: `${STUDENT_PREFIX_PATH}/certificate`,
-  //   title: "Certificate",
-  //   icon: "documentation",
-  //   type: NAV_ITEM_TYPE_ITEM,
-  //   authority: [STUDENT],
-  //   subMenu: [],
-  // },
+  {
+    key: "apps.certificate",
+    path: `${STUDENT_PREFIX_PATH}/certificate`,
+    title: "Certificate",
+    icon: "certificate",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [STUDENT],
+    subMenu: []
+  },
   {
     key: "apps.quizattempts",
     path: `${STUDENT_PREFIX_PATH}/quiz-attempts`,

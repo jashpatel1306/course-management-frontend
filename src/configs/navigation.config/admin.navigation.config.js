@@ -203,10 +203,10 @@ const adminNavigationConfig = [
     ]
   },
   {
-    key: "apps.testPage",
-    path: `${ADMIN_PREFIX_PATH}/testpage`,
-    title: "Complier Testing",
-    icon: "policy",
+    key: "apps.certificateTemplate",
+    path: `${ADMIN_PREFIX_PATH}/certificate-template`,
+    title: "Certificate  Template",
+    icon: "certificate",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [],
     subMenu: []

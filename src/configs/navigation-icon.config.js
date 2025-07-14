@@ -50,6 +50,7 @@ import {
 } from "assets/svg";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { TbReportAnalytics } from "react-icons/tb";
+import { GrCertificate } from "react-icons/gr";
 
 const navigationIcon = {
   // main navbar icon
@@ -85,6 +86,7 @@ const navigationIcon = {
   ),
   result: <Result />,
   report: <TbReportAnalytics />,
+  certificate: <GrCertificate />,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,

@@ -267,9 +267,9 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
-    key: "apps.testPage",
-    path: `${ADMIN_PREFIX_PATH}/testpage`,
-    component: React.lazy(() => import("views/testPage")),
+    key: "apps.certificateTemplate",
+    path: `${ADMIN_PREFIX_PATH}/certificate-template`,
+    component: React.lazy(() => import("views/certificateTemplate")),
     authority: []
   },
 

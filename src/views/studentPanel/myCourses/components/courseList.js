@@ -9,6 +9,7 @@ const CourseList = (props) => {
   const { flag } = props;
 
   const [courseData, setCourseData] = useState([]);
+  const [certificateData, setCertificateData] = useState([]);
   const [trackingData, setTrackingData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [apiFlag, setApiFlag] = useState(false);
@@ -17,7 +18,8 @@ const CourseList = (props) => {
     try {
       const response = await axiosInstance.get(`student/student-wise-courses`);
       if (response.success) {
-        setCourseData(response.data);
+        setCourseData(response.data.courses);
+        setCertificateData(response.data.certificateData);
         setIsLoading(false);
       } else {
         openNotification("danger", response.message);
@@ -45,7 +47,7 @@ const CourseList = (props) => {
       setIsLoading(false);
     }
   };
- 
+
   useEffect(() => {
     if (apiFlag) {
       setApiFlag(false);
@@ -114,11 +116,15 @@ const CourseList = (props) => {
                     const trackingRecode = trackingData.find(
                       (info, index) => info.courseId === item._id
                     );
+                    const certificateRecode = certificateData.find(
+                      (info) => info.courseId === item._id
+                    );
                     return (
                       <CourseCard
                         item={item}
                         index={index}
                         trackingRecode={trackingRecode}
+                        certificateRecode={certificateRecode}
                       />
                     );
                   })}
