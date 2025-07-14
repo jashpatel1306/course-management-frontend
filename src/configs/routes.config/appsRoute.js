@@ -270,14 +270,14 @@ const appsRoute = [
     key: "apps.certificateTemplate",
     path: `${ADMIN_PREFIX_PATH}/certificate-template`,
     component: React.lazy(() => import("views/certificateTemplate")),
-    authority: []
+    authority: [SUPERADMIN, ADMIN, STAFF]
   },
 
   {
     key: "apps.courseCompletionReport",
     path: `${ADMIN_PREFIX_PATH}/course-completion-report`,
     component: React.lazy(() => import("views/courseCompletionReport")),
-    subMenu: []
+    authority: [SUPERADMIN, ADMIN, STAFF]
   }
 ];
 

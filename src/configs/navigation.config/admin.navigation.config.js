@@ -208,7 +208,7 @@ const adminNavigationConfig = [
     title: "Certificate  Template",
     icon: "certificate",
     type: NAV_ITEM_TYPE_ITEM,
-    authority: [],
+    authority: [SUPERADMIN,STAFF],
     subMenu: []
   }
 ];
