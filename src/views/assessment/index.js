@@ -22,10 +22,15 @@ const Assessment = () => {
   const [IsOpen, setIsOpen] = useState(false);
   const [collegeLoading, setCollegeLoading] = useState(false);
   const [collegeList, setCollegeList] = useState([]);
+  const [typeList] = useState([
+    { label: "Quiz", value: "quiz" },
+    { label: "Exercise", value: "exercise" }
+  ]);
   const [formData, setFormData] = useState({
     title: "",
+    type: "",
     collegeId:
-      userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId,
+      userData?.authority.toString() === SUPERADMIN ? null : userData.collegeId
   });
   const [error, setError] = useState("");
   const CreateAssessment = async () => {
@@ -35,7 +40,7 @@ const Assessment = () => {
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
         navigate(`/app/admin/assessment/form/${response.data._id}`, {
-          state: response.data,
+          state: response.data
         });
         setIsOpen(false);
         setError("");
@@ -44,6 +49,7 @@ const Assessment = () => {
       }
       setFormData({
         title: "",
+        type: ""
       });
     } catch (error) {
       console.log("onFormSubmit error: ", error);
@@ -60,8 +66,11 @@ const Assessment = () => {
       if (!formData?.title) {
         setError("Please Enter Assessment Title.");
       }
+      if (!formData?.type) {
+        setError("Please Enter Assessment Type.");
+      }
 
-      if (formData?.title && formData.collegeId) {
+      if (formData?.title && formData.collegeId && formData?.type) {
         setError("");
         CreateAssessment(formData);
       }
@@ -123,8 +132,8 @@ const Assessment = () => {
         isOpen={IsOpen}
         style={{
           content: {
-            marginTop: 250,
-          },
+            marginTop: 250
+          }
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
@@ -132,7 +141,9 @@ const Assessment = () => {
           setError("");
           setFormData({
             title: "",
-            collegeId: "",
+            type: "",
+
+            collegeId: ""
           });
         }}
         onRequestClose={() => {
@@ -140,7 +151,9 @@ const Assessment = () => {
           setError("");
           setFormData({
             title: "",
-            collegeId: "",
+            type: "",
+
+            collegeId: ""
           });
         }}
       >
@@ -162,10 +175,31 @@ const Assessment = () => {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    title: e.target.value,
+                    title: e.target.value
                   });
                 }}
                 value={formData?.title}
+              />
+            </div>
+          </div>
+          <div className="col-span-1 gap-4 mb-4">
+            <div
+              className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+            >
+              Assessment Type
+            </div>
+            <div className="col-span-2">
+              <Select
+                placeholder="Please Select Type"
+                loading={collegeLoading}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    type: e.value
+                  });
+                }}
+                value={typeList.find((info) => info.value === formData?.type)}
+                options={typeList}
               />
             </div>
           </div>
@@ -185,7 +219,7 @@ const Assessment = () => {
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        collegeId: e.value,
+                        collegeId: e.value
                       });
                     }}
                     value={collegeList.find(
@@ -207,7 +241,8 @@ const Assessment = () => {
               setIsOpen(false);
               setFormData({
                 title: "",
-                collegeId: null,
+                type: "",
+                collegeId: null
               });
               setError("");
             }}
