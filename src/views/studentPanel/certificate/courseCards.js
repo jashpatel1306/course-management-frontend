@@ -2,6 +2,7 @@ import axiosInstance from "apiServices/axiosInstance";
 import { Button, Dialog, Input, Progress, Tooltip } from "components/ui";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import DisplayError from "views/common/displayError";
 import openNotification from "views/common/notification";
 const getRandomBgColorClass = () => {
@@ -26,6 +27,7 @@ const getRandomBgColorClass = () => {
   return bgColors[randomIndex];
 };
 const CourseCard = ({ index, item, certificateRecode }) => {
+  const navigate = useNavigate();
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
@@ -50,7 +52,9 @@ const CourseCard = ({ index, item, certificateRecode }) => {
               alt="Course Cover"
             />
           ) : (
-            <div className="w-full h-full flex justify-center items-center text-white font-bold text-5xl uppercase bg-red-300">
+            <div
+              className={`w-full h-full flex justify-center items-center text-white font-bold text-5xl uppercase bg-red-300`}
+            >
               <p>
                 {item?.courseName
                   .split(" ") // Split the phrase by spaces
@@ -66,7 +70,7 @@ const CourseCard = ({ index, item, certificateRecode }) => {
         <div className={`p-4 `}>
           <Tooltip title={item?.courseName} placement="bottom">
             <h5
-              className="text-lg font-bold line-clamp-1 cursor-pointer"
+              className={`text-lg font-semibold text-gray-900 mb-2 cursor-pointer hover:text-${themeColor}-${primaryColorLevel}`}
               // onClick={() => {
               //   if (certificateRecode) {
               //     const url = `/app/student/course/${item?._id}`;
@@ -82,9 +86,7 @@ const CourseCard = ({ index, item, certificateRecode }) => {
             variant="twoTone"
             block
             onClick={() => {
-              //new code
-              const url = `/app/student/certificate/${certificateRecode?._id}`;
-              window.open(url, "_blank");
+              navigate(`/app/student/certificate/${certificateRecode?._id}`);
             }}
           >
             Certificate

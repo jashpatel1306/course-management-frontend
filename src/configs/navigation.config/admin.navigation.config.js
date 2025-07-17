@@ -130,12 +130,31 @@ const adminNavigationConfig = [
   },
   {
     key: "apps.assessmentResult",
-    path: `${ADMIN_PREFIX_PATH}/assessment-result`,
+    path: `${ADMIN_PREFIX_PATH}/assessment-quiz-result`,
     title: "Assessment Result",
     icon: "result",
-    type: NAV_ITEM_TYPE_ITEM,
+    type: NAV_ITEM_TYPE_COLLAPSE,
     authority: [ADMIN, SUPERADMIN, STAFF],
-    subMenu: []
+    subMenu: [
+      {
+        key: "assessmentResult.assessmentQuizResult",
+        path: `${ADMIN_PREFIX_PATH}/assessment-quiz-result`,
+        title: " Quiz Result",
+        icon: "result",
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [ADMIN, SUPERADMIN, STAFF],
+        subMenu: []
+      },
+      {
+        key: "assessmentResult.assessmentExerciseResult",
+        path: `${ADMIN_PREFIX_PATH}/assessment-exercise-result`,
+        title: " Exercise Result",
+        icon: "result",
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [ADMIN, SUPERADMIN, STAFF],
+        subMenu: []
+      }
+    ]
   },
   {
     key: "apps.courseCompletionReport",
@@ -190,6 +209,15 @@ const adminNavigationConfig = [
         type: NAV_ITEM_TYPE_ITEM,
         authority: [ADMIN, SUPERADMIN, STAFF],
         subMenu: []
+      },
+      {
+        key: "configuration.certificateTemplate",
+        path: `${ADMIN_PREFIX_PATH}/certificate-template`,
+        title: "Certificate  Template",
+        icon: "certificate",
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [SUPERADMIN],
+        subMenu: []
       }
       // {
       //   key: "appconfigurations.policy",
@@ -201,15 +229,6 @@ const adminNavigationConfig = [
       //   subMenu: [],
       // },
     ]
-  },
-  {
-    key: "apps.certificateTemplate",
-    path: `${ADMIN_PREFIX_PATH}/certificate-template`,
-    title: "Certificate  Template",
-    icon: "certificate",
-    type: NAV_ITEM_TYPE_ITEM,
-    authority: [SUPERADMIN,STAFF],
-    subMenu: []
   }
 ];
 

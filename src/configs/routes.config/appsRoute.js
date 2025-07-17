@@ -107,6 +107,17 @@ const appsRoute = [
     }
   },
   {
+    key: "apps.viewExercise",
+    path: `${STUDENT_PREFIX_PATH}/:assessmentId/exercise/:exerciseId`,
+    component: React.lazy(() => import("views/studentPanel/exercise")),
+    authority: [STUDENT],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false
+    }
+  },
+  {
     key: "apps.viewquizresult",
     path: `${STUDENT_PREFIX_PATH}/quiz-result/:trackingId`,
     component: React.lazy(() => import("views/studentPanel/quizResult")),
@@ -168,10 +179,42 @@ const appsRoute = [
   //   }
   // },
   {
-    key: "apps.assessmentResult",
-    path: `${ADMIN_PREFIX_PATH}/assessment-result`,
-    component: React.lazy(() => import("views/assessmentResult")),
+    key: "assessmentResult.assessmentQuizResult",
+    path: `${ADMIN_PREFIX_PATH}/assessment-quiz-result`,
+    component: React.lazy(() => import("views/assessmentResult/quiz")),
     authority: [ADMIN, SUPERADMIN, STAFF]
+  },
+  {
+    key: "assessmentResult.assessmentExerciseResult",
+    path: `${ADMIN_PREFIX_PATH}/assessment-exercise-result`,
+    component: React.lazy(() => import("views/assessmentResult/exercise")),
+    authority: [ADMIN, SUPERADMIN, STAFF]
+  },
+  {
+    key: "assessmentResult.assessmentExerciseResult",
+    path: `${ADMIN_PREFIX_PATH}/exercise-result/:trackingId`,
+    component: React.lazy(() =>
+      import("views/assessmentResult/exerciseAddResult")
+    ),
+    authority: [ADMIN, SUPERADMIN, STAFF, STUDENT],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false
+    }
+  },
+  {
+    key: "assessmentResult.assessmentExerciseResult",
+    path: `${STUDENT_PREFIX_PATH}/exercise-result/:trackingId`,
+    component: React.lazy(() =>
+      import("views/studentPanel/exerciseResultView")
+    ),
+    authority: [ADMIN, SUPERADMIN, STAFF, STUDENT],
+    meta: {
+      layout: "blank",
+      pageContainerType: "gutterless",
+      footer: false
+    }
   },
   {
     key: "contentHub.instructors",
@@ -267,7 +310,7 @@ const appsRoute = [
     authority: [ADMIN, SUPERADMIN, STAFF]
   },
   {
-    key: "apps.certificateTemplate",
+    key: "configuration.certificateTemplate",
     path: `${ADMIN_PREFIX_PATH}/certificate-template`,
     component: React.lazy(() => import("views/certificateTemplate")),
     authority: [SUPERADMIN, ADMIN, STAFF]

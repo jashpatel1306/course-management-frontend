@@ -58,7 +58,7 @@ const AssessmentResult = (props) => {
             }
 
             const response = await axiosInstance.post(
-                `user/get-all-result`,
+                `user/get-all-quiz-result`,
                 formData
             );
             if (response.success) {

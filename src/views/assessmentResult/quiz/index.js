@@ -17,7 +17,7 @@ const Students = () => {
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
-            Assessment Result Details
+            Quiz Result Details
           </div>
           <div className="flex gap-x-4"></div>
         </div>

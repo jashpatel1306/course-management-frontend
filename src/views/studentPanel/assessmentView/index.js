@@ -93,21 +93,24 @@ const AssessmentView = () => {
                 >
                   Total Marks : {assessmentData?.totalMarks}
                 </p>
-                <p
-                  className={`text-${themeColor}-${primaryColorLevel} bg-${themeColor}-50 p-2 px-4 rounded-md`}
-                >
-                  Total Time : {totalTime} min
-                </p>
+                {assessmentData?.type === "quiz" && (
+                  <p
+                    className={`text-${themeColor}-${primaryColorLevel} bg-${themeColor}-50 p-2 px-4 rounded-md`}
+                  >
+                    Total Time : {assessmentData?.time} min
+                  </p>
+                )}
               </div>
             </div>
             <div>
               {assessmentData?.content.map((info) => {
                 const content = info.data;
-                const trackingQuizData =
-                  assessmentData?.trackingQuizData?.filter(
-                    (data) => data.quizId === content._id
-                  );
+
                 if (info.type === "quiz") {
+                  const trackingQuizData =
+                    assessmentData?.trackingQuizData?.filter(
+                      (data) => data.quizId === content._id
+                    );
                   return (
                     <div
                       key={content?._id}
@@ -131,7 +134,7 @@ const AssessmentView = () => {
                             <Button
                               variant="solid"
                               onClick={() => {
-                                navigate('/app/student/quiz-attempts');
+                                navigate("/app/student/quiz-attempts");
                               }}
                             >
                               Result
@@ -151,6 +154,72 @@ const AssessmentView = () => {
                             className="border border-blue-500"
                           >
                             Quiz Start
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+                if (info.type === "exercise") {
+                  const trackingExerciseData =
+                    assessmentData?.trackingExerciseData?.filter(
+                      (data) => data.exerciseId === content._id
+                    );
+                  return (
+                    <div
+                      key={content?._id}
+                      className={`mb-4 text-base font-medium rounded-lg mt-2 ${
+                        trackingExerciseData?.length
+                          ? "bg-blue-100 border-2 border-blue-500"
+                          : "border-2 border-blue-500"
+                      } flex p-4 px-6 items-center justify-between`}
+                    >
+                      <div>
+                        <h3
+                          className={`text-${themeColor}-${primaryColorLevel}`}
+                        >
+                          {content.title}
+                        </h3>
+                        <div className="flex gap-4 mt-2 text-lg">
+                          <p>TotalMarks : {content.totalMarks}</p>
+                          <p>TotalQuestions : {content.questions.length}</p>
+                        </div>
+                      </div>
+                      <div>
+                        {trackingExerciseData?.length ? (
+                          <>
+                            <Button
+                              variant="solid"
+                              onClick={() => {
+                                if (trackingExerciseData[0].showResult) {
+                                  navigate("/app/student/exercise-attempts");
+                                }
+                              }}
+                              color={
+                                trackingExerciseData[0].showResult
+                                  ? "green"
+                                  : "orange"
+                              }
+                            >
+                              {trackingExerciseData[0].showResult
+                                ? "Result"
+                                : "Result In Progress"}
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            variant="solid"
+                            onClick={() => {
+                              const url = `${
+                                window.location.href.split("app")[0]
+                              }app/student/${assessmentData?._id}/exercise/${
+                                content?._id
+                              }`;
+                              window.open(url, "_blank");
+                            }}
+                            className="border border-blue-500"
+                          >
+                            Start
                           </Button>
                         )}
                       </div>

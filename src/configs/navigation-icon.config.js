@@ -34,7 +34,12 @@ import { MdSubscriptions, MdTransferWithinAStation } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 import { AiTwotoneSetting } from "react-icons/ai";
 import { PiStudentFill, PiFilesFill } from "react-icons/pi";
-import { FaRegQuestionCircle, FaSchool } from "react-icons/fa";
+import {
+  FaCode,
+  FaRegFileCode,
+  FaRegQuestionCircle,
+  FaSchool
+} from "react-icons/fa";
 import Assessment from "assets/svg/assessment";
 import {
   Clients,
@@ -87,6 +92,7 @@ const navigationIcon = {
   result: <Result />,
   report: <TbReportAnalytics />,
   certificate: <GrCertificate />,
+  exercise: <FaRegFileCode />,
   //other icon
   apps: <HiOutlineViewGridAdd />,
   project: <HiOutlineChartSquareBar />,

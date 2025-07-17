@@ -46,6 +46,12 @@ const studentRoute = [
     authority: [STUDENT]
   },
   {
+    key: "apps.exerciseattempts",
+    path: `${STUDENT_PREFIX_PATH}/exercise-attempts`,
+    component: React.lazy(() => import("views/studentPanel/exerciseAttempts")),
+    authority: [STUDENT]
+  },
+  {
     key: "apps.certificate",
     path: `${STUDENT_PREFIX_PATH}/certificate/:certificateId`,
     component: React.lazy(() =>

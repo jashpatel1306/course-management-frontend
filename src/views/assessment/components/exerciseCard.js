@@ -31,7 +31,10 @@ const ExerciseCard = (props) => {
   const UpdateExercise = async (apiData) => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post(`user/exercise`, apiData);
+      const response = await axiosInstance.put(
+        `user/exercise/${apiData.exerciseId}`,
+        apiData
+      );
       if (response?.success && response?.data?._id) {
         openNotification("success", response.message);
         // setSectionData(response.data);
@@ -67,6 +70,7 @@ const ExerciseCard = (props) => {
           title: formData?.title,
           description: formData?.description,
           assessmentId: formData?.assessmentId,
+          exerciseId: formData?.exerciseId,
           isPublish: formData?.isPublish
         });
         setApiFlag(true);
@@ -105,6 +109,7 @@ const ExerciseCard = (props) => {
       description: newDescriptions
     });
   };
+  console.log("formData:,", formData);
   return (
     <>
       <Card className="bg-gray-50 border-2 mb-3" bodyClass="p-3 sm:p-[1.25rem]">
