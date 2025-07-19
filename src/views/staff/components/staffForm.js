@@ -19,7 +19,8 @@ const staffPermissionOptions = [
   { value: "assessmentResult", label: "Assessment Result" },
   { value: "configuration", label: "Configuration" },
   { value: "publiccontent", label: "Public Content" },
-  { value: "courseCompletionReport", label: "Course Completion Report" }
+  { value: "courseCompletionReport", label: "Course Completion Summary" },
+  { value: "certificateReport", label: "Certificate Issuances " }
 ];
 const superAdminPermissionOptions = [
   { value: "dashboard", label: "Dashboard" },
@@ -34,7 +35,8 @@ const superAdminPermissionOptions = [
   { value: "staff", label: "Staff" },
   { value: "policy", label: "Policy" },
   { value: "configuration", label: "General Configuration" },
-  { value: "courseCompletionReport", label: "Course Completion Report" }
+  { value: "courseCompletionReport", label: "Course Completion Summary" },
+  { value: "certificateReport", label: "Certificate Issuances" }
 ];
 function StaffForm(props) {
   const { handleCloseClick, staffData, isOpen } = props;

@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Button, Dialog, Input, Spinner } from "components/ui";
+import { Button, Input, Spinner } from "components/ui";
 import axiosInstance from "apiServices/axiosInstance";
 import openNotification from "views/common/notification";
 import { useParams } from "react-router-dom";
-import { FaInfo, FaQuestionCircle } from "react-icons/fa";
+import { FaQuestionCircle } from "react-icons/fa";
 import Logo from "components/template/Logo";
 import { useSelector } from "react-redux";
+import DisplayError from "views/common/displayError";
 
 export const Exercise = (props) => {
   const { questions, exerciseData, setResults, setDisplayView, results } =
@@ -23,7 +24,7 @@ export const Exercise = (props) => {
   const [exerciseFinished, setExerciseFinished] = useState(false);
   const [nextButton, setNextButton] = useState(false);
   const [fillAnswer, setFillAnswer] = useState("");
-  const [dialogIsOpen, setIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [questionStatus, setQuestionStatus] = useState([]);
   const numberOfQuestions = questions.length;
@@ -98,9 +99,24 @@ export const Exercise = (props) => {
       // setIsLoading(false);
     }
   };
+  const isValidUrl = (value) => {
+    try {
+      new URL(value);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
   const handleNextQuestion = async () => {
-    if (fillAnswer) {
+    if (fillAnswer && isValidUrl(fillAnswer)) {
+      setErrorMessage("");
       await UpdateExerciseQuestionData(questionData._id, fillAnswer);
+    } else {
+      if (!isValidUrl(fillAnswer)) {
+        setErrorMessage("Please Enter a Valid URL.");
+      } else {
+        setErrorMessage("Please Enter URL");
+      }
     }
   };
   const handleBackQuestion = async () => {
@@ -230,7 +246,7 @@ export const Exercise = (props) => {
                         <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
                           Question : Exercise
                         </p>
-                        <Button
+                        {/* <Button
                           size="xs"
                           shape="circle"
                           icon={<FaInfo />}
@@ -238,7 +254,7 @@ export const Exercise = (props) => {
                           onClick={() => {
                             setIsOpen(true);
                           }}
-                        />
+                        /> */}
                       </div>
 
                       <p className="px-4 p-1 capitalize rounded-lg border-2 border-gray-600 text-base font-semibold">
@@ -246,7 +262,7 @@ export const Exercise = (props) => {
                       </p>
                     </div>
                     <div className=" pt-2 pb-8">
-                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-8 ">
+                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-4 w-full mb-4 ">
                         <h4 className="text-gray-700 font-semibold text-lg select-none">
                           <span
                             dangerouslySetInnerHTML={{
@@ -255,16 +271,85 @@ export const Exercise = (props) => {
                           ></span>
                         </h4>
                       </div>
+                      <div className="mt-2 rounded-xl border-2 border-gray-600 px-7 py-2 w-full mb-4 ">
+                        <h2 class="text-lg font-bold text-gray-800 mb-2">
+                          Coding Task Instructions (Using CodeSandbox)
+                        </h2>
+                        <ol class="list-decimal pl-6 space-y-1 text-gray-700 font-medium leading-relaxed">
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Go to:
+                            </span>
+                            👉
+                            <a
+                              href="https://codesandbox.io"
+                              target="_blank"
+                              class="text-blue-600 hover:underline font-semibold"
+                              rel="noreferrer"
+                            >
+                              https://codesandbox.io
+                            </a>
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Create a Sandbox:
+                            </span>
+                            Click on <em>"Create Sandbox"</em> or{" "}
+                            <em>"New Sandbox"</em>.
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Select Environment:
+                            </span>
+                            Choose the appropriate environment based on the
+                            question requirements (e.g., HTML, React, Node.js).
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Write and Test:
+                            </span>
+                            Write your code in the editor and test it using the
+                            live preview.
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Share the Project:
+                            </span>
+                            Click on the <em>"Share"</em> button located at the
+                            top-right of the page.
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Copy Link:
+                            </span>
+                            Copy the generated shareable link.
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Submit the Link:
+                            </span>
+                            Paste the copied link into the answer box provided
+                            under the question.
+                          </li>
+                          <li>
+                            <span class="font-semibold text-gray-900">
+                              Click Submit:
+                            </span>
+                            Hit <strong>"Submit"</strong> to proceed to the next
+                            question.
+                          </li>
+                        </ol>
+                      </div>
                       <Input
-                        textArea
                         placeholder="Wrtie Your Public Link Here"
                         value={fillAnswer}
-                        className="mb-8 focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
+                        className="focus:ring-gray-600 focus-within:ring-gray-600 focus-within:border-gray-600 focus:border-gray-600 mt-2 rounded-xl border-2 border-gray-600 "
                         onChange={(e) => {
                           console.log("e.target.valu: ", e.target.value);
                           setFillAnswer(e.target.value);
                         }}
                       />
+                      {DisplayError(errorMessage)}
                     </div>
                   </>
                 )}
@@ -321,7 +406,7 @@ export const Exercise = (props) => {
           </div>
         </>
       </motion.div>
-      <Dialog
+      {/* <Dialog
         isOpen={dialogIsOpen}
         bodyOpenClassName="overflow-hidden"
         onClose={() => {
@@ -384,7 +469,7 @@ export const Exercise = (props) => {
             </li>
           </ol>
         
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

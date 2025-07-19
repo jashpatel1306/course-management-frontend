@@ -15,6 +15,7 @@ const adminNavigationConfig = [
     authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: []
   },
+
   {
     key: "apps.students",
     path: `${ADMIN_PREFIX_PATH}/students`,
@@ -24,6 +25,7 @@ const adminNavigationConfig = [
     authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: []
   },
+
   {
     key: "apps.batches",
     path: `${ADMIN_PREFIX_PATH}/batches`,
@@ -100,6 +102,7 @@ const adminNavigationConfig = [
       }
     ]
   },
+
   {
     key: "apps.publiccontent",
     path: `${ADMIN_PREFIX_PATH}/public-content`,
@@ -128,6 +131,7 @@ const adminNavigationConfig = [
       }
     ]
   },
+
   {
     key: "apps.assessmentResult",
     path: `${ADMIN_PREFIX_PATH}/assessment-quiz-result`,
@@ -148,7 +152,7 @@ const adminNavigationConfig = [
       {
         key: "assessmentResult.assessmentExerciseResult",
         path: `${ADMIN_PREFIX_PATH}/assessment-exercise-result`,
-        title: " Exercise Result",
+        title: "Coding Evaluation",
         icon: "result",
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [ADMIN, SUPERADMIN, STAFF],
@@ -156,15 +160,27 @@ const adminNavigationConfig = [
       }
     ]
   },
+
   {
     key: "apps.courseCompletionReport",
     path: `${ADMIN_PREFIX_PATH}/course-completion-report`,
-    title: "Course Completion Report",
+    title: "Course Completion Summary",
     icon: "report",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: []
   },
+
+  {
+    key: "apps.certificateReport",
+    path: `${ADMIN_PREFIX_PATH}/certificate-completion-report`,
+    title: "Certificate Issuances ",
+    icon: "certificate",
+    type: NAV_ITEM_TYPE_ITEM,
+    authority: [ADMIN, SUPERADMIN, STAFF],
+    subMenu: []
+  },
+
   {
     key: "apps.instructors",
     path: `${ADMIN_PREFIX_PATH}/instructors`,
@@ -174,6 +190,7 @@ const adminNavigationConfig = [
     authority: [ADMIN, SUPERADMIN, STAFF],
     subMenu: []
   },
+
   {
     key: "apps.colleges",
     path: `${ADMIN_PREFIX_PATH}/colleges`,
@@ -183,6 +200,7 @@ const adminNavigationConfig = [
     authority: [SUPERADMIN, STAFF],
     subMenu: []
   },
+
   {
     key: "apps.staff",
     path: `${ADMIN_PREFIX_PATH}/staff`,
@@ -212,22 +230,13 @@ const adminNavigationConfig = [
       },
       {
         key: "configuration.certificateTemplate",
-        path: `${ADMIN_PREFIX_PATH}/certificate-template`,
-        title: "Certificate  Template",
+        path: `${ADMIN_PREFIX_PATH}/certificate-template-layout`,
+        title: "Certificate Template Layout",
         icon: "certificate",
         type: NAV_ITEM_TYPE_ITEM,
-        authority: [SUPERADMIN],
+        authority: [SUPERADMIN, ADMIN, STAFF],
         subMenu: []
       }
-      // {
-      //   key: "appconfigurations.policy",
-      //   path: `${ADMIN_PREFIX_PATH}/configuration/policy`,
-      //   title: "Policy",
-      //   icon: "policy",
-      //   type: NAV_ITEM_TYPE_ITEM,
-      //   authority: [SUPERADMIN],
-      //   subMenu: [],
-      // },
     ]
   }
 ];

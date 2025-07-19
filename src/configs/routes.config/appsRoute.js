@@ -311,15 +311,20 @@ const appsRoute = [
   },
   {
     key: "configuration.certificateTemplate",
-    path: `${ADMIN_PREFIX_PATH}/certificate-template`,
+    path: `${ADMIN_PREFIX_PATH}/certificate-template-layout`,
     component: React.lazy(() => import("views/certificateTemplate")),
     authority: [SUPERADMIN, ADMIN, STAFF]
   },
-
   {
     key: "apps.courseCompletionReport",
     path: `${ADMIN_PREFIX_PATH}/course-completion-report`,
     component: React.lazy(() => import("views/courseCompletionReport")),
+    authority: [SUPERADMIN, ADMIN, STAFF]
+  },
+  {
+    key: "apps.certificateReport",
+    path: `${ADMIN_PREFIX_PATH}/certificate-completion-report`,
+    component: React.lazy(() => import("views/certificateCompletionReport")),
     authority: [SUPERADMIN, ADMIN, STAFF]
   }
 ];

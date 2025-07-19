@@ -47,7 +47,7 @@ const studentRoute = [
   },
   {
     key: "apps.exerciseattempts",
-    path: `${STUDENT_PREFIX_PATH}/exercise-attempts`,
+    path: `${STUDENT_PREFIX_PATH}/attempted-coding-exercises`,
     component: React.lazy(() => import("views/studentPanel/exerciseAttempts")),
     authority: [STUDENT]
   },

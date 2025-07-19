@@ -175,7 +175,7 @@ const AssessmentView = ({ contentData }) => {
                           <Button
                             variant="solid"
                             onClick={() => {
-                              navigate("/app/student/exercise-attempts");
+                              navigate("/app/student/attempted-coding-exercises");
                             }}
                           >
                             Result
@@ -228,7 +228,7 @@ const AssessmentView = ({ contentData }) => {
                           <Button
                             variant="solid"
                             onClick={() => {
-                              navigate("/app/student/exercise-attempts");
+                              navigate("/app/student/attempted-coding-exercises");
                             }}
                           >
                             Result

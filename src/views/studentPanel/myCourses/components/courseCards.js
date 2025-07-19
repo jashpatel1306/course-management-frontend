@@ -68,17 +68,22 @@ const CourseCard = ({ index, item, trackingRecode, certificateRecode }) => {
         userId: userData?.user_id,
         studentName: selectedName,
         courseName: item?.courseName,
-        courseId: item?._id,
-        certificateStatus: "APPROVE"
+        courseId: item?._id
+        // certificateStatus: "APPROVE"
       };
       const response = await axiosInstance.post(
         `/api/student-certificates`,
         apiData
       );
-      if (response.success) {
+      if (response.status) {
         setIsLoading(false);
-        const url = `/app/student/certificate/${certificateRecode?._id}`;
-        window.open(url, "_blank");
+        openNotification("success", response?.message);
+        setIsOpen(false);
+        setError("");
+        setSelectedName("");
+
+        // const url = `/app/student/certificate/${certificateRecode?._id}`;
+        // window.open(url, "_blank");
       } else {
         openNotification("danger", response?.message);
         setIsLoading(false);
@@ -164,20 +169,39 @@ const CourseCard = ({ index, item, trackingRecode, certificateRecode }) => {
                   <Progress percent={percentage} />
                 </div>
               ) : certificateRecode ? (
-                <div className="mt-2">
-                  <Button
-                    variant="twoTone"
-                    block
-                    onClick={() => {
-                      //new code
-                      const url = `/app/student/certificate/${certificateRecode?._id}`;
-                      window.open(url, "_blank");
-                    }}
-                    loading={isLoading}
-                  >
-                    Certificate
-                  </Button>
-                </div>
+                certificateRecode?.certificateStatus ? (
+                  <>
+                    {" "}
+                    <div className="mt-2">
+                      <Button
+                        variant="twoTone"
+                        block
+                        onClick={() => {
+                          //new code
+                          const url = `/app/student/certificate/${certificateRecode?._id}`;
+                          window.open(url, "_blank");
+                        }}
+                        loading={isLoading}
+                      >
+                        Certificate
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <div className="mt-2">
+                      <Button
+                        variant="twoTone"
+                        block
+                        onClick={() => {}}
+                        loading={isLoading}
+                      >
+                        Pending
+                      </Button>
+                    </div>
+                  </>
+                )
               ) : (
                 <div className="mt-2">
                   <Button

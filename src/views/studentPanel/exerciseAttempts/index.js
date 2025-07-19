@@ -16,7 +16,7 @@ const Students = () => {
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
-            Exercise Attempts
+            Attempted Coding Exercises
           </div>
           <div className="flex gap-x-4"></div>
         </div>

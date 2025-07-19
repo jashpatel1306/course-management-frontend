@@ -8,6 +8,7 @@ import { Button, Card, Input } from "components/ui";
 import { useSelector } from "react-redux";
 import { FaSave } from "react-icons/fa";
 import axiosInstance from "apiServices/axiosInstance";
+import { IoMdClose } from "react-icons/io";
 const Index = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
@@ -19,7 +20,7 @@ const Index = () => {
     "Ref-CCC/SKG/{{CERTIFICATION-NUMBER}}"
   );
 
-  const [initialValues, setInitialValues] = useState({
+  const [initialValues] = useState({
     companyLogo1: null,
     companyLogo2: null,
     signature1: null,
@@ -130,7 +131,7 @@ const Index = () => {
   };
   const validationSchema = Yup.object().shape({
     companyLogo1: Yup.mixed().required("Company Logo 1 is required"),
-    companyLogo2: Yup.mixed().required("Company Logo 2 is required"),
+    companyLogo2: Yup.mixed(),
     signature1: Yup.mixed().required("Signature 1 is required"),
     signature2: Yup.mixed().required("Signature 2 is required"),
     signatory1Name: Yup.string().required("Signatory 1 Name is required"),
@@ -160,7 +161,7 @@ const Index = () => {
     fetchTemplateData();
   }, []);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async () => {
     try {
       const apiData = {
         companyLogo1: companyLogo1,
@@ -195,7 +196,7 @@ const Index = () => {
           <div
             className={`text-xl font-bold text-${themeColor}-${primaryColorLevel} dark:text-white`}
           >
-            Certificate Template Details
+            Certificate Template Layout
           </div>
         </Card>
         <Card className=" mb-4 space-y-6">
@@ -219,12 +220,24 @@ const Index = () => {
                   className="border-cert-accent/20 focus:border-cert-accent"
                 />
               </div>
+
               {companyLogo1 && (
-                <img
-                  src={companyLogo1}
-                  alt="Logo 1"
-                  className="w-20 h-20 object-contain border rounded mt-2"
-                />
+                <div className="relative w-20 h-20 mt-2">
+                  <img
+                    src={companyLogo1}
+                    alt="Logo 1"
+                    className="w-full h-full object-contain border rounded"
+                  />
+                  <Button
+                    shape="circle"
+                    size="xs"
+                    variant="twoTone"
+                    className="absolute top-0 right-0"
+                    color="red-600"
+                    onClick={() => setCompanyLogo1(null)} // Replace with your actual state clearing function
+                    icon={<IoMdClose />}
+                  />
+                </div>
               )}
             </div>
             <div>
@@ -246,11 +259,23 @@ const Index = () => {
                 />
               </div>
               {companyLogo2 && (
-                <img
-                  src={companyLogo2}
-                  alt="Logo 2"
-                  className="w-20 h-20 object-contain border rounded mt-2"
-                />
+                <div className="relative w-20 h-20 mt-2">
+                  <img
+                    src={companyLogo2}
+                    alt="Logo 2"
+                    className="w-full h-full object-contain border rounded"
+                  />
+
+                  <Button
+                    shape="circle"
+                    size="xs"
+                    variant="twoTone"
+                    className="absolute top-0 right-0"
+                    color="red-600"
+                    onClick={() => setCompanyLogo2(null)} // Replace with your actual state clearing function
+                    icon={<IoMdClose />}
+                  />
+                </div>
               )}
             </div>
           </div>

@@ -1,10 +1,7 @@
-import axiosInstance from "apiServices/axiosInstance";
-import { Button, Dialog, Input, Progress, Tooltip } from "components/ui";
-import React, { useState } from "react";
+import { Button, Dialog, Tooltip } from "components/ui";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import DisplayError from "views/common/displayError";
-import openNotification from "views/common/notification";
 const getRandomBgColorClass = () => {
   // Define an array of possible Tailwind background color classes
   const bgColors = [
@@ -71,26 +68,37 @@ const CourseCard = ({ index, item, certificateRecode }) => {
           <Tooltip title={item?.courseName} placement="bottom">
             <h5
               className={`text-lg font-semibold text-gray-900 mb-2 cursor-pointer hover:text-${themeColor}-${primaryColorLevel}`}
-              // onClick={() => {
-              //   if (certificateRecode) {
-              //     const url = `/app/student/course/${item?._id}`;
-              //     window.open(url, "_blank");
-              //   }
-              // }}
             >
               {item?.courseName}
             </h5>
           </Tooltip>
-
-          <Button
-            variant="twoTone"
-            block
-            onClick={() => {
-              navigate(`/app/student/certificate/${certificateRecode?._id}`);
-            }}
-          >
-            Certificate
-          </Button>
+          {certificateRecode &&
+            (certificateRecode?.certificateStatus ? (
+              <>
+                <div className="mt-2">
+                  <Button
+                    variant="twoTone"
+                    block
+                    onClick={() => {
+                      //new code
+                      const url = `/app/student/certificate/${certificateRecode?._id}`;
+                      window.open(url, "_blank");
+                    }}
+                  >
+                    Certificate
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                {" "}
+                <div className="mt-2">
+                  <Button variant="twoTone" block>
+                    Pending
+                  </Button>
+                </div>
+              </>
+            ))}
         </div>
       </div>
     </>

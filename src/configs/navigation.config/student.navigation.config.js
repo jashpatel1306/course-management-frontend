@@ -62,8 +62,8 @@ const studentNavigationConfig = [
   },
   {
     key: "apps.exerciseattempts",
-    path: `${STUDENT_PREFIX_PATH}/exercise-attempts`,
-    title: "Exercise Attempts",
+    path: `${STUDENT_PREFIX_PATH}/attempted-coding-exercises`,
+    title: "Attempted Coding Exercises",
     icon: "exercise",
     type: NAV_ITEM_TYPE_ITEM,
     authority: [STUDENT],

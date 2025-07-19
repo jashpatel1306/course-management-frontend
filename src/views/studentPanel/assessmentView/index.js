@@ -192,7 +192,7 @@ const AssessmentView = () => {
                               variant="solid"
                               onClick={() => {
                                 if (trackingExerciseData[0].showResult) {
-                                  navigate("/app/student/exercise-attempts");
+                                  navigate("/app/student/attempted-coding-exercises");
                                 }
                               }}
                               color={
