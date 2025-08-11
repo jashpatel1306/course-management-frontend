@@ -1148,7 +1148,6 @@ const LectureForm = (props) => {
                                   color="blue-500"
                                   checked={lectureData.isPublish}
                                   onChange={(val) => {
-                                    console.log("val: ", val);
                                     if (val) {
                                       setLectureUnpublishIsOpen(true);
                                       setLecturePublishIsOpen(false);
@@ -1357,11 +1356,11 @@ const LectureForm = (props) => {
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
-          lectureUnpublishIsOpen(false);
+          setLectureUnpublishIsOpen(false);
           setLecturePublishIsOpen(false);
         }}
         onRequestClose={() => {
-          lectureUnpublishIsOpen(false);
+          setLectureUnpublishIsOpen(false);
           setLecturePublishIsOpen(false);
         }}
       >
@@ -1375,7 +1374,7 @@ const LectureForm = (props) => {
           <Button
             className="ltr:mr-2 rtl:ml-2"
             onClick={() => {
-              lectureUnpublishIsOpen(false);
+              setLectureUnpublishIsOpen(false);
               setLecturePublishIsOpen(false);
             }}
           >
@@ -1395,7 +1394,7 @@ const LectureForm = (props) => {
         }}
         contentClassName="pb-0 px-0"
         onClose={() => {
-          lectureUnpublishIsOpen(false);
+          setLecturePublishIsOpen(false);
           setLectureUnpublishIsOpen(false);
         }}
         onRequestClose={() => {

@@ -165,15 +165,14 @@ const SectionForm = (props) => {
                   <>
                     {sectionData?.lectures?.map((info, index) => {
                       return (
-                        <>
                           <LectureForm
+                            key={info?._id}
                             lecture={info}
                             lectureIndex={index}
                             sectionId={section.id}
                             courseId={courseId}
                             setSectionData={setApiFlag}
                           />
-                        </>
                       );
                     })}
                   </>

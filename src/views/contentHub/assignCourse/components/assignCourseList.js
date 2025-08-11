@@ -210,7 +210,7 @@ const InstructorList = (props) => {
                   return (
                     <Tr key={item?._id} className="capitalize">
                       {userData.authority.toString() === SUPERADMIN ? (
-                        <Td>{item.collegeId.collegeName}</Td>
+                        <Td>{item?.collegeId?.collegeName}</Td>
                       ) : (
                         <></>
                       )}

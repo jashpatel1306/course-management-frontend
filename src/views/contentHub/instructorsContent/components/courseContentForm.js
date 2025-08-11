@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Card, Input, Upload, Table } from "components/ui";
+import { Button, Card, Input, Upload, Table, Dialog } from "components/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   HiArrowNarrowLeft,
@@ -60,9 +60,8 @@ const ReactTable = ({ columns, data }) => {
                           {...row.getRowProps()}
                           {...provided.draggableProps}
                           ref={provided.innerRef}
-                          className={`${
-                            snapshot.isDragging ? "table" : ""
-                          } border-2  border-gray-20`}
+                          className={`${snapshot.isDragging ? "table" : ""
+                            } border-2  border-gray-20`}
                           style={style}
                         >
                           {row.cells.map((cell) => (
@@ -108,6 +107,8 @@ const CourseContentForm = () => {
   });
   const [file, setFile] = useState();
   const [error, setError] = useState("");
+  const [isDeleteContentOpen, setIsDeleteContentOpen] = useState(false);
+  const [deleteContentId, setDeleteContentId] = useState(null);
 
   const handleAddNewCourseClick = () => {
     setAddCourseFlag(true);
@@ -241,6 +242,26 @@ const CourseContentForm = () => {
       console.log("onHandleBox error :", error);
     }
   };
+
+  const deleteContent = async () => {
+    try {
+      const response = await axiosInstance.delete(
+        `user/instructor-content/${deleteContentId}`
+      );
+      if (response.success) {
+        openNotification("success", response.message);
+        setApiFlag(true);
+      } else {
+        openNotification("danger", response.message);
+      }
+    } catch (error) {
+      console.log("deleteContent error: ", error);
+      openNotification("danger", error.message);
+    } finally {
+      setIsDeleteContentOpen(false);
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -291,8 +312,8 @@ const CourseContentForm = () => {
               </span>
               <span
                 onClick={() => {
-                  // setDeleteIsOpen(true);
-                  // setSelectObject(props.row.original);
+                  setDeleteContentId(props?.row?.original?._id);
+                  setIsDeleteContentOpen(true);
                 }}
               >
                 <HiOutlineTrash size={20} />
@@ -355,8 +376,8 @@ const CourseContentForm = () => {
           ) : (
             <>
               {!lectureFormFlag &&
-              courseData?.content &&
-              courseData?.content?.length > 0 ? (
+                courseData?.content &&
+                courseData?.content?.length > 0 ? (
                 <>
                   <Card className="mt-4">
                     <div className="flex flex-col justify-center bg-gray-100 rounded-b-lg w-full">
@@ -540,6 +561,43 @@ const CourseContentForm = () => {
         setCourseData={setCourseData}
         courseData={courseData}
       />
+
+      {/* Confirm Delete Dialog */}
+      <Dialog
+        isOpen={isDeleteContentOpen}
+        style={{
+          content: {
+            marginTop: 250
+          }
+        }}
+        contentClassName="pb-0 px-0"
+        onClose={() => {
+          setIsDeleteContentOpen(false);
+        }}
+        onRequestClose={() => {
+          setIsDeleteContentOpen(false);
+        }}
+      >
+        <div className="px-6 pb-6">
+          <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
+            Confirm Delete
+          </h5>
+          <p>Are you sure you want to delete this content?</p>
+        </div>
+        <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            onClick={() => {
+              setIsDeleteContentOpen(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" color="red-500" onClick={deleteContent}>
+            Delete
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 };

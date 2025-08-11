@@ -68,7 +68,6 @@ const DepartmentList = (props) => {
 
   const fetchData = async () => {
     try {
-      console.log("currentTab: ", currentTab);
       const response = await axiosInstance.get(
         `user/departments/${currentTab}`
       );
@@ -298,7 +297,7 @@ const DepartmentList = (props) => {
           <h5 className={`mb-4 text-${themeColor}-${primaryColorLevel}`}>
             Confirm delete of Department
           </h5>
-          <p>Are you sure you want to delete this student?</p>
+          <p>Are you sure you want to delete this department?</p>
         </div>
         <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
           <Button

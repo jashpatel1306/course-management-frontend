@@ -9,7 +9,7 @@ import DisplayError from "views/common/displayError";
 import { SUPERADMIN } from "constants/roles.constant";
 import { FormNumericInput } from "components/shared";
 
-const staffPermissionOptions = [
+export const staffPermissionOptions = [
   { value: "dashboard", label: "Dashboard" },
   { value: "students", label: "Students" },
   { value: "Batches", label: "Batches" },
@@ -20,9 +20,10 @@ const staffPermissionOptions = [
   { value: "configuration", label: "Configuration" },
   { value: "publiccontent", label: "Public Content" },
   { value: "courseCompletionReport", label: "Course Completion Summary" },
-  { value: "certificateReport", label: "Certificate Issuances " }
+  { value: "certificateIssuances", label: "Certificate Issuances " }
 ];
-const superAdminPermissionOptions = [
+
+export const superAdminPermissionOptions = [
   { value: "dashboard", label: "Dashboard" },
   { value: "students", label: "Students" },
   { value: "batches", label: "Batches" },
@@ -33,10 +34,10 @@ const superAdminPermissionOptions = [
   { value: "assessmentResult", label: "Assessment Result" },
   { value: "colleges", label: "Colleges" },
   { value: "staff", label: "Staff" },
-  { value: "policy", label: "Policy" },
+  // { value: "policy", label: "Policy" },
   { value: "configuration", label: "General Configuration" },
-  { value: "courseCompletionReport", label: "Course Completion Summary" },
-  { value: "certificateReport", label: "Certificate Issuances" }
+  { value: "courseCompletionSummary", label: "Course Completion Summary" },
+  { value: "certificateIssuances", label: "Certificate Issuances" }
 ];
 function StaffForm(props) {
   const { handleCloseClick, staffData, isOpen } = props;
@@ -51,17 +52,11 @@ function StaffForm(props) {
       .email("Invalid email address")
       .required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
-    collegeUserId: Yup.string().when([], {
-      is: (userData) =>
-        userData?.authority.toString() === SUPERADMIN.toString(),
-      then: Yup.string().required("College Name is required"),
-      otherwise: Yup.string().notRequired()
+    collegeUserId: Yup.string().when("isSuperAdmin", {
+      is: false, // When isSuperAdmin is false
+      then: Yup.string().required("College Name is required"), // Make it required
+      otherwise: Yup.string().notRequired() // Otherwise not required
     }),
-    // collegeUserId: Yup.string().when("isSuperAdmin", {
-    //   is: false, // When isSuperAdmin is false
-    //   then: Yup.string().required("College Name is required"), // Make it required
-    //   otherwise: Yup.string().notRequired() // Otherwise not required
-    // }),
     permissions: Yup.array().required("permissions is required"),
     isSuperAdmin: Yup.boolean(),
     active: Yup.boolean()
@@ -217,7 +212,7 @@ function StaffForm(props) {
   };
   const formValidation = () => {
     try {
-      staffValidationSchema.validateSync(formData, { abortEarly: false });
+      staffValidationSchema.validateSync(formData);
       return {
         name: "",
         email: "",
@@ -251,6 +246,9 @@ function StaffForm(props) {
     }
   };
   const SubmitHandle = async () => {
+    if (formData.isSuperAdmin) {
+      delete formData.collegeUserId;
+    }
     const errorObject = formValidation();
     if (!errorObject.status) {
       resetErrorData();
@@ -394,7 +392,7 @@ function StaffForm(props) {
                 <div
                   className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
                 >
-                  Staff SuperAdmin
+                  Staff Super Admin
                 </div>
                 <div className="col-span-2">
                   <Switcher

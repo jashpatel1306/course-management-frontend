@@ -573,7 +573,7 @@ function StudentForm(props) {
                   (info) => info.value === formData?.department
                 )}
                 options={departmentList}
-                className={errorData.department && "select-error"}
+                className={`capitalize ${errorData.department && "select-error"}`}
               />
             </div>
             {DisplayError(errorData.department)}

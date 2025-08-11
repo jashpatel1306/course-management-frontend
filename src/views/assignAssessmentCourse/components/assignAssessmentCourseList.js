@@ -26,7 +26,7 @@ const columns = [
     "assessment type",
     "Batch name",
     "course name",
-    "postion Type",
+    "position type",
     "date",
     "Actions",
 ];

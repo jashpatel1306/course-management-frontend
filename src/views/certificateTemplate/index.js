@@ -9,14 +9,15 @@ import { useSelector } from "react-redux";
 import { FaSave } from "react-icons/fa";
 import axiosInstance from "apiServices/axiosInstance";
 import { IoMdClose } from "react-icons/io";
+
 const Index = () => {
   const themeColor = useSelector((state) => state?.theme?.themeColor);
   const primaryColorLevel = useSelector(
     (state) => state?.theme?.primaryColorLevel
   );
-  const [studentName] = useState("{{FULL CANDIDATE NAME}}");
-  const [courseName] = useState("{{Name of the training course}}");
-  const [certificationNumber] = useState(
+  const [studentName, setStudentName] = useState("{{FULL CANDIDATE NAME}}");
+  const [courseName, setCourseName] = useState("{{Name of the training course}}");
+  const [certificationNumber, setCertificationNumber] = useState(
     "Ref-CCC/SKG/{{CERTIFICATION-NUMBER}}"
   );
 
@@ -145,7 +146,6 @@ const Index = () => {
       try {
         const response = await axiosInstance.get("/api/template-certificates");
         const data = response.data;
-        console.log("data: ", data);
         setCompanyLogo1(data[0].companyLogo1);
         setCompanyLogo2(data[0].companyLogo2);
         setSignature1(data[0].signature1);
@@ -173,7 +173,6 @@ const Index = () => {
         signatory2Name: signatory2Name,
         signatory2Title: signatory2Title
       };
-      console.log("apiData: ", apiData);
       await validationSchema.validate(apiData, { abortEarly: false });
       await axiosInstance.post("/api/template-certificates", apiData);
     } catch (error) {
@@ -200,6 +199,62 @@ const Index = () => {
           </div>
         </Card>
         <Card className=" mb-4 space-y-6">
+          {/* Candidate Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                {" "}
+                Candidate Name *
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                  className="border-cert-accent/20 focus:border-cert-accent"
+                />
+              </div>
+            </div>
+
+            {/* Course Details */}
+            <div>
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                {" "}
+                Course Name *
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  value={courseName}
+                  onChange={(e) => setCourseName(e.target.value)}
+                  className="border-cert-accent/20 focus:border-cert-accent"
+                />
+              </div>
+            </div>
+
+            {/* Certification No */}
+            <div>
+              <div
+                className={`font-bold mb-1 text-${themeColor}-${primaryColorLevel}`}
+              >
+                {" "}
+                Certification No *
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  value={certificationNumber}
+                  onChange={(e) => setCertificationNumber(e.target.value)}
+                  className="border-cert-accent/20 focus:border-cert-accent"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Company Logos */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

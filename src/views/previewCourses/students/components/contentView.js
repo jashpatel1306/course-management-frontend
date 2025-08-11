@@ -219,7 +219,7 @@ const ContentView = (props) => {
                     </Button>
                     <Button
                         variant="solid"
-                        disabled={contentData.length <= currentContentIndex + 1}
+                        disabled={contentData.length < currentContentIndex + 1}
                         onClick={() => {
                             const nextContent =
                                 contentData[currentContentIndex + 1];

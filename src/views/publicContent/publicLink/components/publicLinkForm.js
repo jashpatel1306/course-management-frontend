@@ -450,7 +450,7 @@ function PublicLinkForm(props) {
                         <div className="col-span-2">
                             <Select
                                 isMulti
-                                placeholder="Select Quiz"
+                                placeholder="Select Quiz name"
                                 loading={quizLoading}
                                 onChange={(value) => {
                                     setFormData({

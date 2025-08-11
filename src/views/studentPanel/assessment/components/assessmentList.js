@@ -38,6 +38,7 @@ const AssessmentList = () => {
     setPage(val);
     setApiFlag(true);
   };
+
   const fetchData = async () => {
     try {
       let formData = {
@@ -82,6 +83,14 @@ const AssessmentList = () => {
       fetchData();
     }
   }, [apiFlag]);
+
+  useEffect(() => {
+    if (debouncedText.trim() !== "") {
+      setPage(1);
+      setApiFlag(true);
+    }
+  }, [debouncedText]);
+
   useEffect(() => {
     setApiFlag(true);
   }, []);
@@ -127,11 +136,7 @@ const AssessmentList = () => {
                   className={`text-xl text-${themeColor}-${primaryColorLevel}`}
                 />
               }
-              onChange={(e) => {
-                setSearchText(e.target.value);
-                setPage(1);
-                setApiFlag(true);
-              }}
+              onChange={(e) => setSearchText(e.target.value)}
               suffix={
                 searchText && (
                   <AiOutlineClose

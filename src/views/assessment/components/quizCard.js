@@ -223,7 +223,7 @@ const QuizCard = (props) => {
             <div
               className={`flex items-center text-base font-semibold text-${themeColor}-${primaryColorLevel} px-3 p-1 rounded-lg border border-${themeColor}-${primaryColorLevel}`}
             >
-              Total Marks : {quizData?.totalMarks || "0"}
+              Total Marksfafa : {quizData?.totalMarks || "0"}
             </div>
             {/* <Button
               size="sm"

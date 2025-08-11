@@ -1,21 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import axiosInstance from "apiServices/axiosInstance";
+import { Button } from "components/ui";
 import { motion } from "framer-motion";
-import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import * as Yup from "yup";
-import { Button, Card, Input } from "components/ui";
-import { useSelector } from "react-redux";
-import { FaSave } from "react-icons/fa";
-import axiosInstance from "apiServices/axiosInstance";
+import { Download } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+
 const CertificateView = () => {
   const params = useParams();
   const certificateId = params.certificateId;
-  const themeColor = useSelector((state) => state?.theme?.themeColor);
-  const primaryColorLevel = useSelector(
-    (state) => state?.theme?.primaryColorLevel
-  );
   const [studentName] = useState("{{FULL CANDIDATE NAME}}");
   const [courseName] = useState("{{Name of the training course}}");
   const [certificationNumber] = useState(
@@ -109,7 +103,6 @@ const CertificateView = () => {
           `/api/student-certificates/${certificateId}`
         );
         const data = response.data;
-        console.log("data: ", data);
         setInitialValues(data);
       } catch (error) {
         console.error("Error fetching template data:", error);

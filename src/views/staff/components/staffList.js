@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import removeSpecials from "views/common/serachText";
 import { SUPERADMIN } from "constants/roles.constant";
 import { BsThreeDots } from "react-icons/bs";
+import { staffPermissionOptions, superAdminPermissionOptions } from "./staffForm";
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
@@ -171,7 +172,7 @@ const StaffList = (props) => {
       setDeleteIsOpen(false);
     }
   };
-  console.log("collegeList: ", collegeList);
+
   return (
     <>
       <div className="lg:flex items-center justify-between mt-4 w-[100%]  md:flex md:flex-wrap sm:flex sm:flex-wrap">
@@ -256,9 +257,9 @@ const StaffList = (props) => {
               <TBody>
                 {staffData?.map((item, key) => {
                   return (
-                    <Tr key={item?._id} className={ item?.active
-                          ? "capitalize"
-                          : "bg-red-200"
+                    <Tr key={item?._id} className={item?.active
+                      ? "capitalize"
+                      : "bg-red-200"
                     }>
                       <Td>{item?.name}</Td>
                       <Td className="lowercase">
@@ -267,8 +268,11 @@ const StaffList = (props) => {
 
                       <Td>{item?.phone}</Td>
                       <Td className="capitalize">
-                        {" "}
-                        {item?.permissions?.join(", ")}
+                        {item?.isSuperAdmin ?
+                          superAdminPermissionOptions.map((item) => item.label).join(" | ")
+                          :
+                          staffPermissionOptions.map((item) => item.label).join(" | ")
+                        }
                       </Td>
 
                       <Td>
