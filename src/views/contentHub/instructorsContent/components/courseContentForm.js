@@ -152,14 +152,14 @@ const CourseContentForm = () => {
       "application/vnd.ms-excel", // XLS (old)
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX (new)
     ];
-    const maxFileSize = 5000000;
+    // const maxFileSize = 5000000;
     for (let file of files) {
       if (!allowedFileType.includes(file.type)) {
         valid = false;
       }
-      if (file.size >= maxFileSize) {
-        valid = false;
-      }
+      // if (file.size >= maxFileSize) {
+      //   valid = false;
+      // }
     }
     if (valid) {
     }

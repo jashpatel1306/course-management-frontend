@@ -80,7 +80,7 @@ function CourseForm(props) {
       "image/bmp",
       "image/webp",
     ];
-    const maxFileSize = 5000000;
+    // const maxFileSize = 5000000;
     for (let file of files) {
       if (!allowedFileType.includes(file.type)) {
         setErrorData({
@@ -89,13 +89,13 @@ function CourseForm(props) {
         });
         valid = false;
       }
-      if (file.size >= maxFileSize) {
-        setErrorData({
-          ...errorData,
-          coverImage: "Upload image cannot more then 5MB!",
-        });
-        valid = false;
-      }
+      // if (file.size >= maxFileSize) {
+      //   setErrorData({
+      //     ...errorData,
+      //     coverImage: "Upload image cannot more then 5MB!",
+      //   });
+      //   valid = false;
+      // }
     }
     if (valid) {
       setErrorData({ ...errorData, coverImage: "" });

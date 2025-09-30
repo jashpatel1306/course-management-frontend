@@ -122,14 +122,14 @@ const QuizCard = (props) => {
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ];
-    const maxFileSize = 5000000;
+    // const maxFileSize = 5000000;
     for (let file of files) {
       if (!allowedFileType.includes(file.type)) {
         valid = false;
       }
-      if (file.size >= maxFileSize) {
-        valid = false;
-      }
+      // if (file.size >= maxFileSize) {
+      //   valid = false;
+      // }
     }
     if (valid) {
     }
