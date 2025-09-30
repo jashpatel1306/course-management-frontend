@@ -80,12 +80,14 @@ const Upload = React.forwardRef(( props, ref) => {
 		if(beforeUpload) {
 			result = beforeUpload(newFiles, files)
 
+			console.log("result before uplaod: ", result);
 			if(result === false) {
 				triggerMessage()
 				return
 			}
 	
 			if(typeof result === 'string' && result.length > 0) {
+				console.log("result : ", result);
 				triggerMessage(result)
 				return
 			}
